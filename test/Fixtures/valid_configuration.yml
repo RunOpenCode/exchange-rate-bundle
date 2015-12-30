@@ -1,0 +1,13 @@
+run_open_code_exchange_rate:
+
+    base_currency: RSD
+
+    processors:
+        - run_open_code.exchange_rate.processor.base_currency_validator
+    rates:
+        - { currency_code: 'EUR', rate_type: 'default', source: 'national_bank_of_serbia' }
+        - { currency_code: 'CHF', rate_type: 'default', source: 'national_bank_of_serbia' }
+        - { currency_code: 'BAM', rate_type: 'default', source: 'national_bank_of_serbia' }
+
+    file_repository:
+        path: /path/to/some/file
