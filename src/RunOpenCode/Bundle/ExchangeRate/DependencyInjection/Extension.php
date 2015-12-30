@@ -28,6 +28,7 @@ class Extension extends BaseExtension
         $this->configureSourcesRegistry($config, $container);
         $this->configureProcessorsRegistry($config, $container);
         $this->configureRatesRegistry($config, $container);
+        $this->configureFileRepository($config, $container);
     }
 
     protected function configureExchangeRateService(array $config, ContainerBuilder $container)
@@ -57,11 +58,13 @@ class Extension extends BaseExtension
                 $requiredSources[$rate['source']] = $rate['source'];
             }
 
+
             foreach ($container->findTaggedServiceIds('run_open_code.exchange_rate.source') as $id => $tags) {
 
                 foreach ($tags as $attributes) {
 
                     if (array_key_exists($attributes['alias'], $requiredSources)) {
+
                         $definition->addMethodCall('add', array(
                             new Reference($id)
                         ));
@@ -85,9 +88,9 @@ class Extension extends BaseExtension
 
             $processors = array();
 
-            foreach ($container->findTaggedServiceIds('run_open_code.exchange_rate.processors') as $id => $tags) {
+            foreach ($container->findTaggedServiceIds('run_open_code.exchange_rate.processor') as $id => $tags) {
 
-                if (!isset($config['processors'][$id])) {
+                if (!in_array($id, $config['processors'])) {
                     continue;
                 }
 
@@ -100,7 +103,7 @@ class Extension extends BaseExtension
 
             foreach (array_keys($processors) as $id) {
                 $definition->addMethodCall('add', array(
-                    new Definition($id)
+                    new Reference($id)
                 ));
             }
         }
@@ -130,6 +133,30 @@ class Extension extends BaseExtension
             $definition->setArguments(array(
                 array_values($processed)
             ));
+        }
+    }
+
+    protected function configureFileRepository(array $config, ContainerBuilder $container)
+    {
+        if (
+            $config['repository'] == 'run_open_code.exchange_rate.repository.file_repository'
+            &&
+            $container->hasDefinition('run_open_code.exchange_rate.repository.file_repository')
+        ) {
+
+            if (!empty($config['file_repository']) && !empty($config['file_repository']['path'])) {
+                $definition = $container->getDefinition('run_open_code.exchange_rate.repository.file_repository');
+                $definition->setArguments(array(
+                    $config['file_repository']['path']
+                ));
+            } else {
+                throw new InvalidConfigurationException('You must configure location to the file where file repository will store exchange rates.');
+            }
+
+        } elseif ($config['repository'] == 'run_open_code.exchange_rate.repository.file_repository') {
+            throw new InvalidConfigurationException('File repository is used to store exchange rates, but it is not available in container.');
+        } else {
+            $container->removeDefinition('run_open_code.exchange_rate.repository.file_repository');
         }
     }
 

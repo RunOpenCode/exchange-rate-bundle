@@ -20,6 +20,9 @@
 
         <parameter key="run_open_code.exchange_rate.registry.rates.factory.class">RunOpenCode\Bundle\ExchangeRate\DependencyInjection\Factory\RatesConfigurationRegistryFactory</parameter>
 
+        <parameter key="run_open_code.exchange_rate.command.fetch.class">RunOpenCode\Bundle\ExchangeRate\Command\FetchCommand</parameter>
+        <parameter key="run_open_code.exchange_rate.command.configuration_debug.class">RunOpenCode\Bundle\ExchangeRate\Command\ConfigurationDebugCommand</parameter>
+
     </parameters>
 
     <services>
@@ -41,6 +44,19 @@
 
         <service id="run_open_code.exchange_rate.registry.rates" class="%run_open_code.exchange_rate.registry.rates.class%" public="false" >
             <factory class="%run_open_code.exchange_rate.registry.rates.factory.class%" method="build" />
+        </service>
+
+        <service id="run_open_code.exchange_rate.command.fetch" class="%run_open_code.exchange_rate.command.fetch.class%">
+            <argument type="service" id="run_open_code.exchange_rate" />
+            <argument type="service" id="run_open_code.exchange_rate.registry.sources" />
+            <tag name="console.command" />
+        </service>
+
+        <service id="run_open_code.exchange_rate.command.configuration_debug" class="%run_open_code.exchange_rate.command.configuration_debug.class%">
+            <argument type="service" id="run_open_code.exchange_rate.registry.sources" />
+            <argument type="service" id="run_open_code.exchange_rate.registry.processors" />
+            <argument type="service" id="run_open_code.exchange_rate.registry.rates" />
+            <tag name="console.command" />
         </service>
 
     </services>

@@ -66,7 +66,7 @@ class Configuration implements ConfigurationInterface
 
         $node
             ->children()
-                ->scalarNode('path')->defaultValue(null)->end()
+                ->scalarNode('path')->defaultValue('%kernel.root_dir%/db/exchange_rates.dat')->end()
             ->end()
         ->end();
 
