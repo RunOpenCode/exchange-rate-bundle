@@ -29,6 +29,7 @@ class Extension extends BaseExtension
         $this->configureProcessorsRegistry($config, $container);
         $this->configureRatesRegistry($config, $container);
         $this->configureFileRepository($config, $container);
+        $this->configureController($config, $container);
     }
 
     protected function configureExchangeRateService(array $config, ContainerBuilder $container)
@@ -90,7 +91,7 @@ class Extension extends BaseExtension
 
             foreach ($container->findTaggedServiceIds('run_open_code.exchange_rate.processor') as $id => $tags) {
 
-                if (!in_array($id, $config['processors'])) {
+                if (!in_array($id, $config['processors'], true)) {
                     continue;
                 }
 
@@ -139,7 +140,7 @@ class Extension extends BaseExtension
     protected function configureFileRepository(array $config, ContainerBuilder $container)
     {
         if (
-            $config['repository'] == 'run_open_code.exchange_rate.repository.file_repository'
+            $config['repository'] === 'run_open_code.exchange_rate.repository.file_repository'
             &&
             $container->hasDefinition('run_open_code.exchange_rate.repository.file_repository')
         ) {
@@ -153,10 +154,22 @@ class Extension extends BaseExtension
                 throw new InvalidConfigurationException('You must configure location to the file where file repository will store exchange rates.');
             }
 
-        } elseif ($config['repository'] == 'run_open_code.exchange_rate.repository.file_repository') {
+        } elseif ($config['repository'] === 'run_open_code.exchange_rate.repository.file_repository') {
             throw new InvalidConfigurationException('File repository is used to store exchange rates, but it is not available in container.');
         } else {
             $container->removeDefinition('run_open_code.exchange_rate.repository.file_repository');
+        }
+    }
+
+    public function configureController(array $config, ContainerBuilder $container)
+    {
+        if ($container->has('run_open_code.exchange_rate.controller')) {
+            $definition = $container->getDefinition('run_open_code.exchange_rate.controller');
+            $definition->setArguments(array(
+                new Reference($config['repository']),
+                $config['base_currency'],
+                $config['view']
+            ));
         }
     }
 

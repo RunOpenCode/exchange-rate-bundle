@@ -23,6 +23,14 @@
         <parameter key="run_open_code.exchange_rate.command.fetch.class">RunOpenCode\Bundle\ExchangeRate\Command\FetchCommand</parameter>
         <parameter key="run_open_code.exchange_rate.command.configuration_debug.class">RunOpenCode\Bundle\ExchangeRate\Command\ConfigurationDebugCommand</parameter>
 
+        <parameter key="run_open_code.exchange_rate.controller.class">RunOpenCode\Bundle\ExchangeRate\Controller\ExchangeRateController</parameter>
+
+        <parameter key="run_open_code.exchange_rate.validator.exchange_rate.class">RunOpenCode\Bundle\ExchangeRate\Validator\Constraints\ExchangeRateValidator</parameter>
+
+        <parameter key="run_open_code.exchange_rate.type.registered_currency_codes.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\RegisteredCurrencyCodeType</parameter>
+        <parameter key="run_open_code.exchange_rate.type.registered_rate_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\RegisteredRateType</parameter>
+        <parameter key="run_open_code.exchange_rate.type.registered_source.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\RegisteredSourceType</parameter>
+
     </parameters>
 
     <services>
@@ -42,7 +50,7 @@
         <service id="run_open_code.exchange_rate.registry.sources" class="%run_open_code.exchange_rate.registry.sources.class%" public="false" />
         <service id="run_open_code.exchange_rate.registry.processors" class="%run_open_code.exchange_rate.registry.processors.class%" public="false" />
 
-        <service id="run_open_code.exchange_rate.registry.rates" class="%run_open_code.exchange_rate.registry.rates.class%" public="false" >
+        <service id="run_open_code.exchange_rate.registry.rates" class="%run_open_code.exchange_rate.registry.rates.class%" public="false">
             <factory class="%run_open_code.exchange_rate.registry.rates.factory.class%" method="build" />
         </service>
 
@@ -57,6 +65,32 @@
             <argument type="service" id="run_open_code.exchange_rate.registry.processors" />
             <argument type="service" id="run_open_code.exchange_rate.registry.rates" />
             <tag name="console.command" />
+        </service>
+
+        <service id="run_open_code.exchange_rate.controller" class="%run_open_code.exchange_rate.controller.class%">
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+        </service>
+
+        <service id="run_open_code.exchange_rate.validator.exchange_rate" class="%run_open_code.exchange_rate.validator.exchange_rate.class%">
+            <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
+            <tag name="validator.constraint_validator" alias="run_open_code.exchange_rate.rate_validator" />
+        </service>
+
+        <service id="run_open_code.exchange_rate.type.registered_currency_codes" class="%run_open_code.exchange_rate.type.registered_currency_codes.class%">
+            <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
+            <tag name="form.type" />
+        </service>
+
+        <service id="run_open_code.exchange_rate.type.registered_rate_type" class="%run_open_code.exchange_rate.type.registered_rate_type.class%">
+            <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
+            <tag name="form.type" />
+        </service>
+
+        <service id="run_open_code.exchange_rate.type.registered_source" class="%run_open_code.exchange_rate.type.registered_source.class%">
+            <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
+            <tag name="form.type" />
         </service>
 
     </services>

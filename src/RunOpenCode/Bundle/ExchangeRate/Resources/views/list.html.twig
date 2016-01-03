@@ -1,0 +1,90 @@
+{% extends base_template %}
+
+{% block body %}
+
+    {% block exchange_rates_table %}
+
+        <table>
+
+            <thead>
+                <tr>
+
+                    {% block table_headings %}
+
+                        <th>
+                            Source
+                        </th>
+                        <th>
+                            Rate type
+                        </th>
+                        <th>
+                            Currency code
+                        </th>
+                        <th>
+                            Value
+                        </th>
+                        <th>
+                            Date
+                        </th>
+                        <th>
+                            Modified at
+                        </th>
+
+                    {% endblock table_headings %}
+
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for rate in rates %}
+
+                    {% block table_row %}
+
+                        <tr>
+                            <td>
+                                {{ rate.sourceName }}
+                            </td>
+                            <td>
+                                {{ rate.rateType }}
+                            </td>
+                            <td>
+                                {{ rate.currencyCode }}
+                            </td>
+                            <td>
+                                {{ rate.value }}
+                            </td>
+                            <td>
+                                {{ rate.date|date(date_format) }}
+                            </td>
+                            <td>
+                                {{ rate.modifiedAt|date(date_time_format) }}
+                            </td>
+                        </tr>
+
+                    {% endblock table_row %}
+
+                {% else %}
+
+                    {% block no_data_table_row %}
+
+                        <tr>
+                            <td colspan="6">
+                                {% block no_data_advisory_note %}
+                                    There are no rates at the moment.
+                                {% endblock no_data_advisory_note %}
+                            </td>
+                        </tr>
+
+                    {% endblock no_data_table_row %}
+
+                {% endfor %}
+            </tbody>
+        </table>
+
+    {% endblock exchange_rates_table %}
+
+    {% block list_actions %}
+        <a href="{{ path('roc_exchange_rate_new') }}">Add new</a>
+    {% endblock list_actions %}
+
+{% endblock body %}

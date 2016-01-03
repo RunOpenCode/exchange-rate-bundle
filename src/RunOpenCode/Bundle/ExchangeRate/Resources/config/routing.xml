@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing
+        http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="roc_exchange_rate_list" path="/exchange-rates">
+        <default key="_controller">run_open_code.exchange_rate.controller:indexAction</default>
+    </route>
+
+    <route id="roc_exchange_rate_new" path="/exchange-rates/new">
+        <default key="_controller">run_open_code.exchange_rate.controller:newAction</default>
+    </route>
+</routes>

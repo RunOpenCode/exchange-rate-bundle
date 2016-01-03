@@ -24,6 +24,7 @@ class Configuration implements ConfigurationInterface
                 ->append($this->getRatesDefinition())
                 ->append($this->getProcessorsDefinition())
                 ->append($this->getFileRepositoryDefinition())
+                ->append($this->getViewDefinition())
             ->end()
         ->end();
 
@@ -65,8 +66,27 @@ class Configuration implements ConfigurationInterface
         $node = new ArrayNodeDefinition('file_repository');
 
         $node
+            ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('path')->defaultValue('%kernel.root_dir%/db/exchange_rates.dat')->end()
+            ->end()
+        ->end();
+
+        return $node;
+    }
+
+    protected function getViewDefinition()
+    {
+        $node = new ArrayNodeDefinition('view');
+
+        $node
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->scalarNode('base_template')->defaultValue('@ExchangeRate/base.html.twig')->end()
+                ->scalarNode('list')->defaultValue('@ExchangeRate/list.html.twig')->end()
+                ->scalarNode('new')->defaultValue('@ExchangeRate/new.html.twig')->end()
+                ->scalarNode('date_format')->defaultValue('Y-m-d')->end()
+                ->scalarNode('date_time_format')->defaultValue('Y-m-d H:i')->end()
             ->end()
         ->end();
 

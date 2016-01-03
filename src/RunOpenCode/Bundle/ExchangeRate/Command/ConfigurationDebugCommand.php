@@ -3,8 +3,10 @@
 namespace RunOpenCode\Bundle\ExchangeRate\Command;
 
 use RunOpenCode\ExchangeRate\Configuration;
+use RunOpenCode\ExchangeRate\Contract\ProcessorInterface;
 use RunOpenCode\ExchangeRate\Contract\ProcessorsRegistryInterface;
 use RunOpenCode\ExchangeRate\Contract\RatesConfigurationRegistryInterface;
+use RunOpenCode\ExchangeRate\Contract\SourceInterface;
 use RunOpenCode\ExchangeRate\Contract\SourcesRegistryInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
@@ -69,6 +71,9 @@ class ConfigurationDebugCommand extends Command
     {
         $formatter = $this->getHelper('formatter');
 
+        /**
+         * @var SourceInterface $source
+         */
         foreach ($this->sourcesRegistry as $source) {
             $output->writeln($formatter->formatSection('Source', sprintf('%s as %s', get_class($source), $source->getName())));
         }
@@ -78,6 +83,9 @@ class ConfigurationDebugCommand extends Command
     {
         $formatter = $this->getHelper('formatter');
 
+        /**
+         * @var ProcessorInterface $processor
+         */
         foreach ($this->processorsRegistry as $processor) {
             $output->writeln($formatter->formatSection('Processor', get_class($processor)));
         }
