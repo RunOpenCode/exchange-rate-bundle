@@ -10,10 +10,9 @@ class NewType extends BaseType
     {
         parent::buildForm($builder, $options);
 
-        $builder->add('currency_code', RegisteredCurrencyCodeType::class, array('placeholder' => ''));
-
-        $builder->add('rate_type', RegisteredRateType::class, array('placeholder' => ''));
-
-        $builder->add('source_name', RegisteredSourceType::class, array('placeholder' => ''));
+        $builder->add('rate', RateType::class, array(
+            'mapped' => false,
+            'placeholder' => ''
+        ));
     }
 }

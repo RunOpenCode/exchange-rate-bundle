@@ -1,0 +1,22 @@
+{% extends base_template %}
+
+{% block title %}Exchange rates - edit{% endblock title %}
+
+{% block body %}
+
+    {% block edit_form %}
+
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+
+            <input type="submit" />
+        {{ form_end(form) }}
+
+    {% endblock edit_form %}
+
+    {% block edit_actions %}
+        <a href="{{ path('roc_exchange_rate_list') }}">List</a>
+    {% endblock edit_actions %}
+
+{% endblock body %}
+

@@ -11,4 +11,8 @@
     <route id="roc_exchange_rate_new" path="/exchange-rates/new">
         <default key="_controller">run_open_code.exchange_rate.controller:newAction</default>
     </route>
+
+    <route id="roc_exchange_rate_edit" path="/exchange-rates/edit/{rate_type}/{date}/{currency_code}">
+        <default key="_controller">run_open_code.exchange_rate.controller:editAction</default>
+    </route>
 </routes>

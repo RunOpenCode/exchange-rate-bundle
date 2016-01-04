@@ -27,9 +27,7 @@
 
         <parameter key="run_open_code.exchange_rate.validator.exchange_rate.class">RunOpenCode\Bundle\ExchangeRate\Validator\Constraints\ExchangeRateValidator</parameter>
 
-        <parameter key="run_open_code.exchange_rate.type.registered_currency_codes.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\RegisteredCurrencyCodeType</parameter>
-        <parameter key="run_open_code.exchange_rate.type.registered_rate_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\RegisteredRateType</parameter>
-        <parameter key="run_open_code.exchange_rate.type.registered_source.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\RegisteredSourceType</parameter>
+        <parameter key="run_open_code.exchange_rate.type.rate_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\RateType</parameter>
 
     </parameters>
 
@@ -78,18 +76,9 @@
             <tag name="validator.constraint_validator" alias="run_open_code.exchange_rate.rate_validator" />
         </service>
 
-        <service id="run_open_code.exchange_rate.type.registered_currency_codes" class="%run_open_code.exchange_rate.type.registered_currency_codes.class%">
+        <service id="run_open_code.exchange_rate.type.rate_type" class="%run_open_code.exchange_rate.type.rate_type.class%">
             <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
-            <tag name="form.type" />
-        </service>
-
-        <service id="run_open_code.exchange_rate.type.registered_rate_type" class="%run_open_code.exchange_rate.type.registered_rate_type.class%">
-            <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
-            <tag name="form.type" />
-        </service>
-
-        <service id="run_open_code.exchange_rate.type.registered_source" class="%run_open_code.exchange_rate.type.registered_source.class%">
-            <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
+            <argument type="service" id="translator" />
             <tag name="form.type" />
         </service>
 

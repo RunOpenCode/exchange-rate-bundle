@@ -85,6 +85,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('base_template')->defaultValue('@ExchangeRate/base.html.twig')->end()
                 ->scalarNode('list')->defaultValue('@ExchangeRate/list.html.twig')->end()
                 ->scalarNode('new')->defaultValue('@ExchangeRate/new.html.twig')->end()
+                ->scalarNode('edit')->defaultValue('@ExchangeRate/edit.html.twig')->end()
                 ->scalarNode('date_format')->defaultValue('Y-m-d')->end()
                 ->scalarNode('date_time_format')->defaultValue('Y-m-d H:i')->end()
             ->end()

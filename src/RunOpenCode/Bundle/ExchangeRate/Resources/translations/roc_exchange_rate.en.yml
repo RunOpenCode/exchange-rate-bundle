@@ -1,0 +1,13 @@
+exchange_rate:
+    national_bank_of_serbia:
+        label: National bank of Serbia
+        default:
+            label: Middle
+        foreign_cache_buying:
+            label: Buying foreign cache
+        foreign_cache_selling:
+            label: Selling foreign cache
+        foreign_exchange_buying:
+            label: Buying FX
+        foreign_exchange_selling:
+            label: Selling FX

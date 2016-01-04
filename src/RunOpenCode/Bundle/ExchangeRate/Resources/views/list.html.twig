@@ -29,6 +29,9 @@
                         <th>
                             Modified at
                         </th>
+                        <th>
+                            Actions
+                        </th>
 
                     {% endblock table_headings %}
 
@@ -58,6 +61,15 @@
                             </td>
                             <td>
                                 {{ rate.modifiedAt|date(date_time_format) }}
+                            </td>
+                            <td>
+                                <a href="{{ path('roc_exchange_rate_edit', {
+                                    date: rate.date|date('Y-m-d'),
+                                    currency_code: rate.currencyCode,
+                                    rate_type: rate.rateType
+                                }) }}">
+                                    Edit
+                                </a>
                             </td>
                         </tr>
 
