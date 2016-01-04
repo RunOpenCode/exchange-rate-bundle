@@ -2,11 +2,9 @@
 
 namespace RunOpenCode\Bundle\ExchangeRate\DependencyInjection;
 
-use RunOpenCode\ExchangeRate\Configuration as RateConfiguration;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension as BaseExtension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
@@ -166,6 +164,8 @@ class Extension extends BaseExtension
         if ($container->has('run_open_code.exchange_rate.controller')) {
             $definition = $container->getDefinition('run_open_code.exchange_rate.controller');
             $definition->setArguments(array(
+                new Reference('security.csrf.token_manager'),
+                new Reference('translator'),
                 new Reference($config['repository']),
                 $config['base_currency'],
                 $config['view']

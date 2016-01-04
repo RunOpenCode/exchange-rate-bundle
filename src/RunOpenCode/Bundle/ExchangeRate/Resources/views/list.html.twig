@@ -2,6 +2,50 @@
 
 {% block body %}
 
+    {% block java_script_delete_action %}
+
+        <script type="text/javascript">
+            function runOpenCodeExchangeRateListOnDeleteItemAction (elem) {
+
+                if (confirm('{{ 'exchange_rate.list.actions.delete.question'|trans({}, 'roc_exchange_rate') }}')) {
+                    var
+                            form = document.createElement('form'),
+                            hiddenField = document.createElement('input')
+                            ;
+
+                    form.setAttribute('method', 'post');
+                    form.setAttribute('action', elem.getAttribute('href'));
+
+                    hiddenField.setAttribute('type', 'hidden');
+                    hiddenField.setAttribute('name', '_csrf_token');
+                    hiddenField.setAttribute('value', elem.getAttribute('data-csrf-token'));
+
+                    form.appendChild(hiddenField);
+
+                    document.body.appendChild(form);
+                    form.submit();
+                };
+
+                return false;
+            };
+        </script>
+
+    {% endblock java_script_delete_action %}
+
+    {% block flash_messages %}
+
+        {% if app.session.flashbag.peekAll|length > 0 %}
+            {% for type, messages in app.session.flashbag.all %}
+                {% for message in messages %}
+                    <div class="{{ type ? type : '' }}">
+                        {{ message|trans({}, 'roc_exchange_rate') }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+
+    {% endblock flash_messages %}
+
     {% block exchange_rates_table %}
 
         <table>
@@ -69,6 +113,21 @@
                                     rate_type: rate.rateType
                                 }) }}">
                                     Edit
+                                </a>
+                                <a
+                                        href="{{ path('roc_exchange_rate_delete', {
+                                            date: rate.date|date('Y-m-d'),
+                                            currency_code: rate.currencyCode,
+                                            rate_type: rate.rateType
+                                        }) }}"
+                                        data-csrf-token="{{ csrf_token(path('roc_exchange_rate_delete', {
+                                            date: rate.date|date('Y-m-d'),
+                                            currency_code: rate.currencyCode,
+                                            rate_type: rate.rateType
+                                        })) }}"
+                                        onclick="return runOpenCodeExchangeRateListOnDeleteItemAction(this);"
+                                >
+                                    Delete
                                 </a>
                             </td>
                         </tr>

@@ -1,13 +1,28 @@
 exchange_rate:
-    national_bank_of_serbia:
-        label: National bank of Serbia
-        default:
-            label: Middle
-        foreign_cache_buying:
-            label: Buying foreign cache
-        foreign_cache_selling:
-            label: Selling foreign cache
-        foreign_exchange_buying:
-            label: Buying FX
-        foreign_exchange_selling:
-            label: Selling FX
+    flash:
+        new:
+            success: You have successfully added new exchange rate.
+        edit:
+            success: You have successfully updated exchange rate.
+        delete:
+            success: You have successfully deleted exchange rate.
+    list:
+        actions:
+            delete:
+                question: Are you sure that you want to delete this rate?
+    form:
+        error:
+            new_exists: That rate already exists.
+        rate_type:
+            national_bank_of_serbia:
+                label: National bank of Serbia
+                default:
+                    label: Middle
+                foreign_cache_buying:
+                    label: Buying foreign cache
+                foreign_cache_selling:
+                    label: Selling foreign cache
+                foreign_exchange_buying:
+                    label: Buying FX
+                foreign_exchange_selling:
+                    label: Selling FX

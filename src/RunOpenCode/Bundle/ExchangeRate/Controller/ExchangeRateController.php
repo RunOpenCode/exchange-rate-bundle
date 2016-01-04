@@ -3,11 +3,17 @@
 namespace RunOpenCode\Bundle\ExchangeRate\Controller;
 
 use RunOpenCode\Bundle\ExchangeRate\Form\Type\NewType;
+use RunOpenCode\ExchangeRate\Contract\RateInterface;
 use RunOpenCode\ExchangeRate\Contract\RepositoryInterface;
 use RunOpenCode\Bundle\ExchangeRate\Model\Rate;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class ExchangeRateController extends Controller
 {
@@ -17,11 +23,17 @@ class ExchangeRateController extends Controller
 
     protected $settings;
 
-    public function __construct(RepositoryInterface $repository, $baseCurrency, $settings)
+    protected $csrfTokenManager;
+
+    protected $translator;
+
+    public function __construct(CsrfTokenManagerInterface $csrfTokenManager, TranslatorInterface $translator, RepositoryInterface $repository, $baseCurrency, $settings)
     {
         $this->repository = $repository;
         $this->baseCurrency = $baseCurrency;
         $this->settings = $settings;
+        $this->csrfTokenManager = $csrfTokenManager;
+        $this->translator = $translator;
     }
 
     public function indexAction()
@@ -42,12 +54,21 @@ class ExchangeRateController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $this->repository->save(array(
-                $form->getData()
-            ));
+            /**
+             * @var RateInterface $rate
+             */
+            $rate = $form->getData();
 
-            $this->get('session')->getFlashBag()->add('success', 'run_open_code.exchange_rate.flash.new.success');
-            return $this->redirectToRoute('roc_exchange_rate_list');
+            if ($this->repository->has($rate->getCurrencyCode(), $rate->getDate(), $rate->getRateType())) {
+                $form->addError(new FormError($this->translator->trans('exchange_rate.form.error.new_exists', array(), 'roc_exchange_rate')));
+            } else {
+                $this->repository->save(array(
+                    $form->getData()
+                ));
+
+                $this->get('session')->getFlashBag()->add('success', 'exchange_rate.flash.new.success');
+                return $this->redirectToRoute('roc_exchange_rate_list');
+            }
         }
 
         return $this->render($this->settings['new'], array(
@@ -68,7 +89,7 @@ class ExchangeRateController extends Controller
                 $form->getData()
             ));
 
-            $this->get('session')->getFlashBag()->add('success', 'run_open_code.exchange_rate.flash.edit.success');
+            $this->get('session')->getFlashBag()->add('success', 'exchange_rate.flash.edit.success');
             return $this->redirectToRoute('roc_exchange_rate_list');
         }
 
@@ -76,6 +97,20 @@ class ExchangeRateController extends Controller
             'base_template' => $this->settings['base_template'],
             'form' => $form->createView()
         ));
+    }
+
+    public function deleteAction(Request $request)
+    {
+        if (!$this->csrfTokenManager->isTokenValid(new CsrfToken($request->getRequestUri(), $request->get('_csrf_token')))) {
+            throw new InvalidCsrfTokenException;
+        }
+
+        $rate = $this->getRateFromRequest($request);
+
+        $this->repository->delete(array($rate));
+
+        $this->get('session')->getFlashBag()->add('success', 'exchange_rate.flash.delete.success');
+        return $this->redirectToRoute('roc_exchange_rate_list');
     }
 
     protected function getNewRate()
@@ -94,5 +129,4 @@ class ExchangeRateController extends Controller
 
         return Rate::fromRateInterface($this->repository->get($request->get('currency_code'), \DateTime::createFromFormat('Y-m-d', $request->get('date')), $request->get('rate_type')));
     }
-
 }
