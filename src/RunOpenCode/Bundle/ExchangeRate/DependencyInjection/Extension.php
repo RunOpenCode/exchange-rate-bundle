@@ -9,7 +9,6 @@
  */
 namespace RunOpenCode\Bundle\ExchangeRate\DependencyInjection;
 
-use RunOpenCode\ExchangeRate\Configuration;
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\Configuration as TreeConfiguration;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;

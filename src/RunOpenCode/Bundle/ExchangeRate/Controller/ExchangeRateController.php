@@ -198,7 +198,19 @@ class ExchangeRateController extends Controller
     protected function denyAccessUnlessGranted($attributes, $object = null, $message = 'Access Denied.')
     {
         if ($this->settings['secure']) {
-            parent::denyAccessUnlessGranted($attributes, $object, $message);
+            if (!is_array($attributes)) {
+                $attributes = array($attributes);
+            }
+
+            $granted = false;
+
+            foreach ($attributes as $attribute) {
+                $granted |= $this->isGranted($attribute, $object);
+            }
+
+            if (!$granted) {
+                throw $this->createAccessDeniedException($message);
+            }
         }
     }
 }
