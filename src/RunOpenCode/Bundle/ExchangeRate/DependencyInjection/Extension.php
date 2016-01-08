@@ -161,20 +161,17 @@ class Extension extends BaseExtension
 
             $aliases = array();
 
-            /**
-             * @var Configuration $rateConfiguration
-             */
             foreach ($config['rates'] as $rateConfiguration) {
 
-                if ($rateConfiguration->getAlias() === null) {
+                if ($rateConfiguration['alias'] === null) {
                     continue;
                 }
 
-                if (array_key_exists($rateConfiguration->getAlias(), $aliases)) {
-                    throw new InvalidConfigurationException(sprintf('Rate with alias "%s" is already defined.', $rateConfiguration->getAlias()));
+                if (array_key_exists($rateConfiguration['alias'], $aliases)) {
+                    throw new InvalidConfigurationException(sprintf('Rate with alias "%s" is already defined.', $rateConfiguration['alias']));
                 }
 
-                $aliases[$rateConfiguration->getAlias()] = $rateConfiguration;
+                $aliases[$rateConfiguration['alias']] = $rateConfiguration;
             }
 
             $definition->setArguments(array(array_values($config['rates'])));
