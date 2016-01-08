@@ -9,6 +9,7 @@
         <parameter key="run_open_code.exchange_rate.class">RunOpenCode\ExchangeRate\Manager</parameter>
 
         <parameter key="run_open_code.exchange_rate.processor.base_currency_validator.class">RunOpenCode\ExchangeRate\Processor\BaseCurrencyValidator</parameter>
+        <parameter key="run_open_code.exchange_rate.processor.unique_rates_validator.class">RunOpenCode\ExchangeRate\Processor\UniqueRatesValidator</parameter>
 
         <parameter key="run_open_code.exchange_rate.repository.file_repository.class">RunOpenCode\ExchangeRate\Repository\FileRepository</parameter>
 
@@ -36,7 +37,10 @@
         <service id="roc.exchange_rate" alias="run_open_code.exchange_rate" />
 
         <service id="run_open_code.exchange_rate.processor.base_currency_validator" class="%run_open_code.exchange_rate.processor.base_currency_validator.class%" public="false">
-            <tag name="run_open_code.exchange_rate.processor" />
+            <tag name="run_open_code.exchange_rate.processor" priority="9" />
+        </service>
+        <service id="run_open_code.exchange_rate.processor.unique_rates_validator" class="%run_open_code.exchange_rate.processor.unique_rates_validator.class%" public="false">
+            <tag name="run_open_code.exchange_rate.processor" priority="10" />
         </service>
 
         <service id="run_open_code.exchange_rate.repository.file_repository" class="%run_open_code.exchange_rate.repository.file_repository.class%" public="false" />

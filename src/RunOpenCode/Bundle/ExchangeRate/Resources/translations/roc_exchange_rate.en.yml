@@ -1,4 +1,5 @@
 exchange_rate:
+    page_title: Exchange rates
     flash:
         new:
             success: You have successfully added new exchange rate.
@@ -6,23 +7,54 @@ exchange_rate:
             success: You have successfully updated exchange rate.
         delete:
             success: You have successfully deleted exchange rate.
+    advisory:
+        no_data: There are no rates at the moment.
     list:
+        object_actions:
+            edit: Edit
+            delete: Delete
+
+        list_actions:
+            add_new: Add new
+
+        table:
+            headings:
+                source: Source
+                rate_type: Rate type
+                currency_code: Currency code
+                value: Value
+                date: Date
+                modified_at: Modified at
+                actions: Actions
+
         actions:
             delete:
                 question: Are you sure that you want to delete this rate?
     form:
+        title:
+            new: Add new exchange rate
+            edit: Modify exchange rate
+        fields:
+            value: Value
+            date: Date
+            rate: Rate
         error:
             new_exists: That rate already exists.
-        rate_type:
-            national_bank_of_serbia:
-                label: National bank of Serbia
-                default:
-                    label: Middle
-                foreign_cache_buying:
-                    label: Buying foreign cache
-                foreign_cache_selling:
-                    label: Selling foreign cache
-                foreign_exchange_buying:
-                    label: Buying FX
-                foreign_exchange_selling:
-                    label: Selling FX
+        actions:
+            list: List
+            save: Save
+            add_new: Add new
+
+    rates:
+        national_bank_of_serbia:
+            label: National bank of Serbia
+            default:
+                label: Middle
+            foreign_cache_buying:
+                label: Buying foreign cache
+            foreign_cache_selling:
+                label: Selling foreign cache
+            foreign_exchange_buying:
+                label: Buying FX
+            foreign_exchange_selling:
+                label: Selling FX

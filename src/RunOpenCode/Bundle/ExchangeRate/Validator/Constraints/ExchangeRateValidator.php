@@ -1,15 +1,31 @@
 <?php
-
+/*
+ * This file is part of the Exchange Rate Bundle, an RunOpenCode project.
+ *
+ * (c) 2016 RunOpenCode
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace RunOpenCode\Bundle\ExchangeRate\Validator\Constraints;
 
 use RunOpenCode\ExchangeRate\Configuration;
-use RunOpenCode\ExchangeRate\Contract\RateInterface;
 use RunOpenCode\ExchangeRate\Contract\RatesConfigurationRegistryInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
+/**
+ * Class ExchangeRateValidator
+ *
+ * Exchange rate validator.
+ *
+ * @package RunOpenCode\Bundle\ExchangeRate\Validator\Constraints
+ */
 class ExchangeRateValidator extends ConstraintValidator
 {
+    /**
+     * @var RatesConfigurationRegistryInterface
+     */
     protected $ratesConfiguration;
 
     public function __construct(RatesConfigurationRegistryInterface $ratesConfiguration)
@@ -18,10 +34,7 @@ class ExchangeRateValidator extends ConstraintValidator
     }
 
     /**
-     * Validate rate.
-     *
-     * @param RateInterface $rate
-     * @param Constraint $constraint
+     * {@inheritdoc}
      */
     public function validate($rate, Constraint $constraint)
     {

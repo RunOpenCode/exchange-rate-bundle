@@ -1,21 +1,44 @@
 {% extends base_template %}
 
-{% block title %}Exchange rates - edit{% endblock title %}
+{% block title %}{{ 'exchange_rate.form.title.edit'|trans({}, 'roc_exchange_rate') }}{% endblock title %}
 
 {% block body %}
 
     {% block edit_form %}
 
         {{ form_start(form) }}
+
             {{ form_widget(form) }}
 
-            <input type="submit" />
+            <button type="submit">
+                {{ 'exchange_rate.form.actions.save'|trans({}, 'roc_exchange_rate') }}
+            </button>
         {{ form_end(form) }}
 
     {% endblock edit_form %}
 
     {% block edit_actions %}
-        <a href="{{ path('roc_exchange_rate_list') }}">List</a>
+
+        {% block edit_actions_goto_list %}
+
+            {% if not secure or is_granted('ROLE_EXCHANGE_RATE_MANAGER') or is_granted('ROLE_EXCHANGE_RATE_LIST') %}
+                <a href="{{ path('roc_exchange_rate_list') }}">
+                    {{ 'exchange_rate.form.actions.list'|trans({}, 'roc_exchange_rate') }}
+                </a>
+            {% endif %}
+
+        {% endblock edit_actions_goto_list %}
+
+        {% block edit_actions_add_new %}
+
+            {% if not secure or is_granted('ROLE_EXCHANGE_RATE_MANAGER') or is_granted('ROLE_EXCHANGE_RATE_CREATE') %}
+                <a href="{{ path('roc_exchange_rate_new') }}">
+                    {{ 'exchange_rate.form.actions.add_new'|trans({}, 'roc_exchange_rate') }}
+                </a>
+            {% endif %}
+
+        {% endblock edit_actions_add_new %}
+
     {% endblock edit_actions %}
 
 {% endblock body %}

@@ -1,21 +1,35 @@
 {% extends base_template %}
 
-{% block title %}Exchange rates - add new{% endblock title %}
+{% block title %}{{ 'exchange_rate.form.title.new'|trans({}, 'roc_exchange_rate') }}{% endblock title %}
 
 {% block body %}
 
     {% block new_form %}
 
         {{ form_start(form) }}
+
             {{ form_widget(form) }}
 
-            <input type="submit" />
+            <button type="submit">
+                {{ 'exchange_rate.form.actions.save'|trans({}, 'roc_exchange_rate') }}
+            </button>
+
         {{ form_end(form) }}
 
     {% endblock new_form %}
 
     {% block new_actions %}
-        <a href="{{ path('roc_exchange_rate_list') }}">List</a>
+
+        {% block new_actions_goto_list %}
+
+            {% if not secure or is_granted('ROLE_EXCHANGE_RATE_MANAGER') or is_granted('ROLE_EXCHANGE_RATE_LIST') %}
+                <a href="{{ path('roc_exchange_rate_list') }}">
+                    {{ 'exchange_rate.form.actions.list'|trans({}, 'roc_exchange_rate') }}
+                </a>
+            {% endif %}
+
+        {% endblock new_actions_goto_list %}
+
     {% endblock new_actions %}
 
 {% endblock body %}

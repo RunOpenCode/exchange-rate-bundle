@@ -56,26 +56,31 @@
                     {% block table_headings %}
 
                         <th>
-                            Source
+                            {{ 'exchange_rate.list.table.headings.source'|trans({}, 'roc_exchange_rate') }}
                         </th>
                         <th>
-                            Rate type
+                            {{ 'exchange_rate.list.table.headings.rate_type'|trans({}, 'roc_exchange_rate') }}
                         </th>
                         <th>
-                            Currency code
+                            {{ 'exchange_rate.list.table.headings.currency_code'|trans({}, 'roc_exchange_rate') }}
                         </th>
                         <th>
-                            Value
+                            {{ 'exchange_rate.list.table.headings.value'|trans({}, 'roc_exchange_rate') }}
                         </th>
                         <th>
-                            Date
+                            {{ 'exchange_rate.list.table.headings.date'|trans({}, 'roc_exchange_rate') }}
                         </th>
                         <th>
-                            Modified at
+                            {{ 'exchange_rate.list.table.headings.modified_at'|trans({}, 'roc_exchange_rate') }}
                         </th>
-                        <th>
-                            Actions
-                        </th>
+
+                        {% if not secure or is_granted('ROLE_EXCHANGE_RATE_MANAGER') or is_granted('ROLE_EXCHANGE_RATE_EDIT') or is_granted('ROLE_EXCHANGE_RATE_DELETE') %}
+
+                            <th>
+                                {{ 'exchange_rate.list.table.headings.actions'|trans({}, 'roc_exchange_rate') }}
+                            </th>
+
+                        {% endif %}
 
                     {% endblock table_headings %}
 
@@ -89,10 +94,10 @@
 
                         <tr>
                             <td>
-                                {{ rate.sourceName }}
+                                {{ ('exchange_rate.rates.' ~ rate.sourceName ~ '.label')|trans({}, 'roc_exchange_rate') }}
                             </td>
                             <td>
-                                {{ rate.rateType }}
+                                {{ ('exchange_rate.rates.' ~ rate.sourceName ~ '.' ~ rate.rateType ~ '.label')|trans({}, 'roc_exchange_rate') }}
                             </td>
                             <td>
                                 {{ rate.currencyCode }}
@@ -104,32 +109,51 @@
                                 {{ rate.date|date(date_format) }}
                             </td>
                             <td>
-                                {{ rate.modifiedAt|date(date_time_format) }}
+                                {{ rate.modifiedAt|date(date_format) }} {{ rate.modifiedAt|date(time_format) }}
                             </td>
-                            <td>
-                                <a href="{{ path('roc_exchange_rate_edit', {
-                                    date: rate.date|date('Y-m-d'),
-                                    currency_code: rate.currencyCode,
-                                    rate_type: rate.rateType
-                                }) }}">
-                                    Edit
-                                </a>
-                                <a
-                                        href="{{ path('roc_exchange_rate_delete', {
+
+                            {% if not secure or is_granted('ROLE_EXCHANGE_RATE_MANAGER') or is_granted('ROLE_EXCHANGE_RATE_EDIT') or is_granted('ROLE_EXCHANGE_RATE_DELETE') %}
+
+                                <td>
+
+                                    {% if not secure or is_granted('ROLE_EXCHANGE_RATE_MANAGER') or is_granted('ROLE_EXCHANGE_RATE_EDIT') %}
+
+                                        <a href="{{ path('roc_exchange_rate_edit', {
                                             date: rate.date|date('Y-m-d'),
                                             currency_code: rate.currencyCode,
-                                            rate_type: rate.rateType
-                                        }) }}"
-                                        data-csrf-token="{{ csrf_token(path('roc_exchange_rate_delete', {
-                                            date: rate.date|date('Y-m-d'),
-                                            currency_code: rate.currencyCode,
-                                            rate_type: rate.rateType
-                                        })) }}"
-                                        onclick="return runOpenCodeExchangeRateListOnDeleteItemAction(this);"
-                                >
-                                    Delete
-                                </a>
-                            </td>
+                                            rate_type: rate.rateType,
+                                            source: rate.sourceName
+                                        }) }}">
+                                            {{ 'exchange_rate.list.object_actions.edit'|trans({}, 'roc_exchange_rate') }}
+                                        </a>
+
+                                    {% endif %}
+
+                                    {% if not secure or is_granted('ROLE_EXCHANGE_RATE_MANAGER') or is_granted('ROLE_EXCHANGE_RATE_DELETE') %}
+
+                                        <a
+                                                href="{{ path('roc_exchange_rate_delete', {
+                                                    date: rate.date|date('Y-m-d'),
+                                                    currency_code: rate.currencyCode,
+                                                    rate_type: rate.rateType,
+                                                    source: rate.sourceName
+                                                }) }}"
+                                                data-csrf-token="{{ csrf_token(path('roc_exchange_rate_delete', {
+                                                    date: rate.date|date('Y-m-d'),
+                                                    currency_code: rate.currencyCode,
+                                                    rate_type: rate.rateType,
+                                                    source: rate.sourceName
+                                                })) }}"
+                                                onclick="return runOpenCodeExchangeRateListOnDeleteItemAction(this);"
+                                        >
+                                            {{ 'exchange_rate.list.object_actions.delete'|trans({}, 'roc_exchange_rate') }}
+                                        </a>
+
+                                    {% endif %}
+
+                                </td>
+
+                            {% endif %}
                         </tr>
 
                     {% endblock table_row %}
@@ -141,7 +165,7 @@
                         <tr>
                             <td colspan="6">
                                 {% block no_data_advisory_note %}
-                                    There are no rates at the moment.
+                                    {{ 'exchange_rate.advisory.no_data'|trans({}, 'roc_exchange_rate') }}
                                 {% endblock no_data_advisory_note %}
                             </td>
                         </tr>
@@ -155,7 +179,17 @@
     {% endblock exchange_rates_table %}
 
     {% block list_actions %}
-        <a href="{{ path('roc_exchange_rate_new') }}">Add new</a>
+
+        {% block list_actions_add_new %}
+
+            {% if not secure or is_granted('ROLE_EXCHANGE_RATE_MANAGER') or is_granted('ROLE_EXCHANGE_RATE_CREATE') %}
+                <a href="{{ path('roc_exchange_rate_new') }}">
+                    {{ 'exchange_rate.list.list_actions.add_new'|trans({}, 'roc_exchange_rate') }}
+                </a>
+            {% endif %}
+
+        {% endblock list_actions_add_new %}
+
     {% endblock list_actions %}
 
 {% endblock body %}

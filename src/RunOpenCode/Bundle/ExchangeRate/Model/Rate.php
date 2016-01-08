@@ -1,10 +1,24 @@
 <?php
-
+/*
+ * This file is part of the Exchange Rate Bundle, an RunOpenCode project.
+ *
+ * (c) 2016 RunOpenCode
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace RunOpenCode\Bundle\ExchangeRate\Model;
 
 use RunOpenCode\ExchangeRate\Contract\RateInterface;
 use RunOpenCode\ExchangeRate\Model\Rate as BaseRate;
 
+/**
+ * Class Rate
+ *
+ * Extended rate with setters, adjusted for form.
+ *
+ * @package RunOpenCode\Bundle\ExchangeRate\Model
+ */
 class Rate extends BaseRate
 {
     /**
@@ -103,6 +117,12 @@ class Rate extends BaseRate
         return $this;
     }
 
+    /**
+     * Build this rate instance from any RateInterface implementation.
+     *
+     * @param RateInterface $rate
+     * @return Rate
+     */
     public static function fromRateInterface(RateInterface $rate)
     {
         return new static(

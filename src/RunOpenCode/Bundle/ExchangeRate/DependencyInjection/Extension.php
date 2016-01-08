@@ -1,7 +1,15 @@
 <?php
-
+/*
+ * This file is part of the Exchange Rate Bundle, an RunOpenCode project.
+ *
+ * (c) 2016 RunOpenCode
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace RunOpenCode\Bundle\ExchangeRate\DependencyInjection;
 
+use RunOpenCode\ExchangeRate\Configuration;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -9,8 +17,23 @@ use Symfony\Component\DependencyInjection\Extension\Extension as BaseExtension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 
+/**
+ * Class Extension
+ *
+ * Bundle extension.
+ *
+ * @package RunOpenCode\Bundle\ExchangeRate\DependencyInjection
+ */
 class Extension extends BaseExtension
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getAlias()
+    {
+        return "run_open_code_exchange_rate";
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -28,11 +51,19 @@ class Extension extends BaseExtension
         $this->configureRatesRegistry($config, $container);
         $this->configureFileRepository($config, $container);
         $this->configureController($config, $container);
+        $this->configureDebugCommand($config, $container);
     }
 
+    /**
+     * Configure exchange rate service.
+     *
+     * @param array $config
+     * @param ContainerBuilder $container
+     */
     protected function configureExchangeRateService(array $config, ContainerBuilder $container)
     {
         if ($container->hasDefinition('run_open_code.exchange_rate')) {
+
             $definition = $container->getDefinition('run_open_code.exchange_rate');
 
             $definition->setArguments(array(
@@ -45,17 +76,18 @@ class Extension extends BaseExtension
         }
     }
 
+    /**
+     * Configure sources registry.
+     *
+     * @param array $config
+     * @param ContainerBuilder $container
+     */
     protected function configureSourcesRegistry(array $config, ContainerBuilder $container)
     {
         if ($container->hasDefinition('run_open_code.exchange_rate.registry.sources')) {
 
             $definition = $container->getDefinition('run_open_code.exchange_rate.registry.sources');
-
-            $requiredSources = array();
-
-            foreach ($config['rates'] as $rate) {
-                $requiredSources[$rate['source']] = $rate['source'];
-            }
+            $requiredSources = $this->getRequiredSources($config);
 
 
             foreach ($container->findTaggedServiceIds('run_open_code.exchange_rate.source') as $id => $tags) {
@@ -79,6 +111,12 @@ class Extension extends BaseExtension
         }
     }
 
+    /**
+     * Configure processors registry.
+     *
+     * @param array $config
+     * @param ContainerBuilder $container
+     */
     protected function configureProcessorsRegistry(array $config, ContainerBuilder $container)
     {
         if ($container->hasDefinition('run_open_code.exchange_rate.registry.processors')) {
@@ -100,7 +138,7 @@ class Extension extends BaseExtension
 
             asort($processors);
 
-            foreach (array_keys($processors) as $id) {
+            foreach ($processors as $id => $processor) {
                 $definition->addMethodCall('add', array(
                     new Reference($id)
                 ));
@@ -108,33 +146,46 @@ class Extension extends BaseExtension
         }
     }
 
+    /**
+     * Configure rates.
+     *
+     * @param array $config
+     * @param ContainerBuilder $container
+     */
     protected function configureRatesRegistry(array $config, ContainerBuilder $container)
     {
         if ($container->hasDefinition('run_open_code.exchange_rate.registry.rates')) {
 
             $definition = $container->getDefinition('run_open_code.exchange_rate.registry.rates');
 
-            $processed = array();
+            $aliases = array();
 
+            /**
+             * @var Configuration $rateConfiguration
+             */
             foreach ($config['rates'] as $rateConfiguration) {
 
-                $key = sprintf('%s_%s', $rateConfiguration['currency_code'], $rateConfiguration['rate_type']);
-
-                if (isset($processed[$key])) {
-                    throw new InvalidConfigurationException(sprintf('Currency code "%s" for rate type "%s" is configured twice.', $rateConfiguration['currency_code'], $rateConfiguration['rate_type']));
+                if ($rateConfiguration->getAlias() === null) {
+                    continue;
                 }
 
-                $rateConfiguration['extra'] = (isset($ratesConfiguration['extra'])) ? $ratesConfiguration['extra'] : array();
+                if (array_key_exists($rateConfiguration->getAlias(), $aliases)) {
+                    throw new InvalidConfigurationException(sprintf('Rate with alias "%s" is already defined.', $rateConfiguration->getAlias()));
+                }
 
-                $processed[$key] = $rateConfiguration;
+                $aliases[$rateConfiguration->getAlias()] = $rateConfiguration;
             }
 
-            $definition->setArguments(array(
-                array_values($processed)
-            ));
+            $definition->setArguments(array(array_values($config['rates'])));
         }
     }
 
+    /**
+     * Configure file registry, if used.
+     *
+     * @param array $config
+     * @param ContainerBuilder $container
+     */
     protected function configureFileRepository(array $config, ContainerBuilder $container)
     {
         if (
@@ -159,13 +210,17 @@ class Extension extends BaseExtension
         }
     }
 
-    public function configureController(array $config, ContainerBuilder $container)
+    /**
+     * Configure controller - view layer.
+     *
+     * @param array $config
+     * @param ContainerBuilder $container
+     */
+    protected function configureController(array $config, ContainerBuilder $container)
     {
         if ($container->has('run_open_code.exchange_rate.controller')) {
             $definition = $container->getDefinition('run_open_code.exchange_rate.controller');
             $definition->setArguments(array(
-                new Reference('security.csrf.token_manager'),
-                new Reference('translator'),
                 new Reference($config['repository']),
                 $config['base_currency'],
                 $config['view']
@@ -174,10 +229,37 @@ class Extension extends BaseExtension
     }
 
     /**
-     * {@inheritdoc}
+     * Configure debug command.
+     *
+     * @param array $config
+     * @param ContainerBuilder $container
      */
-    public function getAlias()
+    protected function configureDebugCommand(array $config, ContainerBuilder $container)
     {
-        return "run_open_code_exchange_rate";
+        if ($container->has('run_open_code.exchange_rate.command.configuration_debug')) {
+            $definition = $container->getDefinition('run_open_code.exchange_rate.command.configuration_debug');
+
+            $arguments = $definition->getArguments();
+            $arguments[3] = new Reference($config['repository']);
+
+            $definition->setArguments($arguments);
+        }
+    }
+
+    /**
+     * Extract name of only required sources from configuration.
+     *
+     * @param array $config
+     * @return array
+     */
+    protected function getRequiredSources(array $config)
+    {
+        $requiredSources = array();
+
+        foreach ($config['rates'] as $rate) {
+            $requiredSources[$rate['source']] = $rate['source'];
+        }
+
+        return $requiredSources;
     }
 }

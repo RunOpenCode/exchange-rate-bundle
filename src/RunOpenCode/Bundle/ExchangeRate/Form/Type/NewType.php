@@ -1,9 +1,23 @@
 <?php
-
+/*
+ * This file is part of the Exchange Rate Bundle, an RunOpenCode project.
+ *
+ * (c) 2016 RunOpenCode
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace RunOpenCode\Bundle\ExchangeRate\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
 
+/**
+ * Class NewType
+ *
+ * New form.
+ *
+ * @package RunOpenCode\Bundle\ExchangeRate\Form\Type
+ */
 class NewType extends BaseType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -12,7 +26,9 @@ class NewType extends BaseType
 
         $builder->add('rate', RateType::class, array(
             'mapped' => false,
-            'placeholder' => ''
+            'placeholder' => '',
+            'label' => 'exchange_rate.form.fields.rate',
+            'translation_domain' => 'roc_exchange_rate'
         ));
     }
 }

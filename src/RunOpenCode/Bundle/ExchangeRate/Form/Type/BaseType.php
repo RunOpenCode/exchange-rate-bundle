@@ -1,5 +1,12 @@
 <?php
-
+/*
+ * This file is part of the Exchange Rate Bundle, an RunOpenCode project.
+ *
+ * (c) 2016 RunOpenCode
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace RunOpenCode\Bundle\ExchangeRate\Form\Type;
 
 use RunOpenCode\Bundle\ExchangeRate\Model\Rate;
@@ -9,22 +16,48 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class BaseType
+ *
+ * Base exchange rate form.
+ *
+ * @package RunOpenCode\Bundle\ExchangeRate\Form\Type
+ */
 abstract class BaseType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('value', 'Symfony\Component\Form\Extension\Core\Type\NumberType', array());
-
-        $builder->add('date', 'Symfony\Component\Form\Extension\Core\Type\DateType', array());
-
-        $builder->add('rate', RateType::class, array(
-            'mapped' => false
+        $builder->add('value', 'Symfony\Component\Form\Extension\Core\Type\NumberType', array(
+            'label' => 'exchange_rate.form.fields.value',
+            'translation_domain' => 'roc_exchange_rate'
         ));
 
-        $builder->addEventListener(FormEvents::POST_SET_DATA, array($this, 'onPostSetData'));
-        $builder->addEventListener(FormEvents::SUBMIT, array($this, 'onSubmit'));
+        $builder->add('date', 'Symfony\Component\Form\Extension\Core\Type\DateType', array(
+            'label' => 'exchange_rate.form.fields.date',
+            'translation_domain' => 'roc_exchange_rate'
+        ));
+
+        $builder->add('rate', RateType::class, array(
+            'mapped' => false,
+            'label' => 'exchange_rate.form.fields.rate',
+            'translation_domain' => 'roc_exchange_rate'
+        ));
+
+        $builder->addEventListener(FormEvents::POST_SET_DATA, \Closure::bind(function(FormEvent $event) {
+            $this->onPostSetData($event);
+        }, $this));
+
+        $builder->addEventListener(FormEvents::SUBMIT, \Closure::bind(function(FormEvent $event) {
+            $this->onSubmit($event);
+        }, $this));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
@@ -32,7 +65,12 @@ abstract class BaseType extends AbstractType
         ));
     }
 
-    public function onPostSetData(FormEvent $event)
+    /**
+     * Handle on post-set-data event.
+     *
+     * @param FormEvent $event
+     */
+    protected function onPostSetData(FormEvent $event)
     {
         /**
          * @var Rate $rate
@@ -53,7 +91,12 @@ abstract class BaseType extends AbstractType
         }
     }
 
-    public function onSubmit(FormEvent $event)
+    /**
+     * Handle on-submit event.
+     *
+     * @param FormEvent $event
+     */
+    protected function onSubmit(FormEvent $event)
     {
         /**
          * @var Rate $rate
