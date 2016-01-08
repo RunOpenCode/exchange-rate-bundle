@@ -39,7 +39,7 @@ final class RatesConfigurationRegistryFactory
                 $ratesConfiguration['rate_type'],
                 $ratesConfiguration['source'],
                 $ratesConfiguration['alias'],
-                $ratesConfiguration['extra']
+                !empty($ratesConfiguration['extra']) ? $ratesConfiguration['extra'] : array()
             ));
         }
 
