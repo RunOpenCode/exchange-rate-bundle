@@ -10,6 +10,7 @@
 namespace RunOpenCode\Bundle\ExchangeRate\DependencyInjection;
 
 use RunOpenCode\ExchangeRate\Configuration;
+use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\Configuration as TreeConfiguration;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -39,7 +40,7 @@ class Extension extends BaseExtension
      */
     public function load(array $config, ContainerBuilder $container)
     {
-        $configuration = new Configuration();
+        $configuration = new TreeConfiguration();
         $config = $this->processConfiguration($configuration, $config);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
