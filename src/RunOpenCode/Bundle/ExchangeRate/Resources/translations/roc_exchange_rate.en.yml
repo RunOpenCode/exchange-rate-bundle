@@ -47,7 +47,7 @@ exchange_rate:
 
     rates:
         national_bank_of_serbia:
-            label: National bank of Serbia
+            label: National Bank of Serbia
             default:
                 label: Middle
             foreign_cache_buying:

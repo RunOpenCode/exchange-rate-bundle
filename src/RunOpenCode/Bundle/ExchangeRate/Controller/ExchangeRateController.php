@@ -9,6 +9,7 @@
  */
 namespace RunOpenCode\Bundle\ExchangeRate\Controller;
 
+use RunOpenCode\Bundle\ExchangeRate\Form\Type\EditType;
 use RunOpenCode\Bundle\ExchangeRate\Form\Type\NewType;
 use RunOpenCode\ExchangeRate\Contract\RateInterface;
 use RunOpenCode\ExchangeRate\Contract\RepositoryInterface;
@@ -81,7 +82,7 @@ class ExchangeRateController extends Controller
     {
         $this->denyAccessUnlessGranted(array('ROLE_EXCHANGE_RATE_MANAGER', 'ROLE_EXCHANGE_RATE_CREATE'));
 
-        $form = $this->createForm(NewType::class, $this->getNewRate());
+        $form = $this->createForm($this->getNewFormTypeFQCN(), $this->getNewRate());
 
         $form->handleRequest($request);
 
@@ -121,7 +122,7 @@ class ExchangeRateController extends Controller
     {
         $this->denyAccessUnlessGranted(array('ROLE_EXCHANGE_RATE_MANAGER', 'ROLE_EXCHANGE_RATE_EDIT'));
 
-        $form = $this->createForm(NewType::class, $this->getRateFromRequest($request));
+        $form = $this->createForm($this->getEditFormTypeFQCN(), $this->getRateFromRequest($request));
 
         $form->handleRequest($request);
 
@@ -190,6 +191,26 @@ class ExchangeRateController extends Controller
         }
 
         return Rate::fromRateInterface($this->repository->get($request->get('source'), $request->get('currency_code'), \DateTime::createFromFormat('Y-m-d', $request->get('date')), $request->get('rate_type')));
+    }
+
+    /**
+     * Get FQDN of NewType form.
+     *
+     * @return string
+     */
+    protected function getNewFormTypeFQCN()
+    {
+        return NewType::class;
+    }
+
+    /**
+     * Get FQDN of EditType form.
+     *
+     * @return string
+     */
+    protected function getEditFormTypeFQCN()
+    {
+        return EditType::class;
     }
 
     /**

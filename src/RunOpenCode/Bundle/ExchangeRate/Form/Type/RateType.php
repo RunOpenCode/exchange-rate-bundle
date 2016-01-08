@@ -76,7 +76,7 @@ class RateType extends AbstractType
                 $this->translator->trans(sprintf('exchange_rate.rates.%s.%s.label', $configuration->getSource(), $configuration->getRateType()), array(), 'roc_exchange_rate'),
                 $this->translator->trans(sprintf('exchange_rate.rates.%s.label', $configuration->getSource()), array(), 'roc_exchange_rate')
             );
-            $choices[$label] = $key;
+            $choices[$key] = $label;
         }
 
         return $choices;
