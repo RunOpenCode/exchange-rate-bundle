@@ -52,6 +52,7 @@ class Extension extends BaseExtension
         $this->configureFileRepository($config, $container);
         $this->configureController($config, $container);
         $this->configureDebugCommand($config, $container);
+        $this->configureCurrencyType($config, $container);
     }
 
     /**
@@ -238,6 +239,24 @@ class Extension extends BaseExtension
 
             $arguments = $definition->getArguments();
             $arguments[3] = new Reference($config['repository']);
+
+            $definition->setArguments($arguments);
+        }
+    }
+
+    /**
+     * Configure currency type.
+     *
+     * @param array $config
+     * @param ContainerBuilder $container
+     */
+    protected function configureCurrencyType(array $config, ContainerBuilder $container)
+    {
+        if ($container->has('run_open_code.exchange_rate.type.currency_type')) {
+            $definition = $container->getDefinition('run_open_code.exchange_rate.type.currency_type');
+
+            $arguments = $definition->getArguments();
+            $arguments[2] = $config['base_currency'];
 
             $definition->setArguments($arguments);
         }

@@ -14,16 +14,15 @@ use RunOpenCode\ExchangeRate\Contract\RatesConfigurationRegistryInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * Class RateType
+ * Class CurrencyType
  *
- * Rate choice type.
+ * Currency choice type.
  *
  * @package RunOpenCode\Bundle\ExchangeRate\Form\Type
  */
-class RateType extends AbstractType
+class CurrencyType extends AbstractType
 {
     /**
      * @var RatesConfigurationRegistryInterface
@@ -31,14 +30,14 @@ class RateType extends AbstractType
     protected $registry;
 
     /**
-     * @var TranslatorInterface
+     * @var string
      */
-    protected $translator;
+    protected $baseCurrency;
 
-    public function __construct(RatesConfigurationRegistryInterface $registry, TranslatorInterface $translator)
+    public function __construct($baseCurrency, RatesConfigurationRegistryInterface $registry)
     {
+        $this->baseCurrency = $baseCurrency;
         $this->registry = $registry;
-        $this->translator = $translator;
     }
 
     /**
@@ -48,7 +47,8 @@ class RateType extends AbstractType
     {
         $resolver->setDefaults(array(
             'choices' => $this->getChoices(),
-            'choice_translation_domain' => false
+            'choice_translation_domain' => false,
+            'preferred_choices' => array($this->baseCurrency)
         ));
     }
 
@@ -67,20 +67,18 @@ class RateType extends AbstractType
      */
     protected function getChoices()
     {
-        $choices = array();
+        $choices = array(
+            $this->baseCurrency => $this->baseCurrency
+        );
 
         /**
          * @var Configuration $configuration
          */
         foreach ($this->registry as $configuration) {
-            $key = sprintf('%s|%s|%s', $configuration->getCurrencyCode(), $configuration->getRateType(), $configuration->getSource());
-            $label = sprintf('%s, %s (%s)',
-                $configuration->getCurrencyCode(),
-                $this->translator->trans(sprintf('exchange_rate.rates.%s.%s.label', $configuration->getSource(), $configuration->getRateType()), array(), 'roc_exchange_rate'),
-                $this->translator->trans(sprintf('exchange_rate.rates.%s.label', $configuration->getSource()), array(), 'roc_exchange_rate')
-            );
-            $choices[$key] = $label;
+            $choices[$configuration->getCurrencyCode()] = $configuration->getCurrencyCode();
         }
+
+        asort($choices);
 
         return $choices;
     }
