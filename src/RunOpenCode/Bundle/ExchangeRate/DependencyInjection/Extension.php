@@ -256,7 +256,7 @@ class Extension extends BaseExtension
             $definition = $container->getDefinition('run_open_code.exchange_rate.type.currency_type');
 
             $arguments = $definition->getArguments();
-            $arguments[2] = $config['base_currency'];
+            $arguments[0] = $config['base_currency'];
 
             $definition->setArguments($arguments);
         }

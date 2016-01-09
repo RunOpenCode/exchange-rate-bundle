@@ -88,6 +88,7 @@
         </service>
 
         <service id="run_open_code.exchange_rate.type.currency_type" class="%run_open_code.exchange_rate.type.currency_type.class%">
+            <argument type="string"></argument>
             <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
             <tag name="form.type" />
         </service>
