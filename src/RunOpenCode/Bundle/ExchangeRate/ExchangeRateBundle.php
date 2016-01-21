@@ -9,7 +9,11 @@
  */
 namespace RunOpenCode\Bundle\ExchangeRate;
 
+use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\ProcessorsCompilerPass;
+use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\RepositoryCompilerPass;
+use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\SourcesCompilerPass;
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\Extension;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
@@ -27,5 +31,14 @@ class ExchangeRateBundle extends Bundle
     public function getContainerExtension()
     {
         return new Extension();
+    }
+
+    public function build(ContainerBuilder $container)
+    {
+        $container
+            ->addCompilerPass(new RepositoryCompilerPass())
+            ->addCompilerPass(new SourcesCompilerPass())
+            ->addCompilerPass(new ProcessorsCompilerPass())
+            ;
     }
 }

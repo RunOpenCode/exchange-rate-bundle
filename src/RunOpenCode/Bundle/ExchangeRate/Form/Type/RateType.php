@@ -73,13 +73,13 @@ class RateType extends AbstractType
          * @var Configuration $configuration
          */
         foreach ($this->registry as $configuration) {
-            $key = sprintf('%s|%s|%s', $configuration->getCurrencyCode(), $configuration->getRateType(), $configuration->getSource());
+            $key = sprintf('%s|%s|%s', $configuration->getCurrencyCode(), $configuration->getRateType(), $configuration->getSourceName());
             $label = sprintf('%s, %s (%s)',
                 $configuration->getCurrencyCode(),
-                $this->translator->trans(sprintf('exchange_rate.rates.%s.%s.label', $configuration->getSource(), $configuration->getRateType()), array(), 'roc_exchange_rate'),
-                $this->translator->trans(sprintf('exchange_rate.rates.%s.label', $configuration->getSource()), array(), 'roc_exchange_rate')
+                $this->translator->trans(sprintf('exchange_rate.rates.%s.%s.label', $configuration->getSourceName(), $configuration->getRateType()), array(), 'roc_exchange_rate'),
+                $this->translator->trans(sprintf('exchange_rate.rates.%s.label', $configuration->getSourceName()), array(), 'roc_exchange_rate')
             );
-            $choices[$key] = $label;
+            $choices[$label] = $key;
         }
 
         return $choices;

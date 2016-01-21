@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+        xmlns="http://symfony.com/schema/dic/services"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+
+    <parameters>
+
+        <parameter key="run_open_code.exchange_rate.registry.processors.class">RunOpenCode\ExchangeRate\Registry\ProcessorsRegistry</parameter>
+
+        <parameter key="run_open_code.exchange_rate.required_processors" />
+
+        <parameter key="run_open_code.exchange_rate.processor.base_currency_validator.class">RunOpenCode\ExchangeRate\Processor\BaseCurrencyValidator</parameter>
+        <parameter key="run_open_code.exchange_rate.processor.unique_rates_validator.class">RunOpenCode\ExchangeRate\Processor\UniqueRatesValidator</parameter>
+
+    </parameters>
+
+    <services>
+
+        <service id="run_open_code.exchange_rate.registry.processors" class="%run_open_code.exchange_rate.registry.processors.class%" public="false" />
+
+        <service id="run_open_code.exchange_rate.processor.base_currency_validator" class="%run_open_code.exchange_rate.processor.base_currency_validator.class%" public="false">
+            <tag name="run_open_code.exchange_rate.processor" priority="9" />
+        </service>
+
+        <service id="run_open_code.exchange_rate.processor.unique_rates_validator" class="%run_open_code.exchange_rate.processor.unique_rates_validator.class%" public="false">
+            <tag name="run_open_code.exchange_rate.processor" priority="10" />
+        </service>
+
+    </services>
+
+</container>

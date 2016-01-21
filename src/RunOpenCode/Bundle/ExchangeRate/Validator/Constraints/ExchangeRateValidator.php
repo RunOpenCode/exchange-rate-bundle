@@ -49,7 +49,7 @@ class ExchangeRateValidator extends ConstraintValidator
                     &&
                     $rateConfiguration->getCurrencyCode() === $rate->getCurrencyCode()
                     &&
-                    $rateConfiguration->getSource() === $rate->getSourceName()
+                    $rateConfiguration->getSourceName() === $rate->getSourceName()
                 ) {
                     return;
                 }

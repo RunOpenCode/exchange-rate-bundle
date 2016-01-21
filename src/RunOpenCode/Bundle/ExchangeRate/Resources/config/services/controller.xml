@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+        xmlns="http://symfony.com/schema/dic/services"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+
+    <parameters>
+
+        <parameter key="run_open_code.exchange_rate.controller.class">RunOpenCode\Bundle\ExchangeRate\Controller\ExchangeRateController</parameter>
+
+        <parameter key="run_open_code.exchange_rate.controller.view_configuration" type="collection" />
+
+    </parameters>
+
+    <services>
+
+        <service id="run_open_code.exchange_rate.controller" class="%run_open_code.exchange_rate.controller.class%">
+            <argument type="service" id="run_open_code.exchange_rate.repository"/>
+            <argument>%run_open_code.exchange_rate.base_currency%</argument>
+            <argument>%run_open_code.exchange_rate.controller.view_configuration%</argument>
+
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+
+        </service>
+
+    </services>
+
+</container>

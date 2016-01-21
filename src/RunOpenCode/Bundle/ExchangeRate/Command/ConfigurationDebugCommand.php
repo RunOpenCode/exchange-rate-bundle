@@ -22,6 +22,7 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Class ConfigurationDebugCommand
@@ -52,6 +53,11 @@ class ConfigurationDebugCommand extends Command
      */
     protected $repository;
 
+    /**
+     * @var SymfonyStyle
+     */
+    protected $sfStyle;
+
     public function __construct(
         SourcesRegistryInterface $sourcesRegistry,
         ProcessorsRegistryInterface $processorsRegistry,
@@ -81,9 +87,13 @@ class ConfigurationDebugCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->sfStyle = new SymfonyStyle($input, $output);
+
         $this
-            ->displayHeader($output)
-            ->displayNewLine($output)
+            ->sfStyle
+            ->title('Displaying current configuration for currency exchange bundle');
+
+        $this
             ->displaySources($output)
             ->displayNewLine($output)
             ->displayProcessors($output)
@@ -92,38 +102,11 @@ class ConfigurationDebugCommand extends Command
             ->displayNewLine($output)
             ->displayRates($output)
             ->displayNewLine($output)
-            ->displayFooter($output)
         ;
-    }
 
-    /**
-     * Display header.
-     *
-     * @param OutputInterface $output
-     * @return ConfigurationDebugCommand $this
-     */
-    protected function displayHeader(OutputInterface $output)
-    {
-        $output->writeln($this->getFormatter()->formatBlock(array(
-            '-------------------------------------------------------------',
-            'Displaying current configuration for currency exchange bundle',
-            '-------------------------------------------------------------'
-        ), 'info'));
-
-        return $this;
-    }
-
-    /**
-     * Display footer.
-     *
-     * @param OutputInterface $output
-     * @return ConfigurationDebugCommand $this
-     */
-    protected function displayFooter(OutputInterface $output)
-    {
-        $output->writeln($this->getFormatter()->formatBlock('-------------------------------------------------------------', 'info'));
-
-        return $this;
+        $this
+            ->sfStyle
+            ->success('Configuration is valid.');
     }
 
     /**
@@ -134,11 +117,12 @@ class ConfigurationDebugCommand extends Command
      */
     protected function displaySources(OutputInterface $output)
     {
+        $this->sfStyle->section('Sources:');
         /**
          * @var SourceInterface $source
          */
         foreach ($this->sourcesRegistry as $source) {
-            $output->writeln($this->getFormatter()->formatSection('Source', sprintf('%s as %s', get_class($source), $source->getName())));
+            $output->writeln(' -> ' . sprintf('%s as %s', get_class($source), $source->getName()));
         }
 
         return $this;
@@ -152,11 +136,12 @@ class ConfigurationDebugCommand extends Command
      */
     protected function displayProcessors(OutputInterface $output)
     {
+        $this->sfStyle->section('Processors:');
         /**
          * @var ProcessorInterface $processor
          */
         foreach ($this->processorsRegistry as $processor) {
-            $output->writeln($this->getFormatter()->formatSection('Processor', get_class($processor)));
+            $output->writeln(' -> ' . get_class($processor));
         }
 
         return $this;
@@ -170,7 +155,9 @@ class ConfigurationDebugCommand extends Command
      */
     protected function displayRepository(OutputInterface $output)
     {
-        $output->writeln($this->getFormatter()->formatSection('Repository', sprintf('%s with %s records.', get_class($this->repository), $this->repository->count())));
+        $this->sfStyle->section('Repository:');
+
+        $output->writeln(' -> '. sprintf('%s with %s record(s).', get_class($this->repository), $this->repository->count()));
 
         return $this;
     }
@@ -183,11 +170,13 @@ class ConfigurationDebugCommand extends Command
      */
     protected function displayRates(OutputInterface $output)
     {
+        $this->sfStyle->section('Exchange rates:');
+
         $table = new Table($output);
 
         $table->setHeaders(array(
             array(new TableCell('Registered currency rates', array('colspan' => 3))),
-            array('Currency code', 'Rate type', 'Source', 'Alias')
+            array('Currency code', 'Rate type', 'Source')
         ));
         /**
          * @var Configuration $rateConfiguration
@@ -196,8 +185,7 @@ class ConfigurationDebugCommand extends Command
             $table->addRow(array(
                 $rateConfiguration->getCurrencyCode(),
                 $rateConfiguration->getRateType(),
-                $rateConfiguration->getSource(),
-                $rateConfiguration->getAlias() ?: 'N/A'
+                $rateConfiguration->getSourceName()
             ));
         }
 
@@ -205,6 +193,7 @@ class ConfigurationDebugCommand extends Command
 
         return $this;
     }
+
 
     /**
      * Display new line.
@@ -217,15 +206,5 @@ class ConfigurationDebugCommand extends Command
         $output->writeln('');
 
         return $this;
-    }
-
-    /**
-     * Get formatter.
-     *
-     * @return FormatterHelper
-     */
-    protected function getFormatter()
-    {
-        return $this->getHelper('formatter');
     }
 }

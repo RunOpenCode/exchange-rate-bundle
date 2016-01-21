@@ -10,9 +10,11 @@
 namespace RunOpenCode\Bundle\ExchangeRate\DependencyInjection;
 
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\Configuration as TreeConfiguration;
+use RunOpenCode\ExchangeRate\Utils\CurrencyCodeUtil;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension as BaseExtension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
@@ -39,243 +41,116 @@ class Extension extends BaseExtension
      */
     public function load(array $config, ContainerBuilder $container)
     {
+
         $configuration = new TreeConfiguration();
         $config = $this->processConfiguration($configuration, $config);
 
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.xml');
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/services'));
+        $loader->load('repository.xml');
+        $loader->load('command.xml');
+        $loader->load('controller.xml');
+        $loader->load('form_type.xml');
+        $loader->load('manager.xml');
+        $loader->load('processor.xml');
+        $loader->load('source.xml');
+        $loader->load('validator.xml');
 
-        $this->configureExchangeRateService($config, $container);
-        $this->configureSourcesRegistry($config, $container);
-        $this->configureProcessorsRegistry($config, $container);
-        $this->configureRatesRegistry($config, $container);
-        $this->configureFileRepository($config, $container);
-        $this->configureController($config, $container);
-        $this->configureDebugCommand($config, $container);
-        $this->configureCurrencyType($config, $container);
+        $this
+            ->configureBaseCurrency($config, $container)
+            ->configureRepository($config, $container)
+            ->configureFileRepository($config, $container)
+            ->configureController($config, $container)
+            ->configureRates($config, $container)
+            ->configureSimpleSources($config, $container)
+        ;
     }
 
     /**
-     * Configure exchange rate service.
+     * Configure base currency.
      *
-     * @param array $config
-     * @param ContainerBuilder $container
+     * @param array $config Configuration parameters.
+     * @param ContainerBuilder $container Service container.
+     * @return Extension $this Fluent interface.
      */
-    protected function configureExchangeRateService(array $config, ContainerBuilder $container)
+    protected function configureBaseCurrency(array $config, ContainerBuilder $container)
     {
-        if ($container->hasDefinition('run_open_code.exchange_rate')) {
+        $baseCurrency = CurrencyCodeUtil::clean($config['base_currency']);
+        $container->setParameter('run_open_code.exchange_rate.base_currency', $baseCurrency);
 
-            $definition = $container->getDefinition('run_open_code.exchange_rate');
-
-            $definition->setArguments(array(
-                $config['base_currency'],
-                new Reference($config['repository']),
-                new Reference('run_open_code.exchange_rate.registry.sources'),
-                new Reference('run_open_code.exchange_rate.registry.processors'),
-                new Reference('run_open_code.exchange_rate.registry.rates')
-            ));
-        }
-    }
-
-    /**
-     * Configure sources registry.
-     *
-     * @param array $config
-     * @param ContainerBuilder $container
-     */
-    protected function configureSourcesRegistry(array $config, ContainerBuilder $container)
-    {
-        if ($container->hasDefinition('run_open_code.exchange_rate.registry.sources')) {
-
-            $definition = $container->getDefinition('run_open_code.exchange_rate.registry.sources');
-            $requiredSources = $this->getRequiredSources($config);
-
-
-            foreach ($container->findTaggedServiceIds('run_open_code.exchange_rate.source') as $id => $tags) {
-
-                foreach ($tags as $attributes) {
-
-                    if (array_key_exists($attributes['alias'], $requiredSources)) {
-
-                        $definition->addMethodCall('add', array(
-                            new Reference($id)
-                        ));
-
-                        unset($requiredSources[$attributes['alias']]);
-                    }
-                }
-            }
-
-            if (count($requiredSources) > 0) {
-                throw new InvalidConfigurationException(sprintf('Required source(s) "%s" does not exists.', implode(', ', $requiredSources)));
-            }
-        }
-    }
-
-    /**
-     * Configure processors registry.
-     *
-     * @param array $config
-     * @param ContainerBuilder $container
-     */
-    protected function configureProcessorsRegistry(array $config, ContainerBuilder $container)
-    {
-        if ($container->hasDefinition('run_open_code.exchange_rate.registry.processors')) {
-
-            $definition = $container->getDefinition('run_open_code.exchange_rate.registry.processors');
-
-            $processors = array();
-
-            foreach ($container->findTaggedServiceIds('run_open_code.exchange_rate.processor') as $id => $tags) {
-
-                if (!in_array($id, $config['processors'], true)) {
-                    continue;
-                }
-
-                foreach ($tags as $attributes) {
-                    $processors[$id] = (isset($attributes['priority'])) ? intval($attributes['priority']) : 0;
-                }
-            }
-
-            asort($processors);
-
-            foreach ($processors as $id => $processor) {
-                $definition->addMethodCall('add', array(
-                    new Reference($id)
-                ));
-            }
-        }
+        return $this;
     }
 
     /**
      * Configure rates.
      *
-     * @param array $config
-     * @param ContainerBuilder $container
+     * @param array $config Configuration parameters.
+     * @param ContainerBuilder $container Service container.
+     * @return Extension $this Fluent interface.
      */
-    protected function configureRatesRegistry(array $config, ContainerBuilder $container)
+    protected function configureRates(array $config, ContainerBuilder $container)
     {
-        if ($container->hasDefinition('run_open_code.exchange_rate.registry.rates')) {
-
-            $definition = $container->getDefinition('run_open_code.exchange_rate.registry.rates');
-
-            $aliases = array();
-
-            foreach ($config['rates'] as $rateConfiguration) {
-
-                if ($rateConfiguration['alias'] === null) {
-                    continue;
-                }
-
-                if (array_key_exists($rateConfiguration['alias'], $aliases)) {
-                    throw new InvalidConfigurationException(sprintf('Rate with alias "%s" is already defined.', $rateConfiguration['alias']));
-                }
-
-                $aliases[$rateConfiguration['alias']] = $rateConfiguration;
-            }
-
-            $definition->setArguments(array(array_values($config['rates'])));
+        if (count($config['rates']) === 0) {
+            throw new \RuntimeException('You have to configure which rates you would like to use in your project.');
         }
+
+        $container->setParameter('run_open_code.exchange_rate.registered_rates', $config['rates']);
+        return $this;
     }
 
     /**
-     * Configure file registry, if used.
+     * Configure required processors.
      *
-     * @param array $config
-     * @param ContainerBuilder $container
+     * @param array $config Configuration parameters.
+     * @param ContainerBuilder $container Service container.
+     * @return Extension $this Fluent interface.
+     */
+    protected function configureRepository(array $config, ContainerBuilder $container)
+    {
+        $container->setParameter('run_open_code.exchange_rate.repository', $config['repository']);
+        return $this;
+    }
+
+    /**
+     * Configure file repository, if used.
+     *
+     * @param array $config Configuration parameters.
+     * @param ContainerBuilder $container Service container.
+     * @return Extension $this Fluent interface.
      */
     protected function configureFileRepository(array $config, ContainerBuilder $container)
     {
-        if (
-            $config['repository'] === 'run_open_code.exchange_rate.repository.file_repository'
-            &&
-            $container->hasDefinition('run_open_code.exchange_rate.repository.file_repository')
-        ) {
-
-            if (!empty($config['file_repository']) && !empty($config['file_repository']['path'])) {
-                $definition = $container->getDefinition('run_open_code.exchange_rate.repository.file_repository');
-                $definition->setArguments(array(
-                    $config['file_repository']['path']
-                ));
-            } else {
-                throw new InvalidConfigurationException('You must configure location to the file where file repository will store exchange rates.');
-            }
-
-        } elseif ($config['repository'] === 'run_open_code.exchange_rate.repository.file_repository') {
-            throw new InvalidConfigurationException('File repository is used to store exchange rates, but it is not available in container.');
-        } else {
-            $container->removeDefinition('run_open_code.exchange_rate.repository.file_repository');
-        }
+        $container->setParameter('run_open_code.exchange_rate.repository.file_repository.path', $config['file_repository']['path']);
+        return $this;
     }
 
     /**
-     * Configure controller - view layer.
+     * Configure controller.
      *
-     * @param array $config
-     * @param ContainerBuilder $container
+     * @param array $config Configuration parameters.
+     * @param ContainerBuilder $container Service container.
+     * @return Extension $this Fluent interface.
      */
     protected function configureController(array $config, ContainerBuilder $container)
     {
-        if ($container->has('run_open_code.exchange_rate.controller')) {
-            $definition = $container->getDefinition('run_open_code.exchange_rate.controller');
-            $definition->setArguments(array(
-                new Reference($config['repository']),
-                $config['base_currency'],
-                $config['view']
-            ));
-        }
+        $container->setParameter(
+            'run_open_code.exchange_rate.controller.view_configuration',
+            $config['view']
+        );
+
+        return $this;
     }
 
     /**
-     * Configure debug command.
+     * Configure simple sources which does not have to be explicitly added to service container.
      *
-     * @param array $config
-     * @param ContainerBuilder $container
+     * @param array $config Configuration parameters.
+     * @param ContainerBuilder $container Service container.
+     * @return Extension $this Fluent interface.
      */
-    protected function configureDebugCommand(array $config, ContainerBuilder $container)
+    protected function configureSimpleSources(array $config, ContainerBuilder $container)
     {
-        if ($container->has('run_open_code.exchange_rate.command.configuration_debug')) {
-            $definition = $container->getDefinition('run_open_code.exchange_rate.command.configuration_debug');
-
-            $arguments = $definition->getArguments();
-            $arguments[3] = new Reference($config['repository']);
-
-            $definition->setArguments($arguments);
+        if (!empty($config['sources']) && count($config['sources']) > 0) {
+            $container->setParameter('run_open_code.exchange_rate.source.registered_simple_sources', $config['sources']);
         }
-    }
-
-    /**
-     * Configure currency type.
-     *
-     * @param array $config
-     * @param ContainerBuilder $container
-     */
-    protected function configureCurrencyType(array $config, ContainerBuilder $container)
-    {
-        if ($container->has('run_open_code.exchange_rate.type.currency_type')) {
-            $definition = $container->getDefinition('run_open_code.exchange_rate.type.currency_type');
-
-            $arguments = $definition->getArguments();
-            $arguments[0] = $config['base_currency'];
-
-            $definition->setArguments($arguments);
-        }
-    }
-
-    /**
-     * Extract name of only required sources from configuration.
-     *
-     * @param array $config
-     * @return array
-     */
-    protected function getRequiredSources(array $config)
-    {
-        $requiredSources = array();
-
-        foreach ($config['rates'] as $rate) {
-            $requiredSources[$rate['source']] = $rate['source'];
-        }
-
-        return $requiredSources;
     }
 }

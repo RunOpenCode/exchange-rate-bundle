@@ -9,8 +9,8 @@
  */
 namespace RunOpenCode\Bundle\ExchangeRate\Controller;
 
-use RunOpenCode\Bundle\ExchangeRate\Form\Type\EditType;
-use RunOpenCode\Bundle\ExchangeRate\Form\Type\NewType;
+use RunOpenCode\Bundle\ExchangeRate\Form\EditType;
+use RunOpenCode\Bundle\ExchangeRate\Form\NewType;
 use RunOpenCode\ExchangeRate\Contract\RateInterface;
 use RunOpenCode\ExchangeRate\Contract\RepositoryInterface;
 use RunOpenCode\Bundle\ExchangeRate\Model\Rate;
@@ -82,7 +82,7 @@ class ExchangeRateController extends Controller
     {
         $this->denyAccessUnlessGranted(array('ROLE_EXCHANGE_RATE_MANAGER', 'ROLE_EXCHANGE_RATE_CREATE'));
 
-        $form = $this->createForm($this->getNewFormTypeFQCN(), $this->getNewRate());
+        $form = $this->createForm($this->getNewFormType(), $this->getNewRate());
 
         $form->handleRequest($request);
 
@@ -93,7 +93,7 @@ class ExchangeRateController extends Controller
              */
             $rate = $form->getData();
 
-            if ($this->repository->has($rate->getCurrencyCode(), $rate->getDate(), $rate->getRateType())) {
+            if ($this->repository->has($rate->getSourceName(), $rate->getCurrencyCode(), $rate->getDate(), $rate->getRateType())) {
                 $form->addError(new FormError($this->get('translator')->trans('exchange_rate.form.error.new_exists', array(), 'roc_exchange_rate')));
             } else {
                 $this->repository->save(array(
@@ -122,7 +122,7 @@ class ExchangeRateController extends Controller
     {
         $this->denyAccessUnlessGranted(array('ROLE_EXCHANGE_RATE_MANAGER', 'ROLE_EXCHANGE_RATE_EDIT'));
 
-        $form = $this->createForm($this->getEditFormTypeFQCN(), $this->getRateFromRequest($request));
+        $form = $this->createForm($this->getEditFormType(), $this->getRateFromRequest($request));
 
         $form->handleRequest($request);
 
@@ -194,21 +194,21 @@ class ExchangeRateController extends Controller
     }
 
     /**
-     * Get FQDN of NewType form.
+     * Get FQCN of NewType form.
      *
      * @return string
      */
-    protected function getNewFormTypeFQCN()
+    protected function getNewFormType()
     {
         return NewType::class;
     }
 
     /**
-     * Get FQDN of EditType form.
+     * Get FQCN of EditType form.
      *
      * @return string
      */
-    protected function getEditFormTypeFQCN()
+    protected function getEditFormType()
     {
         return EditType::class;
     }

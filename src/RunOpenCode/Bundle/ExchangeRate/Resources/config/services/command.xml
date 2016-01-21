@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+        xmlns="http://symfony.com/schema/dic/services"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+
+    <parameters>
+
+        <parameter key="run_open_code.exchange_rate.command.fetch.class">RunOpenCode\Bundle\ExchangeRate\Command\FetchCommand</parameter>
+
+        <parameter key="run_open_code.exchange_rate.command.configuration_debug.class">RunOpenCode\Bundle\ExchangeRate\Command\ConfigurationDebugCommand</parameter>
+
+    </parameters>
+
+    <services>
+
+
+        <service id="run_open_code.exchange_rate.command.fetch" class="%run_open_code.exchange_rate.command.fetch.class%">
+            <argument type="service" id="run_open_code.exchange_rate" />
+            <argument type="service" id="run_open_code.exchange_rate.registry.sources" />
+            <tag name="console.command" />
+        </service>
+
+        <service id="run_open_code.exchange_rate.command.configuration_debug" class="%run_open_code.exchange_rate.command.configuration_debug.class%">
+            <argument type="service" id="run_open_code.exchange_rate.registry.sources" />
+            <argument type="service" id="run_open_code.exchange_rate.registry.processors" />
+            <argument type="service" id="run_open_code.exchange_rate.registry.rates" />
+            <argument type="service" id="run_open_code.exchange_rate.repository" />
+            <tag name="console.command" />
+        </service>
+
+    </services>
+
+</container>

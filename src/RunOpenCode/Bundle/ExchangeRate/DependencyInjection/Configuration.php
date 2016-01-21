@@ -38,12 +38,12 @@ class Configuration implements ConfigurationInterface
                     ->info('Set base currency in which you are doing your business activities.')
                 ->end()
                 ->scalarNode('repository')
-                    ->defaultValue('run_open_code.exchange_rate.repository.file_repository')
+                    ->defaultValue('file')
                     ->info('Service ID which is in charge for rates persistence.')
                 ->end()
                 ->append($this->getRatesDefinition())
-                ->append($this->getProcessorsDefinition())
                 ->append($this->getFileRepositoryDefinition())
+                ->append($this->getSourcesDefinition())
                 ->append($this->getViewDefinition())
             ->end()
         ->end();
@@ -59,7 +59,6 @@ class Configuration implements ConfigurationInterface
     protected function getRatesDefinition()
     {
         $node = new ArrayNodeDefinition('rates');
-
         $node
             ->info('Configuration of each individual rate with which you intend to work with.')
             ->requiresAtLeastOneElement()
@@ -68,28 +67,9 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('currency_code')->isRequired()->end()
                         ->scalarNode('rate_type')->isRequired()->end()
                         ->scalarNode('source')->isRequired()->end()
-                        ->scalarNode('alias')->defaultValue(null)->end()
                         ->arrayNode('extra')->end()
                     ->end()
                 ->end()
-            ->end();
-
-        return $node;
-    }
-
-    /**
-     * Build configuration tree for processors.
-     *
-     * @return ArrayNodeDefinition
-     */
-    protected function getProcessorsDefinition()
-    {
-        $node = new ArrayNodeDefinition('processors');
-
-        $node
-            ->info('List of processors which ought to be executed after fetch process.')
-            ->useAttributeAsKey('name')
-                ->prototype('scalar')->end()
             ->end();
 
         return $node;
@@ -113,6 +93,24 @@ class Configuration implements ConfigurationInterface
                 ->defaultValue('%kernel.root_dir%/db/exchange_rates.dat')
                 ->end()
             ->end()
+        ->end();
+
+        return $node;
+    }
+
+    /**
+     * Build configuration tree for simple sources.
+     *
+     * @return ArrayNodeDefinition
+     */
+    protected function getSourcesDefinition()
+    {
+        $node = new ArrayNodeDefinition('sources');
+
+        $node
+            ->info('Add sources to sources registry without registering them into service container.')
+            ->useAttributeAsKey('name')
+            ->prototype('scalar')->end()
         ->end();
 
         return $node;
