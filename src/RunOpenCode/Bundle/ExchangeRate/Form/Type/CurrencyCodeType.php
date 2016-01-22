@@ -22,7 +22,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  * @package RunOpenCode\Bundle\ExchangeRate\Form\Type
  */
-class CurrencyType extends AbstractType
+class CurrencyCodeType extends AbstractType
 {
     /**
      * @var RatesConfigurationRegistryInterface
@@ -34,10 +34,20 @@ class CurrencyType extends AbstractType
      */
     protected $baseCurrency;
 
-    public function __construct($baseCurrency, RatesConfigurationRegistryInterface $registry)
+    /**
+     * @var array
+     */
+    protected $defaults;
+
+    public function __construct($baseCurrency, RatesConfigurationRegistryInterface $registry, array $defaults = array())
     {
         $this->baseCurrency = $baseCurrency;
         $this->registry = $registry;
+        $this->defaults = array_merge(array(
+            'preferred_choices' => array($this->baseCurrency),
+            'choices' => $this->getChoices(),
+            'choice_translation_domain' => false
+        ), $defaults);
     }
 
     /**
@@ -45,11 +55,7 @@ class CurrencyType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'choices' => $this->getChoices(),
-            'choice_translation_domain' => false,
-            'preferred_choices' => array($this->baseCurrency)
-        ));
+        $resolver->setDefaults($this->defaults);
     }
 
     /**

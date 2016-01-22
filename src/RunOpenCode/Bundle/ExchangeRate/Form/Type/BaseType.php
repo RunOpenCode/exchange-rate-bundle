@@ -7,9 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace RunOpenCode\Bundle\ExchangeRate\Form;
+namespace RunOpenCode\Bundle\ExchangeRate\Form\Type;
 
-use RunOpenCode\Bundle\ExchangeRate\Form\Type\RateType;
 use RunOpenCode\Bundle\ExchangeRate\Model\Rate;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;

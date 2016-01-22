@@ -17,7 +17,6 @@ use RunOpenCode\ExchangeRate\Contract\RepositoryInterface;
 use RunOpenCode\ExchangeRate\Contract\SourceInterface;
 use RunOpenCode\ExchangeRate\Contract\SourcesRegistryInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Input\InputInterface;
@@ -203,8 +202,7 @@ class ConfigurationDebugCommand extends Command
      */
     protected function displayNewLine(OutputInterface $output)
     {
-        $output->writeln('');
-
+        $this->sfStyle->newLine();
         return $this;
     }
 }

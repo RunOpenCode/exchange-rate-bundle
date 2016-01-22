@@ -18,6 +18,7 @@ use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Class FetchCommand
@@ -39,6 +40,11 @@ class FetchCommand extends Command
      * @var SourcesRegistryInterface
      */
     protected $sourcesRegistry;
+
+    /**
+     * @var SymfonyStyle
+     */
+    protected $sfStyle;
 
     public function __construct(ManagerInterface $manager, SourcesRegistryInterface $sourcesRegistry)
     {
@@ -65,21 +71,24 @@ class FetchCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->sfStyle = new SymfonyStyle($input, $output);
+
         try {
             $sources = $this->parseSources($input, $output);
             $date = $this->parseDate($input, $output);
         } catch (\Exception $e) {
-            $output->writeln('<error>Unable to continue.</error>');
+            $this->sfStyle->error('Bad input data, unable to continue.');
             return;
         }
 
-        $output->writeln($this->getFormatter()->formatSection('Exchange rates', sprintf('Fetching from %s sources for date %s.', ($sources ? implode(', ', $sources) : 'all'),  $date->format('Y-m-d'))));
+        $this->sfStyle->title('Exchange rates:');
+        $this->sfStyle->text(sprintf('Fetching from %s sources for date %s....', ($sources ? implode(', ', $sources) : 'all'),  $date->format('Y-m-d')));
 
         try {
 
             $this->manager->fetch($sources, $date);
 
-            $output->writeln($this->getFormatter()->formatSection('Exchange rates', 'Rates fetched.'));
+            $this->sfStyle->success('Rates successfully fetched!');
 
             $this->getLogger()->info(sprintf('Rates fetched from %s sources for date %s.', ($sources) ? implode(', ', $sources) : 'all', $date->format('Y-m-d')));
 
@@ -95,7 +104,7 @@ class FetchCommand extends Command
                     'trace' => $e->getTraceAsString()
                 )
             ));
-            $output->writeln('<error>Unable to fetch.</error>');
+            $this->sfStyle->error('Unable to fetch data from source(s). See log for details.');
             return;
         }
     }

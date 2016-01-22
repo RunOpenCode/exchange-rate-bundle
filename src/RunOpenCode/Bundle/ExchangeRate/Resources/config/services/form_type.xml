@@ -9,7 +9,7 @@
 
         <parameter key="run_open_code.exchange_rate.type.rate_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\RateType</parameter>
 
-        <parameter key="run_open_code.exchange_rate.type.currency_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\CurrencyType</parameter>
+        <parameter key="run_open_code.exchange_rate.type.currency_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\CurrencyCodeType</parameter>
 
     </parameters>
 

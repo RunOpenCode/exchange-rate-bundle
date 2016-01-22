@@ -35,10 +35,19 @@ class RateType extends AbstractType
      */
     protected $translator;
 
-    public function __construct(RatesConfigurationRegistryInterface $registry, TranslatorInterface $translator)
+    /**
+     * @var array
+     */
+    protected $defaults;
+
+    public function __construct(RatesConfigurationRegistryInterface $registry, TranslatorInterface $translator, array $defaults = array())
     {
         $this->registry = $registry;
         $this->translator = $translator;
+        $this->defaults = array_merge(array(
+            'choices' => $this->getChoices(),
+            'choice_translation_domain' => false
+        ), $defaults);
     }
 
     /**
@@ -46,10 +55,7 @@ class RateType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'choices' => $this->getChoices(),
-            'choice_translation_domain' => false
-        ));
+        $resolver->setDefaults($this->defaults);
     }
 
     /**

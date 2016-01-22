@@ -9,8 +9,8 @@
  */
 namespace RunOpenCode\Bundle\ExchangeRate\Controller;
 
-use RunOpenCode\Bundle\ExchangeRate\Form\EditType;
-use RunOpenCode\Bundle\ExchangeRate\Form\NewType;
+use RunOpenCode\Bundle\ExchangeRate\Form\Type\EditType;
+use RunOpenCode\Bundle\ExchangeRate\Form\Type\NewType;
 use RunOpenCode\ExchangeRate\Contract\RateInterface;
 use RunOpenCode\ExchangeRate\Contract\RepositoryInterface;
 use RunOpenCode\Bundle\ExchangeRate\Model\Rate;
