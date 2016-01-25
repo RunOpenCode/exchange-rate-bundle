@@ -14,11 +14,12 @@ use RunOpenCode\ExchangeRate\Contract\SourceInterface;
 use RunOpenCode\ExchangeRate\Contract\SourcesRegistryInterface;
 use RunOpenCode\ExchangeRate\Log\LoggerAwareTrait;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Style\OutputStyle;
+use Symfony\Component\Templating\EngineInterface;
 
 /**
  * Class FetchCommand
@@ -42,15 +43,37 @@ class FetchCommand extends Command
     protected $sourcesRegistry;
 
     /**
+     * @var \Swift_Mailer
+     */
+    protected $mailer;
+
+    /**
+     * @var EngineInterface
+     */
+    protected $templateEngine;
+
+    /**
      * @var SymfonyStyle
      */
-    protected $sfStyle;
+    protected $outputStyle;
 
     public function __construct(ManagerInterface $manager, SourcesRegistryInterface $sourcesRegistry)
     {
         parent::__construct();
         $this->manager = $manager;
         $this->sourcesRegistry = $sourcesRegistry;
+    }
+
+    public function setMailer(\Swift_Mailer $mailer)
+    {
+        $this->mailer = $mailer;
+        return $this;
+    }
+
+    public function setTemplateEngine(EngineInterface $templateEngine)
+    {
+        $this->templateEngine = $templateEngine;
+        return $this;
     }
 
     /**
@@ -71,55 +94,41 @@ class FetchCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->sfStyle = new SymfonyStyle($input, $output);
+        $outputStyle = new SymfonyStyle($input, $output);
 
         try {
-            $sources = $this->parseSources($input, $output);
-            $date = $this->parseDate($input, $output);
+            $this
+                ->cleanInputDate($input, $outputStyle)
+                ->cleanInputSources($input, $outputStyle);
         } catch (\Exception $e) {
-            $this->sfStyle->error('Bad input data, unable to continue.');
             return;
         }
 
-        $this->sfStyle->title('Exchange rates:');
-        $this->sfStyle->text(sprintf('Fetching from %s sources for date %s....', ($sources ? implode(', ', $sources) : 'all'),  $date->format('Y-m-d')));
-
         try {
-
-            $this->manager->fetch($sources, $date);
-
-            $this->sfStyle->success('Rates successfully fetched!');
-
-            $this->getLogger()->info(sprintf('Rates fetched from %s sources for date %s.', ($sources) ? implode(', ', $sources) : 'all', $date->format('Y-m-d')));
-
+            $this
+                ->displayCommandBegin($input, $outputStyle)
+                ->doFetch($input)
+                ->displayCommandSuccess($outputStyle)
+                ->notifySuccess();
+            ;
         } catch (\Exception $e) {
-            $this->getLogger()->critical('Unable to fetch rates.', array(
-                'date' => date('Y-m-d H:i:s'),
-                'sources' => $sources ? 'All' : implode(', ', $sources),
-                'exception' => array(
-                    'message' => $e->getMessage(),
-                    'code' => $e->getCode(),
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'trace' => $e->getTraceAsString()
-                )
-            ));
-            $this->sfStyle->error('Unable to fetch data from source(s). See log for details.');
-            return;
+            $this
+                ->displayCommandFail($outputStyle)
+                ->notifyFail();
         }
     }
 
+
     /**
-     * Parse date from console input.
+     * Clean date from console input.
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return \DateTime
+     * @param InputInterface $input Console input.
+     * @param OutputStyle $outputStyle Output style to use.
+     * @return FetchCommand $this Fluent interface.
      *
      * @throws \Exception
      */
-    protected function parseDate(InputInterface $input, OutputInterface $output)
+    protected function cleanInputDate(InputInterface $input, OutputStyle $outputStyle)
     {
         $date = $input->getOption('date');
 
@@ -127,27 +136,28 @@ class FetchCommand extends Command
             $date = \DateTime::createFromFormat('Y-m-d', $date);
 
             if ($date === false) {
-                $output->writeln('<error>Invalid date format provided, expected format is "Y-m-d".</error>');
+                $outputStyle->error('Invalid date format provided, expected format is "Y-m-d".');
                 throw new \Exception;
             }
         } else {
             $date = new \DateTime('now');
         }
 
-        return $date;
+        $input->setOption('date', $date);
+
+        return $this;
     }
 
     /**
-     * Parse sources from console input.
+     * Clean sources from console input.
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return array|null
+     * @param InputInterface $input Console input.
+     * @param OutputStyle $outputStyle Output style to use.
+     * @return FetchCommand $this Fluent interface.
      *
      * @throws \Exception
      */
-    protected function parseSources(InputInterface $input, OutputInterface $output)
+    protected function cleanInputSources(InputInterface $input, OutputStyle $outputStyle)
     {
         $sources = $input->getOption('source');
 
@@ -157,24 +167,110 @@ class FetchCommand extends Command
             foreach ($sources as $source) {
 
                 if (!$this->sourcesRegistry->has($source)) {
-                    $output->writeln(sprintf('<error>Invalid source name "%s" provided, available sources are "%s".</error>', $source, implode(', ', array_map(function(SourceInterface $source) {
+
+                    $outputStyle->error(sprintf('Invalid source name "%s" provided, available sources are "%s".', $source, implode(', ', array_map(function(SourceInterface $source) {
                         return $source->getName();
                     }, $this->sourcesRegistry->all()))));
+
                     throw new \Exception;
                 }
             }
         }
 
-        return $sources;
+        $input->setOption('source', $sources);
+
+        return $this;
     }
 
     /**
-     * Get formatter.
+     * Display command begin note.
      *
-     * @return FormatterHelper
+     * @param InputInterface $input Console input.
+     * @param OutputStyle $outputStyle Console style.
+     * @return FetchCommand $this Fluent interface.
      */
-    protected function getFormatter()
+    protected function displayCommandBegin(InputInterface $input, OutputStyle $outputStyle)
     {
-        return $this->getHelper('formatter');
+        $outputStyle->title('Exchange rates:');
+        $outputStyle->text(
+            sprintf(
+                'Fetching from %s for date %s....',
+                ($input->getOption('source') ? sprintf('"%s"', implode('", "', $input->getOption('source'))) : 'all sources'),
+                $input->getOption('date')->format('Y-m-d')
+            )
+        );
+
+        return $this;
+    }
+
+    /**
+     * Do fetch rates.
+     *
+     * @param InputInterface $input Console input.
+     * @return FetchCommand $this Fluent interface.
+     * @throws \Exception
+     */
+    protected function doFetch(InputInterface $input)
+    {
+        try {
+
+            $this->manager->fetch($input->getOption('source'), $input->getOption('date'));
+
+            $this->getLogger()->info(sprintf('Rates fetched from %s for date %s.', $input->getOption('source') ? sprintf('"%s"', implode('", "', $input->getOption('source'))) : 'all sources', $input->getOption('date')->format('Y-m-d')));
+
+        } catch (\Exception $e) {
+
+            $this->getLogger()->critical('Unable to fetch rates.', array(
+                'date' => $input->getOption('date')->format('Y-m-d'),
+                'sources' => $input->getOption('source') ? sprintf('"%s"', implode('", "', $input->getOption('source'))) : 'All sources',
+                'exception' => array(
+                    'message' => $e->getMessage(),
+                    'code' => $e->getCode(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString()
+                )
+            ));
+
+            throw $e;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Display command success note.
+     *
+     * @param OutputStyle $outputStyle
+     * @return FetchCommand $this Fluent interface.
+     */
+    protected function displayCommandSuccess(OutputStyle $outputStyle)
+    {
+        $outputStyle->success('Exchange rates successfully fetched.');
+        return $this;
+    }
+
+    protected function notifySuccess()
+    {
+
+        return $this;
+    }
+
+    /**
+     * Display command fail note.
+     *
+     * @param OutputStyle $outputStyle
+     * @return FetchCommand $this Fluent interface.
+     */
+    protected function displayCommandFail(OutputStyle $outputStyle)
+    {
+        $outputStyle->error('Unable to fetch data from source(s). See log for details.');
+
+        return $this;
+    }
+
+    protected function notifyFail()
+    {
+        return $this;
     }
 }

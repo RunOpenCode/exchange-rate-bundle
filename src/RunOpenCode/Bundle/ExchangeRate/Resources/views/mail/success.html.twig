@@ -1,0 +1,76 @@
+{% block title %}
+    Exchange rates successfully fetched for date {{ date_valid }}
+{% endblock title %}
+
+{% block body %}
+<p>
+    Exchange rates fetched on {{ date_fetched }}, valid on {{ date_valid }}:
+</p>
+
+<p>
+
+    <table>
+
+        <thead>
+            <tr>
+
+                {% block table_headings %}
+
+                    <th>
+                        {{ 'exchange_rate.list.table.headings.source'|trans({}, 'roc_exchange_rate') }}
+                    </th>
+                    <th>
+                        {{ 'exchange_rate.list.table.headings.rate_type'|trans({}, 'roc_exchange_rate') }}
+                    </th>
+                    <th>
+                        {{ 'exchange_rate.list.table.headings.currency_code'|trans({}, 'roc_exchange_rate') }}
+                    </th>
+                    <th>
+                        {{ 'exchange_rate.list.table.headings.value'|trans({}, 'roc_exchange_rate') }}
+                    </th>
+                    <th>
+                        {{ 'exchange_rate.list.table.headings.date'|trans({}, 'roc_exchange_rate') }}
+                    </th>
+                    <th>
+                        {{ 'exchange_rate.list.table.headings.modified_at'|trans({}, 'roc_exchange_rate') }}
+                    </th>
+
+                {% endblock table_headings %}
+
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for rate in rates %}
+
+                {% block table_row %}
+
+                    <tr>
+                        <td>
+                            {{ ('exchange_rate.rates.' ~ rate.sourceName ~ '.label')|trans({}, 'roc_exchange_rate') }}
+                        </td>
+                        <td>
+                            {{ ('exchange_rate.rates.' ~ rate.sourceName ~ '.' ~ rate.rateType ~ '.label')|trans({}, 'roc_exchange_rate') }}
+                        </td>
+                        <td>
+                            {{ rate.currencyCode }}
+                        </td>
+                        <td>
+                            {{ rate.value }}
+                        </td>
+                        <td>
+                            {{ rate.date|date(date_format) }}
+                        </td>
+                        <td>
+                            {{ rate.modifiedAt|date(date_format) }} {{ rate.modifiedAt|date(time_format) }}
+                        </td>
+                    </tr>
+
+                {% endblock table_row %}
+
+            {% endfor %}
+        </tbody>
+    </table>
+
+</p>
+{% endblock body %}

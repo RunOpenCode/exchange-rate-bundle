@@ -45,6 +45,7 @@ class Configuration implements ConfigurationInterface
                 ->append($this->getFileRepositoryDefinition())
                 ->append($this->getSourcesDefinition())
                 ->append($this->getViewDefinition())
+                ->append($this->getNotificationDefinition())
             ->end()
         ->end();
 
@@ -131,19 +132,19 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('base_template')
                     ->info('Base decorator template.')
-                    ->defaultValue('@ExchangeRate/base.html.twig')
+                    ->defaultValue('@ExchangeRate/admin/base.html.twig')
                 ->end()
                 ->scalarNode('list')
                     ->info('Template for list view.')
-                    ->defaultValue('@ExchangeRate/list.html.twig')
+                    ->defaultValue('@ExchangeRate/admin/list.html.twig')
                 ->end()
                 ->scalarNode('new')
                     ->info('Template for create new exchange rate view.')
-                    ->defaultValue('@ExchangeRate/new.html.twig')
+                    ->defaultValue('@ExchangeRate/admin/new.html.twig')
                 ->end()
                 ->scalarNode('edit')
                     ->info('Template for edit exchange rate view.')
-                    ->defaultValue('@ExchangeRate/edit.html.twig')
+                    ->defaultValue('@ExchangeRate/admin/edit.html.twig')
                 ->end()
                 ->scalarNode('date_format')
                     ->info('Date format in list view.')
@@ -154,6 +155,50 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue('H:i')
                 ->end()
                 ->booleanNode('secure')->defaultValue(true)->end()
+            ->end()
+        ->end();
+
+        return $node;
+    }
+
+    /**
+     * Build configuration tree for e-mail notifications.
+     *
+     * @return ArrayNodeDefinition
+     */
+    public function getNotificationDefinition()
+    {
+        $node = new ArrayNodeDefinition('notifications');
+
+        $node
+            ->info('Notification settings.')
+            ->children()
+                ->arrayNode('fetch')
+                    ->children()
+                        ->booleanNode('enabled')
+                            ->info('Send e-mail report about fetch result and fetched rates.')
+                            ->defaultFalse()
+                        ->end()
+                        ->arrayNode('to')
+                            ->info('Recipients e-mail addresses.')
+                        ->end()
+                        ->arrayNode('to')
+                            ->info('Blank carbon copy recipients e-mail addresses.')
+                        ->end()
+                        ->arrayNode('templates')
+                            ->children()
+                                ->scalarNode('success')
+                                    ->isRequired()
+                                    ->defaultValue('@ExchangeRate/mail/success.html.twig')
+                                ->end()
+                                ->scalarNode('error')
+                                    ->isRequired()
+                                    ->defaultValue('@ExchangeRate/mail/error.html.twig')
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ->end();
 

@@ -17,10 +17,9 @@ use RunOpenCode\ExchangeRate\Contract\RepositoryInterface;
 use RunOpenCode\ExchangeRate\Contract\SourceInterface;
 use RunOpenCode\ExchangeRate\Contract\SourcesRegistryInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -52,11 +51,6 @@ class ConfigurationDebugCommand extends Command
      */
     protected $repository;
 
-    /**
-     * @var SymfonyStyle
-     */
-    protected $sfStyle;
-
     public function __construct(
         SourcesRegistryInterface $sourcesRegistry,
         ProcessorsRegistryInterface $processorsRegistry,
@@ -86,42 +80,39 @@ class ConfigurationDebugCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->sfStyle = new SymfonyStyle($input, $output);
+        $outputStyle = new SymfonyStyle($input, $output);
+
+        $outputStyle->title('Displaying current configuration for currency exchange bundle');
 
         $this
-            ->sfStyle
-            ->title('Displaying current configuration for currency exchange bundle');
-
-        $this
-            ->displaySources($output)
-            ->displayNewLine($output)
-            ->displayProcessors($output)
-            ->displayNewLine($output)
-            ->displayRepository($output)
-            ->displayNewLine($output)
-            ->displayRates($output)
-            ->displayNewLine($output)
+            ->displaySources($outputStyle)
+            ->displayNewLine($outputStyle)
+            ->displayProcessors($outputStyle)
+            ->displayNewLine($outputStyle)
+            ->displayRepository($outputStyle)
+            ->displayNewLine($outputStyle)
+            ->displayRates($outputStyle)
+            ->displayNewLine($outputStyle)
         ;
 
-        $this
-            ->sfStyle
+        $outputStyle
             ->success('Configuration is valid.');
     }
 
     /**
      * Display sources.
      *
-     * @param OutputInterface $output
+     * @param OutputStyle $outputStyle Console output style.
      * @return ConfigurationDebugCommand $this
      */
-    protected function displaySources(OutputInterface $output)
+    protected function displaySources(OutputStyle $outputStyle)
     {
-        $this->sfStyle->section('Sources:');
+        $outputStyle->section('Sources:');
         /**
          * @var SourceInterface $source
          */
         foreach ($this->sourcesRegistry as $source) {
-            $output->writeln(' -> ' . sprintf('%s as %s', get_class($source), $source->getName()));
+            $outputStyle->writeln(' -> ' . sprintf('%s as %s', get_class($source), $source->getName()));
         }
 
         return $this;
@@ -130,17 +121,17 @@ class ConfigurationDebugCommand extends Command
     /**
      * Display processors.
      *
-     * @param OutputInterface $output
+     * @param OutputStyle $outputStyle Console output style.
      * @return ConfigurationDebugCommand $this
      */
-    protected function displayProcessors(OutputInterface $output)
+    protected function displayProcessors(OutputStyle $outputStyle)
     {
-        $this->sfStyle->section('Processors:');
+        $outputStyle->section('Processors:');
         /**
          * @var ProcessorInterface $processor
          */
         foreach ($this->processorsRegistry as $processor) {
-            $output->writeln(' -> ' . get_class($processor));
+            $outputStyle->writeln(' -> ' . get_class($processor));
         }
 
         return $this;
@@ -149,14 +140,14 @@ class ConfigurationDebugCommand extends Command
     /**
      * Display repository.
      *
-     * @param OutputInterface $output
+     * @param OutputStyle $outputStyle Console output style.
      * @return ConfigurationDebugCommand $this
      */
-    protected function displayRepository(OutputInterface $output)
+    protected function displayRepository(OutputStyle $outputStyle)
     {
-        $this->sfStyle->section('Repository:');
+        $outputStyle->section('Repository:');
 
-        $output->writeln(' -> '. sprintf('%s with %s record(s).', get_class($this->repository), $this->repository->count()));
+        $outputStyle->writeln(' -> '. sprintf('%s with %s record(s).', get_class($this->repository), $this->repository->count()));
 
         return $this;
     }
@@ -164,31 +155,28 @@ class ConfigurationDebugCommand extends Command
     /**
      * Display rates.
      *
-     * @param OutputInterface $output
+     * @param OutputStyle $outputStyle Console output style.
      * @return ConfigurationDebugCommand $this
      */
-    protected function displayRates(OutputInterface $output)
+    protected function displayRates(OutputStyle $outputStyle)
     {
-        $this->sfStyle->section('Exchange rates:');
+        $outputStyle->section('Registered exchange rates:');
 
-        $table = new Table($output);
+        $headers = array('Currency code', 'Rate type', 'Source');
 
-        $table->setHeaders(array(
-            array(new TableCell('Registered currency rates', array('colspan' => 3))),
-            array('Currency code', 'Rate type', 'Source')
-        ));
+        $rows = array();
         /**
          * @var Configuration $rateConfiguration
          */
         foreach ($this->ratesConfigurationRegistry as $rateConfiguration) {
-            $table->addRow(array(
+            $rows[] = array(
                 $rateConfiguration->getCurrencyCode(),
                 $rateConfiguration->getRateType(),
                 $rateConfiguration->getSourceName()
-            ));
+            );
         }
 
-        $table->render();
+        $outputStyle->table($headers, $rows);
 
         return $this;
     }
@@ -197,12 +185,12 @@ class ConfigurationDebugCommand extends Command
     /**
      * Display new line.
      *
-     * @param OutputInterface $output
+     * @param OutputStyle $outputStyle Console output style.
      * @return ConfigurationDebugCommand $this
      */
-    protected function displayNewLine(OutputInterface $output)
+    protected function displayNewLine(OutputStyle $outputStyle)
     {
-        $this->sfStyle->newLine();
+        $outputStyle->newLine();
         return $this;
     }
 }
