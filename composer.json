@@ -31,7 +31,7 @@
     },
     "require": {
         "php": ">=5.5",
-        "symfony/framework-bundle": "~2.3",
+        "symfony/framework-bundle": "~2.3|~3.0",
         "runopencode/exchange-rate": "~1.0"
     },
     "suggest": {
