@@ -59,6 +59,10 @@ class Extension extends BaseExtension
             ->configureController($config, $container)
             ->configureRates($config, $container)
             ->configureSimpleSources($config, $container)
+            ->configureSourceType($config, $container)
+            ->configureRateTypeType($config, $container)
+            ->configureCurrencyCodeType($config, $container)
+            ->configureRateType($config, $container)
         ;
     }
 
@@ -149,5 +153,85 @@ class Extension extends BaseExtension
         if (!empty($config['sources']) && count($config['sources']) > 0) {
             $container->setParameter('run_open_code.exchange_rate.source.registered_simple_sources', $config['sources']);
         }
+
+        return $this;
+    }
+
+    /**
+     * Configure "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\SourceType" default settings.
+     *
+     * @param array $config Configuration parameters.
+     * @param ContainerBuilder $container Service container.
+     * @return Extension $this Fluent interface.
+     */
+    protected function configureSourceType(array $config, ContainerBuilder $container)
+    {
+        $defaults = array_merge($config['form_types']['source_type'], array('choices' => array()));
+
+        foreach ($config['rates'] as $rate) {
+            $defaults['choices'][sprintf('exchange_rate.source.%s', $rate['source'])] = $rate['source'];
+        }
+
+        $container->setParameter('run_open_code.exchange_rate.form_type.source_type', $defaults);
+
+        return $this;
+    }
+
+    /**
+     * Configure "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\RateTypeType" default settings.
+     *
+     * @param array $config Configuration parameters.
+     * @param ContainerBuilder $container Service container.
+     * @return Extension $this Fluent interface.
+     */
+    protected function configureRateTypeType(array $config, ContainerBuilder $container)
+    {
+        $defaults = array_merge($config['form_types']['rate_type_type'], array('choices' => array()));
+
+        foreach ($config['rates'] as $rate) {
+            $defaults['choices'][sprintf('exchange_rate.rate_type.%s.%s', $rate['source'], $rate['rate_type'])] = $rate['rate_type'];
+        }
+
+        $container->setParameter('run_open_code.exchange_rate.form_type.rate_type_type', $defaults);
+
+        return $this;
+    }
+
+    /**
+     * Configure "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\CurrencyCodeType" default settings.
+     *
+     * @param array $config Configuration parameters.
+     * @param ContainerBuilder $container Service container.
+     * @return Extension $this Fluent interface.
+     */
+    protected function configureCurrencyCodeType(array $config, ContainerBuilder $container)
+    {
+        $defaults = array_merge($config['form_types']['currency_code_type'], array('choices' => array()));
+
+        foreach ($config['rates'] as $rate) {
+            $defaults['choices'][$rate['currency_code']] = $rate['currency_code'];
+        }
+
+        asort($defaults['choices']);
+
+        $defaults['choices'] = array_merge(array($config['base_currency'] => $config['base_currency']), $defaults['choices']);
+
+        $container->setParameter('run_open_code.exchange_rate.form_type.currency_code_type', $defaults);
+
+        return $this;
+    }
+
+    /**
+     * Configure "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\RateType" default settings.
+     *
+     * @param array $config Configuration parameters.
+     * @param ContainerBuilder $container Service container.
+     * @return Extension $this Fluent interface.
+     */
+    protected function configureRateType(array $config, ContainerBuilder $container)
+    {
+        $container->setParameter('run_open_code.exchange_rate.form_type.rate_type', $config['form_types']['rate_type']);
+
+        return $this;
     }
 }

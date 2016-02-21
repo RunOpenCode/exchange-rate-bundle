@@ -7,27 +7,39 @@
 
     <parameters>
 
-        <parameter key="run_open_code.exchange_rate.type.rate_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\RateType</parameter>
+        <parameter key="run_open_code.exchange_rate.form_type.rate_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\RateType</parameter>
 
-        <parameter key="run_open_code.exchange_rate.type.currency_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\CurrencyCodeType</parameter>
+        <parameter key="run_open_code.exchange_rate.form_type.source_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\SourceType</parameter>
+
+        <parameter key="run_open_code.exchange_rate.form_type.rate_type_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\RateTypeType</parameter>
+
+        <parameter key="run_open_code.exchange_rate.form_type.currency_code_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\CurrencyCodeType</parameter>
 
     </parameters>
 
     <services>
 
-
-        <service id="run_open_code.exchange_rate.type.rate_type" class="%run_open_code.exchange_rate.type.rate_type.class%">
+        <service id="run_open_code.exchange_rate.form_type.rate_type" class="%run_open_code.exchange_rate.form_type.rate_type.class%">
             <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
             <argument type="service" id="translator" />
+            <argument type="collection" />
             <tag name="form.type" />
         </service>
 
-        <service id="run_open_code.exchange_rate.type.currency_type" class="%run_open_code.exchange_rate.type.currency_type.class%">
-            <argument>%run_open_code.exchange_rate.base_currency%</argument>
-            <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
+        <service id="run_open_code.exchange_rate.form_type.source_type" class="%run_open_code.exchange_rate.form_type.source_type.class%">
+            <argument type="collection" />
             <tag name="form.type" />
         </service>
 
+        <service id="run_open_code.exchange_rate.form_type.rate_type_type" class="%run_open_code.exchange_rate.form_type.rate_type_type.class%">
+            <argument type="collection" />
+            <tag name="form.type" />
+        </service>
+
+        <service id="run_open_code.exchange_rate.form_type.currency_code_type" class="%run_open_code.exchange_rate.form_type.currency_code_type.class%">
+            <argument type="collection" />
+            <tag name="form.type" />
+        </service>
 
     </services>
 

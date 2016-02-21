@@ -9,9 +9,13 @@
  */
 namespace RunOpenCode\Bundle\ExchangeRate;
 
+use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\CurrencyCodeTypeCompilerPass;
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\ProcessorsCompilerPass;
+use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\RateTypeCompilerPass;
+use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\RateTypeTypeCompilerPass;
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\RepositoryCompilerPass;
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\SourcesCompilerPass;
+use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\SourceTypeCompilerPass;
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -39,6 +43,10 @@ class ExchangeRateBundle extends Bundle
             ->addCompilerPass(new RepositoryCompilerPass())
             ->addCompilerPass(new SourcesCompilerPass())
             ->addCompilerPass(new ProcessorsCompilerPass())
+            ->addCompilerPass(new SourceTypeCompilerPass())
+            ->addCompilerPass(new RateTypeTypeCompilerPass())
+            ->addCompilerPass(new CurrencyCodeTypeCompilerPass())
+            ->addCompilerPass(new RateTypeCompilerPass())
             ;
     }
 }

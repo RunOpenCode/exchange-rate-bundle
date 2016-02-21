@@ -15,7 +15,7 @@ final class RatesConfigurationRegistry implements RatesConfigurationRegistryInte
         $this->registry = new BaseRatesConfigurationRegistry();
 
         foreach ($registeredRates as $registeredRate) {
-            $this->add( new Configuration(
+            $this->add(new Configuration(
                 $registeredRate['currency_code'],
                 $registeredRate['rate_type'],
                 $registeredRate['source'],

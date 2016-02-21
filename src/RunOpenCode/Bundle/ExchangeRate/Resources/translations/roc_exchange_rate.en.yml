@@ -1,5 +1,25 @@
 exchange_rate:
+
+    source:
+        national_bank_of_serbia: National bank of Serbia
+        banca_intesa_serbia: Banca Intesa Serbia
+
+    rate_type:
+        national_bank_of_serbia:
+            default: Middle exchange rate
+            foreign_cash_buying: Buying foreign cash rate
+            foreign_cash_selling: Selling foreign cash rate
+            foreign_exchange_buying: Buying foreign exchange rate
+            foreign_exchange_selling: Selling foreign exchange rate
+        banca_intesa_serbia:
+            default: Middle exchange rate
+            foreign_cash_buying: Buying foreign cash rate
+            foreign_cash_selling: Selling foreign cash rate
+            foreign_exchange_buying: Buying foreign exchange rate
+            foreign_exchange_selling: Selling foreign exchange rate
+
     page_title: Exchange rates
+
     flash:
         new:
             success: You have successfully added new exchange rate.

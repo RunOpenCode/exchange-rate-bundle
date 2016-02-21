@@ -10,11 +10,13 @@
 namespace RunOpenCode\Bundle\ExchangeRate\Controller;
 
 use RunOpenCode\Bundle\ExchangeRate\Form\Type\EditType;
+use RunOpenCode\Bundle\ExchangeRate\Form\Type\FilterType;
 use RunOpenCode\Bundle\ExchangeRate\Form\Type\NewType;
 use RunOpenCode\ExchangeRate\Contract\RateInterface;
 use RunOpenCode\ExchangeRate\Contract\RepositoryInterface;
 use RunOpenCode\Bundle\ExchangeRate\Model\Rate;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -59,13 +61,16 @@ class ExchangeRateController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $this->denyAccessUnlessGranted(array('ROLE_EXCHANGE_RATE_MANAGER', 'ROLE_EXCHANGE_RATE_LIST'));
 
+        $filter = $this->getFilterForm($request);
+
         return $this->render($this->settings['list'], array(
             'base_template' => $this->settings['base_template'],
-            'rates' => $this->repository->all(),
+            'filter' => $filter->createView(),
+            'rates' => $this->getListData($filter),
             'date_format' => $this->settings['date_format'],
             'time_format' => $this->settings['time_format'],
             'secure' => $this->settings['secure']
@@ -211,6 +216,46 @@ class ExchangeRateController extends Controller
     protected function getEditFormType()
     {
         return EditType::class;
+    }
+
+    /**
+     * Get FQCN of FilterType form.
+     *
+     * @return string
+     */
+    protected function getFilterFormType()
+    {
+        return FilterType::class;
+    }
+
+    /**
+     * Get filter form
+     *
+     * @param Request $request
+     * @return Form
+     */
+    protected function getFilterForm(Request $request)
+    {
+        $filter = $this->createForm($this->getFilterFormType());
+
+        $filter->handleRequest($request);
+
+        return $filter;
+    }
+
+    /**
+     * Get list data. Process filters if submitted.
+     *
+     * @param Form $filter
+     * @return \RunOpenCode\ExchangeRate\Contract\RateInterface[]
+     */
+    protected function getListData(Form $filter)
+    {
+        if ($filter->isSubmitted() && $filter->isValid()) {
+            return $this->repository->all($filter->getData());
+        }
+
+        return $this->repository->all();
     }
 
     /**

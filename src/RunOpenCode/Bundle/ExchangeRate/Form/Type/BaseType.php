@@ -11,6 +11,8 @@ namespace RunOpenCode\Bundle\ExchangeRate\Form\Type;
 
 use RunOpenCode\Bundle\ExchangeRate\Model\Rate;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -30,12 +32,12 @@ abstract class BaseType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('value', 'Symfony\Component\Form\Extension\Core\Type\NumberType', array(
+        $builder->add('value', NumberType::class, array(
             'label' => 'exchange_rate.form.fields.value',
             'translation_domain' => 'roc_exchange_rate'
         ));
 
-        $builder->add('date', 'Symfony\Component\Form\Extension\Core\Type\DateType', array(
+        $builder->add('date', DateType::class, array(
             'label' => 'exchange_rate.form.fields.date',
             'translation_domain' => 'roc_exchange_rate'
         ));
@@ -61,7 +63,7 @@ abstract class BaseType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'RunOpenCode\Bundle\ExchangeRate\Model\Rate',
+            'data_class' => Rate::class,
         ));
     }
 

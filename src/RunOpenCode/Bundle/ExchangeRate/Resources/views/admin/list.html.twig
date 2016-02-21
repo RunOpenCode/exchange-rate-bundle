@@ -94,10 +94,10 @@
 
                         <tr>
                             <td>
-                                {{ ('exchange_rate.rates.' ~ rate.sourceName ~ '.label')|trans({}, 'roc_exchange_rate') }}
+                                {{ ('exchange_rate.source.' ~ rate.sourceName)|trans({}, 'roc_exchange_rate') }}
                             </td>
                             <td>
-                                {{ ('exchange_rate.rates.' ~ rate.sourceName ~ '.' ~ rate.rateType ~ '.label')|trans({}, 'roc_exchange_rate') }}
+                                {{ ('exchange_rate.rate_type.' ~ rate.sourceName ~ '.' ~ rate.rateType)|trans({}, 'roc_exchange_rate') }}
                             </td>
                             <td>
                                 {{ rate.currencyCode }}
@@ -177,6 +177,22 @@
         </table>
 
     {% endblock exchange_rates_table %}
+
+    {% block exchange_rates_filters %}
+
+        {{ form_start(filter) }}
+
+        {{ form_widget(filter) }}
+
+        <button type="submit">
+            {{ 'exchange_rate.filter.submit'|trans({}, 'roc_exchange_rate') }}
+        </button>
+
+        {{ form_end(filter) }}
+
+
+
+    {% endblock exchange_rates_filters %}
 
     {% block list_actions %}
 

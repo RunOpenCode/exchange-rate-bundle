@@ -9,7 +9,9 @@
  */
 namespace RunOpenCode\Bundle\ExchangeRate\Command;
 
+use RunOpenCode\Bundle\ExchangeRate\Contract\NotificationInterface;
 use RunOpenCode\ExchangeRate\Contract\ManagerInterface;
+use RunOpenCode\ExchangeRate\Contract\RateInterface;
 use RunOpenCode\ExchangeRate\Contract\SourceInterface;
 use RunOpenCode\ExchangeRate\Contract\SourcesRegistryInterface;
 use RunOpenCode\ExchangeRate\Log\LoggerAwareTrait;
@@ -43,36 +45,50 @@ class FetchCommand extends Command
     protected $sourcesRegistry;
 
     /**
-     * @var \Swift_Mailer
-     */
-    protected $mailer;
-
-    /**
-     * @var EngineInterface
-     */
-    protected $templateEngine;
-
-    /**
      * @var SymfonyStyle
      */
     protected $outputStyle;
+
+    /**
+     * @var NotificationInterface[]
+     */
+    protected $successNotifications;
+
+    /**
+     * @var NotificationInterface[]
+     */
+    protected $errorNotifications;
 
     public function __construct(ManagerInterface $manager, SourcesRegistryInterface $sourcesRegistry)
     {
         parent::__construct();
         $this->manager = $manager;
         $this->sourcesRegistry = $sourcesRegistry;
+        $this->successNotifications = [];
+        $this->errorNotifications = [];
     }
 
-    public function setMailer(\Swift_Mailer $mailer)
+    /**
+     * Add success notification to command notifications stack.
+     *
+     * @param NotificationInterface $notification Success notification to add.
+     * @return FetchCommand $this Fluent interface.
+     */
+    public function addSuccessNotification(NotificationInterface $notification)
     {
-        $this->mailer = $mailer;
+        $this->successNotifications[] = $notification;
         return $this;
     }
 
-    public function setTemplateEngine(EngineInterface $templateEngine)
+    /**
+     * Add error notification to command notifications stack.
+     *
+     * @param NotificationInterface $notification Error notification to add.
+     * @return FetchCommand $this Fluent interface.
+     */
+    public function addErrorNotification(NotificationInterface $notification)
     {
-        $this->templateEngine = $templateEngine;
+        $this->errorNotifications[] = $notification;
         return $this;
     }
 
@@ -85,7 +101,7 @@ class FetchCommand extends Command
             ->setName('roc:exchange-rate:fetch')
             ->setDescription('Fetch exchange rates from sources.')
             ->addOption('date', 'd', InputOption::VALUE_OPTIONAL, 'State on which date exchange rates should be fetched.')
-            ->addOption('source', 's', InputOption::VALUE_OPTIONAL, 'State which sources should be contacted only, separated with comma.')
+            ->addOption('source', 'src', InputOption::VALUE_OPTIONAL, 'State which sources should be contacted only, separated with comma.')
         ;
     }
 
@@ -104,20 +120,24 @@ class FetchCommand extends Command
             return;
         }
 
+        $this->displayCommandBegin($input, $outputStyle);
+
         try {
-            $this
-                ->displayCommandBegin($input, $outputStyle)
-                ->doFetch($input)
-                ->displayCommandSuccess($outputStyle)
-                ->notifySuccess();
-            ;
+
+            $rates = $this->doFetch($input);
+
         } catch (\Exception $e) {
             $this
-                ->displayCommandFail($outputStyle)
-                ->notifyFail();
+                ->displayCommandError($outputStyle)
+                ->dispatchErrorNotifications($input->getOption('source'), $input->getOption('date'))
+            ;
         }
-    }
 
+        $this
+            ->displayCommandSuccess($outputStyle)
+            ->dispatchSuccessNotifications($input->getOption('source'), $input->getOption('date'), $rates)
+        ;
+    }
 
     /**
      * Clean date from console input.
@@ -207,14 +227,14 @@ class FetchCommand extends Command
      * Do fetch rates.
      *
      * @param InputInterface $input Console input.
-     * @return FetchCommand $this Fluent interface.
+     * @return RateInterface[] Fetched rates.
      * @throws \Exception
      */
     protected function doFetch(InputInterface $input)
     {
         try {
 
-            $this->manager->fetch($input->getOption('source'), $input->getOption('date'));
+            $rates = $this->manager->fetch($input->getOption('source'), $input->getOption('date'));
 
             $this->getLogger()->info(sprintf('Rates fetched from %s for date %s.', $input->getOption('source') ? sprintf('"%s"', implode('", "', $input->getOption('source'))) : 'all sources', $input->getOption('date')->format('Y-m-d')));
 
@@ -235,7 +255,7 @@ class FetchCommand extends Command
             throw $e;
         }
 
-        return $this;
+        return $rates;
     }
 
     /**
@@ -250,27 +270,57 @@ class FetchCommand extends Command
         return $this;
     }
 
-    protected function notifySuccess()
+    /**
+     * Display command error note.
+     *
+     * @param OutputStyle $outputStyle
+     * @return FetchCommand $this Fluent interface.
+     */
+    protected function displayCommandError(OutputStyle $outputStyle)
     {
+        $outputStyle->error('Unable to fetch data from source(s). See log for details.');
+        return $this;
+    }
+
+    /**
+     * Dispatch success notifications.
+     *
+     * @param null|array $source Sources for which command is executed.
+     * @param \DateTime $date Date for which rates are fetched.
+     * @param RateInterface[] $rates Fetched rates
+     * @return FetchCommand $this Fluent interface.
+     */
+    protected function dispatchSuccessNotifications($source, \DateTime $date, array $rates)
+    {
+        foreach ($this->successNotifications as $notification) {
+
+            $notification->notify(array(
+                'source' => $source,
+                'date' => $date,
+                'rates' => $rates
+            ));
+        }
 
         return $this;
     }
 
     /**
-     * Display command fail note.
+     * Dispatch error notifications.
      *
-     * @param OutputStyle $outputStyle
+     * @param null|array $source Sources for which command is executed.
+     * @param \DateTime $date Date for which rates are fetched.
      * @return FetchCommand $this Fluent interface.
      */
-    protected function displayCommandFail(OutputStyle $outputStyle)
+    protected function dispatchErrorNotifications($source, \DateTime $date)
     {
-        $outputStyle->error('Unable to fetch data from source(s). See log for details.');
+        foreach ($this->errorNotifications as $notification) {
 
-        return $this;
-    }
+            $notification->notify(array(
+                'source' => $source,
+                'date' => $date
+            ));
+        }
 
-    protected function notifyFail()
-    {
         return $this;
     }
 }

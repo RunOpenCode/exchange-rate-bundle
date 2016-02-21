@@ -46,6 +46,15 @@ class Configuration implements ConfigurationInterface
                 ->append($this->getSourcesDefinition())
                 ->append($this->getViewDefinition())
                 ->append($this->getNotificationDefinition())
+                ->arrayNode('form_types')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->append($this->getSourceTypeDefinition())
+                        ->append($this->getRateTypeTypeDefinition())
+                        ->append($this->getCurrencyCodeTypeDefinition())
+                        ->append($this->getRateTypeDefinition())
+                    ->end()
+                ->end()
             ->end()
         ->end();
 
@@ -166,7 +175,7 @@ class Configuration implements ConfigurationInterface
      *
      * @return ArrayNodeDefinition
      */
-    public function getNotificationDefinition()
+    protected function getNotificationDefinition()
     {
         $node = new ArrayNodeDefinition('notifications');
 
@@ -182,7 +191,10 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('to')
                             ->info('Recipients e-mail addresses.')
                         ->end()
-                        ->arrayNode('to')
+                        ->arrayNode('cc')
+                            ->info('Recipients e-mail addresses.')
+                        ->end()
+                        ->arrayNode('bcc')
                             ->info('Blank carbon copy recipients e-mail addresses.')
                         ->end()
                         ->arrayNode('templates')
@@ -199,6 +211,91 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+            ->end()
+        ->end();
+
+        return $node;
+    }
+
+    /**
+     * Build configuration tree for "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\SourceType" default settings.
+     *
+     * @return ArrayNodeDefinition
+     */
+    protected function getSourceTypeDefinition()
+    {
+        $node = new ArrayNodeDefinition('source_type');
+
+        $node
+            ->info('Modify default "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\SourceType" settings.')
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->scalarNode('choice_translation_domain')->defaultValue('roc_exchange_rate')->end()
+                ->arrayNode('preferred_choices')->end()
+            ->end()
+        ->end();
+
+        return $node;
+    }
+
+    /**
+     * Build configuration tree for "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\RateTypeType" default settings.
+     *
+     * @return ArrayNodeDefinition
+     */
+    protected function getRateTypeTypeDefinition()
+    {
+        $node = new ArrayNodeDefinition('rate_type_type');
+
+        $node
+            ->info('Modify default "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\RateTypeType" settings.')
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->scalarNode('choice_translation_domain')->defaultValue('roc_exchange_rate')->end()
+                ->arrayNode('preferred_choices')->end()
+            ->end()
+        ->end();
+
+        return $node;
+    }
+
+    /**
+     * Build configuration tree for "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\CurrencyCodeType" default settings.
+     *
+     * @return ArrayNodeDefinition
+     */
+    protected function getCurrencyCodeTypeDefinition()
+    {
+        $node = new ArrayNodeDefinition('currency_code_type');
+
+        $node
+            ->info('Modify default "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\CurrencyCodeType" settings.')
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->scalarNode('choice_translation_domain')->defaultValue('roc_exchange_rate')->end()
+                ->arrayNode('preferred_choices')->end()
+            ->end()
+        ->end();
+
+        return $node;
+    }
+
+    /**
+     * Build configuration tree for "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\RateType" default settings.
+     *
+     * @return ArrayNodeDefinition
+     */
+    protected function getRateTypeDefinition()
+    {
+        $node = new ArrayNodeDefinition('rate_type');
+
+        $node
+            ->info('Modify default "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\RateType" settings.')
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->scalarNode('choice_translation_domain')->defaultValue('roc_exchange_rate')->end()
+                ->scalarNode('label_format')->defaultValue('{{currency-code}}, {{rate-type}} ({{source}})')->end()
+                ->arrayNode('preferred_choices')->end()
             ->end()
         ->end();
 
