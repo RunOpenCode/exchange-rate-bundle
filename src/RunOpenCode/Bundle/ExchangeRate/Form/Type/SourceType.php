@@ -2,8 +2,6 @@
 
 namespace RunOpenCode\Bundle\ExchangeRate\Form\Type;
 
-use RunOpenCode\ExchangeRate\Configuration;
-use RunOpenCode\ExchangeRate\Contract\RatesConfigurationRegistryInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
