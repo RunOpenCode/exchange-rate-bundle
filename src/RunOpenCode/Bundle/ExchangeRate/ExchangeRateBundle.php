@@ -10,6 +10,7 @@
 namespace RunOpenCode\Bundle\ExchangeRate;
 
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\CurrencyCodeTypeCompilerPass;
+use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\FetchCommandNotificationsCompilerPass;
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\ProcessorsCompilerPass;
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\RateTypeCompilerPass;
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\RateTypeTypeCompilerPass;
@@ -47,6 +48,7 @@ class ExchangeRateBundle extends Bundle
             ->addCompilerPass(new RateTypeTypeCompilerPass())
             ->addCompilerPass(new CurrencyCodeTypeCompilerPass())
             ->addCompilerPass(new RateTypeCompilerPass())
+            ->addCompilerPass(new FetchCommandNotificationsCompilerPass())
             ;
     }
 }

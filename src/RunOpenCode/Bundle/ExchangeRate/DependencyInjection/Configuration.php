@@ -181,31 +181,67 @@ class Configuration implements ConfigurationInterface
 
         $node
             ->info('Notification settings.')
+            ->addDefaultsIfNotSet()
             ->children()
                 ->arrayNode('fetch')
                     ->children()
                         ->booleanNode('enabled')
                             ->info('Send e-mail report about fetch result and fetched rates.')
-                            ->defaultFalse()
+                            ->defaultTrue()
+                        ->end()
+                        ->scalarNode('from')
+                            ->info('Mail sender address.')
+                            ->defaultNull()
                         ->end()
                         ->arrayNode('to')
                             ->info('Recipients e-mail addresses.')
+                            ->prototype('scalar')->end()
                         ->end()
                         ->arrayNode('cc')
                             ->info('Recipients e-mail addresses.')
+                            ->prototype('scalar')->end()
                         ->end()
                         ->arrayNode('bcc')
                             ->info('Blank carbon copy recipients e-mail addresses.')
+                            ->prototype('scalar')->end()
                         ->end()
                         ->arrayNode('templates')
+                            ->addDefaultsIfNotSet()
+                            ->info('Enable/disable individual mail notifications.')
                             ->children()
-                                ->scalarNode('success')
-                                    ->isRequired()
-                                    ->defaultValue('@ExchangeRate/mail/success.html.twig')
+                                ->arrayNode('success')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->booleanNode('enabled')
+                                            ->info('Enable/disable success notification.')
+                                            ->defaultTrue()
+                                        ->end()
+                                        ->scalarNode('subject')
+                                            ->info('Mail notification subject.')
+                                            ->defaultValue('System notification: exchange rates successfully fetched.')
+                                        ->end()
+                                        ->scalarNode('template')
+                                            ->info('Mail body template.')
+                                            ->defaultValue('@ExchangeRate/mail/success.html.twig')
+                                        ->end()
+                                    ->end()
                                 ->end()
-                                ->scalarNode('error')
-                                    ->isRequired()
-                                    ->defaultValue('@ExchangeRate/mail/error.html.twig')
+                                ->arrayNode('error')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->booleanNode('enabled')
+                                            ->info('Enable/disable success notification.')
+                                            ->defaultTrue()
+                                        ->end()
+                                        ->scalarNode('subject')
+                                            ->info('Mail notification subject.')
+                                            ->defaultValue('Error notification: exchange rates are not fetched.')
+                                        ->end()
+                                        ->scalarNode('template')
+                                            ->info('Mail body template.')
+                                            ->defaultValue('@ExchangeRate/mail/error.html.twig')
+                                        ->end()
+                                    ->end()
                                 ->end()
                             ->end()
                         ->end()
@@ -218,7 +254,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Build configuration tree for "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\SourceType" default settings.
+     * Build configuration tree for "RunOpenCode\Bundle\ExchangeRate\Form\Type\SourceType" default settings.
      *
      * @return ArrayNodeDefinition
      */
@@ -239,7 +275,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Build configuration tree for "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\RateTypeType" default settings.
+     * Build configuration tree for "RunOpenCode\Bundle\ExchangeRate\Form\Type\RateTypeType" default settings.
      *
      * @return ArrayNodeDefinition
      */
@@ -260,7 +296,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Build configuration tree for "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\CurrencyCodeType" default settings.
+     * Build configuration tree for "RunOpenCode\Bundle\ExchangeRate\Form\Type\CurrencyCodeType" default settings.
      *
      * @return ArrayNodeDefinition
      */
@@ -281,7 +317,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Build configuration tree for "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\RateType" default settings.
+     * Build configuration tree for "RunOpenCode\Bundle\ExchangeRate\Form\Type\RateType" default settings.
      *
      * @return ArrayNodeDefinition
      */

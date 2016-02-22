@@ -19,7 +19,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 /**
  * Class RateType
  *
- * Rate choice type.
+ * Rate choice type - which can be used for CRUD operations only.
  *
  * @package RunOpenCode\Bundle\ExchangeRate\Form\Type
  */

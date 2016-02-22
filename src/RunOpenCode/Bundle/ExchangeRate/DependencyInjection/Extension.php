@@ -63,6 +63,7 @@ class Extension extends BaseExtension
             ->configureRateTypeType($config, $container)
             ->configureCurrencyCodeType($config, $container)
             ->configureRateType($config, $container)
+            ->configureNotifications($config, $container)
         ;
     }
 
@@ -231,6 +232,22 @@ class Extension extends BaseExtension
     protected function configureRateType(array $config, ContainerBuilder $container)
     {
         $container->setParameter('run_open_code.exchange_rate.form_type.rate_type', $config['form_types']['rate_type']);
+
+        return $this;
+    }
+
+    /**
+     * Configure internal notifications.
+     *
+     * @param array $config Configuration parameters.
+     * @param ContainerBuilder $container Service container.
+     * @return Extension $this Fluent interface.
+     */
+    protected function configureNotifications(array $config, ContainerBuilder $container)
+    {
+        if (!empty($config['notifications']['fetch'])) {
+            $container->setParameter('run_open_code.exchange_rate.notifications.fetch', $config['notifications']['fetch']);
+        }
 
         return $this;
     }

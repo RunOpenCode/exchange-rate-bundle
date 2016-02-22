@@ -1,17 +1,15 @@
-{% block title %}
-    Exchange rates successfully fetched for date {{ date_valid }}
-{% endblock title %}
-
 {% block body %}
-<p>
-    Exchange rates fetched on {{ date_fetched }}, valid on {{ date_valid }}:
-</p>
+<h1>
+    Exchange rates successfully fetched on {{ 'now'|date('d/m/Y') }}:
+</h1>
 
-<p>
+<div>
 
-    <table>
+    {% block table %}
 
-        <thead>
+        <table>
+
+            <thead>
             <tr>
 
                 {% block table_headings %}
@@ -38,19 +36,19 @@
                 {% endblock table_headings %}
 
             </tr>
-        </thead>
+            </thead>
 
-        <tbody>
+            <tbody>
             {% for rate in rates %}
 
                 {% block table_row %}
 
                     <tr>
                         <td>
-                            {{ ('exchange_rate.rates.' ~ rate.sourceName ~ '.label')|trans({}, 'roc_exchange_rate') }}
+                            {{ ('exchange_rate.source.' ~ rate.sourceName)|trans({}, 'roc_exchange_rate') }}
                         </td>
                         <td>
-                            {{ ('exchange_rate.rates.' ~ rate.sourceName ~ '.' ~ rate.rateType ~ '.label')|trans({}, 'roc_exchange_rate') }}
+                            {{ ('exchange_rate.rate_type.' ~ rate.sourceName ~ '.' ~ rate.rateType)|trans({}, 'roc_exchange_rate') }}
                         </td>
                         <td>
                             {{ rate.currencyCode }}
@@ -69,8 +67,11 @@
                 {% endblock table_row %}
 
             {% endfor %}
-        </tbody>
-    </table>
+            </tbody>
+        </table>
 
-</p>
+    {% endblock table %}
+
+</div>
+
 {% endblock body %}

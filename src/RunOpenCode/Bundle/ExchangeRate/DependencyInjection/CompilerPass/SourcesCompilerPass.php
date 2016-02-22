@@ -1,5 +1,12 @@
 <?php
-
+/*
+ * This file is part of the Exchange Rate Bundle, an RunOpenCode project.
+ *
+ * (c) 2016 RunOpenCode
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -9,6 +16,8 @@ use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Class SourcesCompilerPass
+ *
+ * Compiler pass for sources
  *
  * @package RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass
  */
@@ -49,6 +58,12 @@ class SourcesCompilerPass implements CompilerPassInterface
         }
     }
 
+    /**
+     * Get list of required sources.
+     *
+     * @param ContainerBuilder $container
+     * @return array
+     */
     protected function getRequiredSources(ContainerBuilder $container)
     {
         $rates = $container->getParameter('run_open_code.exchange_rate.registered_rates');
@@ -58,6 +73,12 @@ class SourcesCompilerPass implements CompilerPassInterface
         }, $rates));
     }
 
+    /**
+     * Get sources which are registered as tagged services via service container.
+     *
+     * @param ContainerBuilder $container
+     * @return array
+     */
     protected function getRegisteredContainerSources(ContainerBuilder $container)
     {
         $availableSources = array();
@@ -76,6 +97,12 @@ class SourcesCompilerPass implements CompilerPassInterface
         return $availableSources;
     }
 
+    /**
+     * Get simple sources which are registered as simple class name via configuration.
+     *
+     * @param ContainerBuilder $container
+     * @return array
+     */
     protected function getRegisteredSimpleSources(ContainerBuilder $container)
     {
         /**

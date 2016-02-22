@@ -1,11 +1,25 @@
 <?php
-
+/*
+ * This file is part of the Exchange Rate Bundle, an RunOpenCode project.
+ *
+ * (c) 2016 RunOpenCode
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace RunOpenCode\Bundle\ExchangeRate\Notification;
 
 use RunOpenCode\Bundle\ExchangeRate\Contract\NotificationInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use RunOpenCode\ExchangeRate\Log\LoggerAwareTrait;
 
+/**
+ * Class MailNotification
+ *
+ * Internal mail notification worker.
+ *
+ * @package RunOpenCode\Bundle\ExchangeRate\Notification
+ */
 class MailNotification implements NotificationInterface
 {
     use LoggerAwareTrait;
