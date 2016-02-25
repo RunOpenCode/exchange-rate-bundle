@@ -15,6 +15,8 @@
 
         <parameter key="run_open_code.exchange_rate.form_type.currency_code_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\CurrencyCodeType</parameter>
 
+        <parameter key="run_open_code.exchange_rate.form_type.foreign_currency_code_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\ForeignCurrencyCodeType</parameter>
+
     </parameters>
 
     <services>
@@ -37,6 +39,11 @@
         </service>
 
         <service id="run_open_code.exchange_rate.form_type.currency_code_type" class="%run_open_code.exchange_rate.form_type.currency_code_type.class%">
+            <argument type="collection" />
+            <tag name="form.type" />
+        </service>
+
+        <service id="run_open_code.exchange_rate.form_type.foreign_currency_code_type" class="%run_open_code.exchange_rate.form_type.foreign_currency_code_type.class%">
             <argument type="collection" />
             <tag name="form.type" />
         </service>

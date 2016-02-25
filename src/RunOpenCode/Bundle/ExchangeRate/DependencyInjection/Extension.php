@@ -62,6 +62,7 @@ class Extension extends BaseExtension
             ->configureSourceType($config, $container)
             ->configureRateTypeType($config, $container)
             ->configureCurrencyCodeType($config, $container)
+            ->configureForeignCurrencyCodeType($config, $container)
             ->configureRateType($config, $container)
             ->configureNotifications($config, $container)
         ;
@@ -220,6 +221,28 @@ class Extension extends BaseExtension
         $defaults['choices'] = array_merge(array($config['base_currency'] => $config['base_currency']), $defaults['choices']);
 
         $container->setParameter('run_open_code.exchange_rate.form_type.currency_code_type', $defaults);
+
+        return $this;
+    }
+
+    /**
+     * Configure "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\ForeignCurrencyCodeType" default settings.
+     *
+     * @param array $config Configuration parameters.
+     * @param ContainerBuilder $container Service container.
+     * @return Extension $this Fluent interface.
+     */
+    protected function configureForeignCurrencyCodeType(array $config, ContainerBuilder $container)
+    {
+        $defaults = array_merge($config['form_types']['currency_code_type'], array('choices' => array()));
+
+        foreach ($config['rates'] as $rate) {
+            $defaults['choices'][$rate['currency_code']] = $rate['currency_code'];
+        }
+
+        asort($defaults['choices']);
+
+        $container->setParameter('run_open_code.exchange_rate.form_type.foreign_currency_code_type', $defaults);
 
         return $this;
     }

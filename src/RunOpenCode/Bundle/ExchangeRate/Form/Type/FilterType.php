@@ -36,7 +36,7 @@ class FilterType extends AbstractType
                 'placeholder' => '',
                 'required' => false
             ))
-            ->add('currencyCode', CurrencyCodeType::class, array(
+            ->add('currencyCode', ForeignCurrencyCodeType::class, array(
                 'placeholder' => '',
                 'required' => false
             ))
