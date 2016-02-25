@@ -131,6 +131,8 @@ class FetchCommand extends Command
                 ->displayCommandError($outputStyle)
                 ->dispatchErrorNotifications($input->getOption('source'), $input->getOption('date'))
             ;
+
+            return;
         }
 
         $this

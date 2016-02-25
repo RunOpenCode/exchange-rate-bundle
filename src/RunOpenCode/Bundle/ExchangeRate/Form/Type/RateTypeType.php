@@ -30,7 +30,8 @@ class RateTypeType extends AbstractType
     public function __construct(array $defaults)
     {
         $this->defaults = array_merge(array(
-            'choice_translation_domain' => 'roc_exchange_rate'
+            'choice_translation_domain' => 'roc_exchange_rate',
+            'choices_as_values' => true
         ), $defaults);
     }
 

@@ -13,6 +13,7 @@ use RunOpenCode\ExchangeRate\Configuration;
 use RunOpenCode\ExchangeRate\Contract\RatesConfigurationRegistryInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -48,7 +49,9 @@ class RateType extends ChoiceType
         $this->translator = $translator;
 
         $this->defaults = array_merge(array(
-            'choice_translation_domain' => 'roc_exchange_rate'
+            'choice_translation_domain' => 'roc_exchange_rate',
+            'label_format'=> '{{currency-code}}, {{rate-type}} ({{source}})',
+            'choices_as_values' => true
         ), $defaults);
     }
 
@@ -58,7 +61,12 @@ class RateType extends ChoiceType
     public function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);
-        $resolver->setDefaults($this->defaults);
+
+        $resolver
+            ->setDefaults($this->defaults)
+            ->setNormalizer('choices', \Closure::bind(function(Options $options, $choices) {
+                return $this->getChoices($options);
+            }, $this));
     }
 
     /**
@@ -70,8 +78,6 @@ class RateType extends ChoiceType
             throw new \LogicException('You can not provide your own choice list for this type.');
         }
 
-        $options['choices'] = $this->getChoices($options);
-
         parent::buildForm($builder, $options);
     }
 
@@ -80,7 +86,7 @@ class RateType extends ChoiceType
      *
      * @return array
      */
-    protected function getChoices(array $options)
+    protected function getChoices(Options $options)
     {
         $choices = array();
 

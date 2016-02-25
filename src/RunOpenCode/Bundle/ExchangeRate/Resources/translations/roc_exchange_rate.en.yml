@@ -64,3 +64,5 @@ exchange_rate:
             list: List
             save: Save
             add_new: Add new
+    filter:
+        submit: Apply

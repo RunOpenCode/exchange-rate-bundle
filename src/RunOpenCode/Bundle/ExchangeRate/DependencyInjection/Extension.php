@@ -190,8 +190,10 @@ class Extension extends BaseExtension
         $defaults = array_merge($config['form_types']['rate_type_type'], array('choices' => array()));
 
         foreach ($config['rates'] as $rate) {
-            $defaults['choices'][sprintf('exchange_rate.rate_type.%s.%s', $rate['source'], $rate['rate_type'])] = $rate['rate_type'];
+            $defaults['choices'][$rate['rate_type']] = sprintf('exchange_rate.rate_type.%s.%s', $rate['source'], $rate['rate_type']);
         }
+
+        $defaults['choices'] = array_flip($defaults['choices']);
 
         $container->setParameter('run_open_code.exchange_rate.form_type.rate_type_type', $defaults);
 
@@ -245,7 +247,7 @@ class Extension extends BaseExtension
      */
     protected function configureNotifications(array $config, ContainerBuilder $container)
     {
-        if (!empty($config['notifications']['fetch'])) {
+        if (!empty($config['notifications']['fetch']) && !empty($config['notifications']['fetch']['enabled'])) {
             $container->setParameter('run_open_code.exchange_rate.notifications.fetch', $config['notifications']['fetch']);
         }
 
