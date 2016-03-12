@@ -30,7 +30,7 @@ class ForeignCurrencyCodeType extends AbstractType
     public function __construct(array $defaults)
     {
         $this->defaults = array_merge(array(
-            'choice_translation_domain' => 'roc_exchange_rate'
+            'choice_translation_domain' => false
         ), $defaults);
     }
 
