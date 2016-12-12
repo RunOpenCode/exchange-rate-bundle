@@ -80,7 +80,8 @@ class ExchangeRateController extends Controller
             'rates' => $this->getListData($filter),
             'date_format' => $this->templates['date_format'],
             'time_format' => $this->templates['time_format'],
-            'secure' => $this->templates['secure']
+            'secure' => $this->templates['secure'],
+            'access_roles' => $this->accessRoles
         ));
     }
 
@@ -120,7 +121,8 @@ class ExchangeRateController extends Controller
         return $this->render($this->templates['new'], array(
             'base_template' => $this->templates['base_template'],
             'form' => $form->createView(),
-            'secure' => $this->templates['secure']
+            'secure' => $this->templates['secure'],
+            'access_roles' => $this->accessRoles
         ));
     }
 
@@ -151,7 +153,8 @@ class ExchangeRateController extends Controller
         return $this->render($this->templates['edit'], array(
             'base_template' => $this->templates['base_template'],
             'form' => $form->createView(),
-            'secure' => $this->templates['secure']
+            'secure' => $this->templates['secure'],
+            'access_roles' => $this->accessRoles
         ));
     }
 

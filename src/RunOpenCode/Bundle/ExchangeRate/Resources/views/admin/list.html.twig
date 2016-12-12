@@ -74,7 +74,7 @@
                             {{ 'exchange_rate.list.table.headings.modified_at'|trans({}, 'roc_exchange_rate') }}
                         </th>
 
-                        {% if not secure or is_granted('ROLE_EXCHANGE_RATE_MANAGER') or is_granted('ROLE_EXCHANGE_RATE_EDIT') or is_granted('ROLE_EXCHANGE_RATE_DELETE') %}
+                        {% if not secure or is_granted(access_roles.edit) or is_granted(access_roles.delete) %}
 
                             <th>
                                 {{ 'exchange_rate.list.table.headings.actions'|trans({}, 'roc_exchange_rate') }}
@@ -112,11 +112,11 @@
                                 {{ rate.modifiedAt|date(date_format) }} {{ rate.modifiedAt|date(time_format) }}
                             </td>
 
-                            {% if not secure or is_granted('ROLE_EXCHANGE_RATE_MANAGER') or is_granted('ROLE_EXCHANGE_RATE_EDIT') or is_granted('ROLE_EXCHANGE_RATE_DELETE') %}
+                            {% if not secure or is_granted(access_roles.edit) or is_granted(access_roles.delete) %}
 
                                 <td>
 
-                                    {% if not secure or is_granted('ROLE_EXCHANGE_RATE_MANAGER') or is_granted('ROLE_EXCHANGE_RATE_EDIT') %}
+                                    {% if not secure or is_granted(access_roles.edit) %}
 
                                         <a href="{{ path('roc_exchange_rate_edit', {
                                             date: rate.date|date('Y-m-d'),
@@ -129,7 +129,7 @@
 
                                     {% endif %}
 
-                                    {% if not secure or is_granted('ROLE_EXCHANGE_RATE_MANAGER') or is_granted('ROLE_EXCHANGE_RATE_DELETE') %}
+                                    {% if not secure or is_granted(access_roles.delete) %}
 
                                         <a
                                                 href="{{ path('roc_exchange_rate_delete', {
@@ -198,7 +198,7 @@
 
         {% block list_actions_add_new %}
 
-            {% if not secure or is_granted('ROLE_EXCHANGE_RATE_MANAGER') or is_granted('ROLE_EXCHANGE_RATE_CREATE') %}
+            {% if not secure or is_granted(access_roles.create) %}
                 <a href="{{ path('roc_exchange_rate_new') }}">
                     {{ 'exchange_rate.list.list_actions.add_new'|trans({}, 'roc_exchange_rate') }}
                 </a>

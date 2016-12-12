@@ -21,7 +21,7 @@
 
         {% block edit_actions_goto_list %}
 
-            {% if not secure or is_granted('ROLE_EXCHANGE_RATE_MANAGER') or is_granted('ROLE_EXCHANGE_RATE_LIST') %}
+            {% if not secure or is_granted(access_roles.list) %}
                 <a href="{{ path('roc_exchange_rate_list') }}">
                     {{ 'exchange_rate.form.actions.list'|trans({}, 'roc_exchange_rate') }}
                 </a>
@@ -31,7 +31,7 @@
 
         {% block edit_actions_add_new %}
 
-            {% if not secure or is_granted('ROLE_EXCHANGE_RATE_MANAGER') or is_granted('ROLE_EXCHANGE_RATE_CREATE') %}
+            {% if not secure or is_granted(access_roles.create) %}
                 <a href="{{ path('roc_exchange_rate_new') }}">
                     {{ 'exchange_rate.form.actions.add_new'|trans({}, 'roc_exchange_rate') }}
                 </a>
