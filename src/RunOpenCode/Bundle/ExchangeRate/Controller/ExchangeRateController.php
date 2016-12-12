@@ -44,16 +44,23 @@ class ExchangeRateController extends Controller
     /**
      * @var array
      */
-    protected $settings;
+    protected $templates;
+
+    /**
+     * @var array
+     */
+    protected $accessRoles;
 
     public function __construct(
         RepositoryInterface $repository,
         $baseCurrency,
-        $settings
+        $templates,
+        $accessRoles
     ) {
         $this->repository = $repository;
         $this->baseCurrency = $baseCurrency;
-        $this->settings = $settings;
+        $this->templates = $templates;
+        $this->accessRoles = $accessRoles;
     }
 
     /**
@@ -63,17 +70,17 @@ class ExchangeRateController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $this->denyAccessUnlessGranted(array('ROLE_EXCHANGE_RATE_MANAGER', 'ROLE_EXCHANGE_RATE_LIST'));
+        $this->denyAccessUnlessGranted($this->accessRoles['list']);
 
         $filter = $this->getFilterForm($request);
 
-        return $this->render($this->settings['list'], array(
-            'base_template' => $this->settings['base_template'],
+        return $this->render($this->templates['list'], array(
+            'base_template' => $this->templates['base_template'],
             'filter' => $filter->createView(),
             'rates' => $this->getListData($filter),
-            'date_format' => $this->settings['date_format'],
-            'time_format' => $this->settings['time_format'],
-            'secure' => $this->settings['secure']
+            'date_format' => $this->templates['date_format'],
+            'time_format' => $this->templates['time_format'],
+            'secure' => $this->templates['secure']
         ));
     }
 
@@ -85,7 +92,7 @@ class ExchangeRateController extends Controller
      */
     public function newAction(Request $request)
     {
-        $this->denyAccessUnlessGranted(array('ROLE_EXCHANGE_RATE_MANAGER', 'ROLE_EXCHANGE_RATE_CREATE'));
+        $this->denyAccessUnlessGranted($this->accessRoles['create']);
 
         $form = $this->createForm($this->getNewFormType(), $this->getNewRate());
 
@@ -110,10 +117,10 @@ class ExchangeRateController extends Controller
             }
         }
 
-        return $this->render($this->settings['new'], array(
-            'base_template' => $this->settings['base_template'],
+        return $this->render($this->templates['new'], array(
+            'base_template' => $this->templates['base_template'],
             'form' => $form->createView(),
-            'secure' => $this->settings['secure']
+            'secure' => $this->templates['secure']
         ));
     }
 
@@ -125,7 +132,7 @@ class ExchangeRateController extends Controller
      */
     public function editAction(Request $request)
     {
-        $this->denyAccessUnlessGranted(array('ROLE_EXCHANGE_RATE_MANAGER', 'ROLE_EXCHANGE_RATE_EDIT'));
+        $this->denyAccessUnlessGranted($this->accessRoles['edit']);
 
         $form = $this->createForm($this->getEditFormType(), $this->getRateFromRequest($request));
 
@@ -141,10 +148,10 @@ class ExchangeRateController extends Controller
             return $this->redirectToRoute('roc_exchange_rate_list');
         }
 
-        return $this->render($this->settings['edit'], array(
-            'base_template' => $this->settings['base_template'],
+        return $this->render($this->templates['edit'], array(
+            'base_template' => $this->templates['base_template'],
             'form' => $form->createView(),
-            'secure' => $this->settings['secure']
+            'secure' => $this->templates['secure']
         ));
     }
 
@@ -156,7 +163,7 @@ class ExchangeRateController extends Controller
      */
     public function deleteAction(Request $request)
     {
-        $this->denyAccessUnlessGranted(array('ROLE_EXCHANGE_RATE_MANAGER', 'ROLE_EXCHANGE_RATE_DELETE'));
+        $this->denyAccessUnlessGranted($this->accessRoles['delete']);
 
         if (!$this->isCsrfTokenValid($request->getRequestUri(), $request->get('_csrf_token'))) {
             throw new InvalidCsrfTokenException;
@@ -187,7 +194,7 @@ class ExchangeRateController extends Controller
      * Find rate based on values of request parameters.
      *
      * @param Request $request
-     * @return static
+     * @return RateInterface
      */
     protected function getRateFromRequest(Request $request)
     {
@@ -263,7 +270,7 @@ class ExchangeRateController extends Controller
      */
     protected function denyAccessUnlessGranted($attributes, $object = null, $message = 'Access Denied.')
     {
-        if ($this->settings['secure']) {
+        if ($this->templates['secure']) {
             if (!is_array($attributes)) {
                 $attributes = array($attributes);
             }

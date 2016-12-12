@@ -140,6 +140,11 @@ class Extension extends BaseExtension
             $config['view']
         );
 
+        $container->setParameter(
+            'run_open_code.exchange_rate.controller.access_roles_configuration',
+            $config['access_roles']
+        );
+
         return $this;
     }
 

@@ -21,7 +21,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Style\OutputStyle;
-use Symfony\Component\Templating\EngineInterface;
 
 /**
  * Class FetchCommand
@@ -117,6 +116,12 @@ class FetchCommand extends Command
                 ->cleanInputDate($input, $outputStyle)
                 ->cleanInputSources($input, $outputStyle);
         } catch (\Exception $e) {
+
+            $this->getLogger()->critical('Unable to execute command. Reason: "{message}".', array(
+                'message' => $e->getMessage(),
+                'exception' => $e
+            ));
+
             return;
         }
 
@@ -132,6 +137,11 @@ class FetchCommand extends Command
                 ->dispatchErrorNotifications($input->getOption('source'), $input->getOption('date'))
             ;
 
+            $this->getLogger()->critical('Unable to fetch rates. Reason: "{message}".', array(
+                'message' => $e->getMessage(),
+                'exception' => $e
+            ));
+
             return;
         }
 
@@ -139,6 +149,12 @@ class FetchCommand extends Command
             ->displayCommandSuccess($outputStyle)
             ->dispatchSuccessNotifications($input->getOption('source'), $input->getOption('date'), $rates)
         ;
+
+        $this->getLogger()->info('Successfully fetched rates "{rates}".', array(
+            'rates' => implode(', ', array_map(function(RateInterface $rate) {
+                return sprintf('%s => %s', $rate->getBaseCurrencyCode(), $rate->getCurrencyCode());
+            }, $rates))
+        ));
     }
 
     /**

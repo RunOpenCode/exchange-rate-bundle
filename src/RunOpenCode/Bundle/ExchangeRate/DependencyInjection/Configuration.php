@@ -45,6 +45,7 @@ class Configuration implements ConfigurationInterface
                 ->append($this->getFileRepositoryDefinition())
                 ->append($this->getSourcesDefinition())
                 ->append($this->getViewDefinition())
+                ->append($this->getAccessRolesDefinition())
                 ->append($this->getNotificationDefinition())
                 ->arrayNode('form_types')
                     ->addDefaultsIfNotSet()
@@ -166,6 +167,42 @@ class Configuration implements ConfigurationInterface
                 ->booleanNode('secure')->defaultValue(true)->end()
             ->end()
         ->end();
+
+        return $node;
+    }
+
+    /**
+     * Build configuration tree for access roles.
+     *
+     * @return ArrayNodeDefinition
+     */
+    protected function getAccessRolesDefinition()
+    {
+        $node = new ArrayNodeDefinition('access_roles');
+
+        $node
+            ->info('Configuration of controller access roles.')
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->arrayNode('list')
+                    ->defaultValue(array('ROLE_EXCHANGE_RATE_MANAGER', 'ROLE_EXCHANGE_RATE_LIST'))
+                    ->prototype('scalar')->end()
+                ->end()
+                ->arrayNode('create')
+                    ->defaultValue(array('ROLE_EXCHANGE_RATE_MANAGER', 'ROLE_EXCHANGE_RATE_CREATE'))
+                    ->prototype('scalar')->end()
+                ->end()
+                ->arrayNode('edit')
+                    ->defaultValue(array('ROLE_EXCHANGE_RATE_MANAGER', 'ROLE_EXCHANGE_RATE_EDIT'))
+                    ->prototype('scalar')->end()
+                ->end()
+                ->arrayNode('delete')
+                    ->defaultValue(array('ROLE_EXCHANGE_RATE_MANAGER', 'ROLE_EXCHANGE_RATE_DELETE'))
+                    ->prototype('scalar')->end()
+                ->end()
+            ->end()
+        ->end();
+
 
         return $node;
     }
