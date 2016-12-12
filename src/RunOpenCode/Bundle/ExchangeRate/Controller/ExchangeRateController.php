@@ -113,7 +113,7 @@ class ExchangeRateController extends Controller
                     $form->getData()
                 ));
 
-                $this->get('session')->getFlashBag()->add('success', 'exchange_rate.flash.new.success');
+                $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('exchange_rate.flash.new.success', array(), 'roc_exchange_rate'));
                 return $this->redirectToRoute('roc_exchange_rate_list');
             }
         }
@@ -146,7 +146,7 @@ class ExchangeRateController extends Controller
                 $form->getData()
             ));
 
-            $this->get('session')->getFlashBag()->add('success', 'exchange_rate.flash.edit.success');
+            $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('exchange_rate.flash.edit.success', array(), 'roc_exchange_rate'));
             return $this->redirectToRoute('roc_exchange_rate_list');
         }
 
@@ -176,7 +176,7 @@ class ExchangeRateController extends Controller
 
         $this->repository->delete(array($rate));
 
-        $this->get('session')->getFlashBag()->add('success', 'exchange_rate.flash.delete.success');
+        $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('exchange_rate.flash.delete.success', array(), 'roc_exchange_rate'));
         return $this->redirectToRoute('roc_exchange_rate_list');
     }
 
