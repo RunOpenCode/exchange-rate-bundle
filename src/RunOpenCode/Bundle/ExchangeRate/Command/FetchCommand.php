@@ -101,6 +101,7 @@ class FetchCommand extends Command
             ->setDescription('Fetch exchange rates from sources.')
             ->addOption('date', 'd', InputOption::VALUE_OPTIONAL, 'State on which date exchange rates should be fetched.')
             ->addOption('source', 'src', InputOption::VALUE_OPTIONAL, 'State which sources should be contacted only, separated with comma.')
+            ->addOption('silent', null, InputOption::VALUE_OPTIONAL, 'In silent mode, rates are fetched, but no notification is being fired on any event.', false)
         ;
     }
 
@@ -132,10 +133,12 @@ class FetchCommand extends Command
             $rates = $this->doFetch($input);
 
         } catch (\Exception $e) {
-            $this
-                ->displayCommandError($outputStyle)
-                ->dispatchErrorNotifications($input->getOption('source'), $input->getOption('date'))
-            ;
+
+            $this->displayCommandError($outputStyle);
+
+            if (!$input->getOption('silent')) {
+                $this->dispatchErrorNotifications($input->getOption('source'), $input->getOption('date'));
+            }
 
             $this->getLogger()->critical('Unable to fetch rates. Reason: "{message}".', array(
                 'message' => $e->getMessage(),
@@ -145,10 +148,11 @@ class FetchCommand extends Command
             return;
         }
 
-        $this
-            ->displayCommandSuccess($outputStyle)
-            ->dispatchSuccessNotifications($input->getOption('source'), $input->getOption('date'), $rates)
-        ;
+        $this->displayCommandSuccess($outputStyle);
+
+        if (!$input->getOption('silent')) {
+            $this->dispatchSuccessNotifications($input->getOption('source'), $input->getOption('date'), $rates);
+        }
 
         $this->getLogger()->info('Successfully fetched rates "{rates}".', array(
             'rates' => implode(', ', array_map(function(RateInterface $rate) {
