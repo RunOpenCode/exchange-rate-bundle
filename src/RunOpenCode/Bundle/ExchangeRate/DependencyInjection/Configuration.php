@@ -9,6 +9,7 @@
  */
 namespace RunOpenCode\Bundle\ExchangeRate\DependencyInjection;
 
+use RunOpenCode\Bundle\ExchangeRate\Role;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -185,19 +186,19 @@ class Configuration implements ConfigurationInterface
             ->addDefaultsIfNotSet()
             ->children()
                 ->arrayNode('list')
-                    ->defaultValue(array('ROLE_EXCHANGE_RATE_MANAGER', 'ROLE_EXCHANGE_RATE_LIST'))
+                    ->defaultValue(array(Role::MANAGE_RATE, Role::VIEW_RATE))
                     ->prototype('scalar')->end()
                 ->end()
                 ->arrayNode('create')
-                    ->defaultValue(array('ROLE_EXCHANGE_RATE_MANAGER', 'ROLE_EXCHANGE_RATE_CREATE'))
+                    ->defaultValue(array(Role::MANAGE_RATE, Role::VIEW_RATE))
                     ->prototype('scalar')->end()
                 ->end()
                 ->arrayNode('edit')
-                    ->defaultValue(array('ROLE_EXCHANGE_RATE_MANAGER', 'ROLE_EXCHANGE_RATE_EDIT'))
+                    ->defaultValue(array(Role::MANAGE_RATE, Role::DELETE_RATE))
                     ->prototype('scalar')->end()
                 ->end()
                 ->arrayNode('delete')
-                    ->defaultValue(array('ROLE_EXCHANGE_RATE_MANAGER', 'ROLE_EXCHANGE_RATE_DELETE'))
+                    ->defaultValue(array(Role::MANAGE_RATE, Role::DELETE_RATE))
                     ->prototype('scalar')->end()
                 ->end()
             ->end()

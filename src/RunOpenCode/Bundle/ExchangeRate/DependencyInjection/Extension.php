@@ -36,6 +36,22 @@ class Extension extends BaseExtension
     /**
      * {@inheritdoc}
      */
+    public function getNamespace()
+    {
+        return 'http://www.runopencode.com/xsd-schema/exchange-rate-bundle';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getXsdValidationBasePath()
+    {
+        return __DIR__.'/../Resources/config/schema';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function load(array $config, ContainerBuilder $container)
     {
 

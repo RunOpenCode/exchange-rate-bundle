@@ -13,51 +13,118 @@
         <xsd:sequence>
 
             <xsd:element name="base-currency" type="xsd:string" minOccurs="1" maxOccurs="1" />
+
             <xsd:element name="repository" type="xsd:string" minOccurs="0" maxOccurs="1" />
-            <xsd:element name="rates" type="rates" minOccurs="1" maxOccurs="1" />
-            <xsd:element name="file-repository" type="fileRepository" minOccurs="0" maxOccurs="1" />
-            <xsd:element name="sources" type="rateSources" minOccurs="0" maxOccurs="1" />
 
-        </xsd:sequence>
-
-    </xsd:complexType>
-
-    <xsd:complexType name="rates">
-        <xsd:sequence>
-            <xsd:element name="rate" type="rate" minOccurs="1" maxOccurs="unbounded" />
-        </xsd:sequence>
-    </xsd:complexType>
-    
-    <xsd:complexType name="rate" mixed="true">
-
-        <xsd:sequence>
-            <xsd:element name="extra" minOccurs="0" maxOccurs="unbounded">
+            <xsd:element name="rates" minOccurs="1" maxOccurs="1">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:any maxOccurs="unbounded" processContents="lax" />
+                        <xsd:element name="rate" minOccurs="1" maxOccurs="unbounded">
+                            <xsd:complexType mixed="true">
+                                <xsd:sequence>
+                                    <xsd:element name="extra" minOccurs="0" maxOccurs="unbounded">
+                                        <xsd:complexType>
+                                            <xsd:sequence>
+                                                <xsd:any maxOccurs="unbounded" processContents="lax" />
+                                            </xsd:sequence>
+                                        </xsd:complexType>
+                                    </xsd:element>
+                                </xsd:sequence>
+                                <xsd:attribute name="currency-code" type="xsd:string" use="required" />
+                                <xsd:attribute name="rate-type" type="xsd:string" use="required" />
+                                <xsd:attribute name="source" type="xsd:string" use="required" />
+                            </xsd:complexType>
+                        </xsd:element>
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
+
+            <xsd:element name="file-repository" minOccurs="0" maxOccurs="1">
+                <xsd:complexType>
+                    <xsd:attribute name="path" type="xsd:string" use="required" />
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="sources" minOccurs="0" maxOccurs="1">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="source" minOccurs="1" maxOccurs="unbounded">
+                            <xsd:complexType mixed="true">
+                                <xsd:simpleContent>
+                                    <xsd:extension base="textType">
+                                        <xsd:attribute name="name" type="xsd:string" use="required"/>
+                                    </xsd:extension>
+                                </xsd:simpleContent>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            
+            <xsd:element name="roles" minOccurs="0" maxOccurs="1">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="list" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+                        <xsd:element name="create" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+                        <xsd:element name="edit" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+                        <xsd:element name="delete" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="form-types" minOccurs="0" maxOccurs="1">
+                <xsd:complexType>
+                    <xsd:sequence>
+
+                        <xsd:element name="source-type" minOccurs="0" maxOccurs="1">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="choice-translation-domain" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+                                    <xsd:element name="preferred-choices" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="rate-type" minOccurs="0" maxOccurs="1">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="choice-translation-domain" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+                                    <xsd:element name="preferred-choices" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+                                    <xsd:element name="label-format" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="rate-type-type" minOccurs="0" maxOccurs="1">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="choice-translation-domain" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+                                    <xsd:element name="preferred-choices" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="currency-code-type" minOccurs="0" maxOccurs="1">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="choice-translation-domain" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+                                    <xsd:element name="preferred-choices" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
         </xsd:sequence>
 
-        <xsd:attribute name="currency-code" type="xsd:string" use="required" />
-        <xsd:attribute name="rate-type" type="xsd:string" use="required" />
-        <xsd:attribute name="source" type="xsd:string" use="required" />
-
-    </xsd:complexType>
-    
-    <xsd:complexType name="fileRepository">
-        <xsd:attribute name="path" type="xsd:string" use="required" />
     </xsd:complexType>
 
-    <xsd:complexType name="rateSources">
-        <xsd:sequence>
-            <xsd:element name="source" type="rateSource" minOccurs="1" maxOccurs="unbounded" />
-        </xsd:sequence>
-    </xsd:complexType>
-
-    <xsd:complexType name="rateSource" mixed="true">
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-    </xsd:complexType>
+    <xsd:simpleType name="textType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value=".+"/>
+        </xsd:restriction>
+    </xsd:simpleType>
 
 </xsd:schema>
