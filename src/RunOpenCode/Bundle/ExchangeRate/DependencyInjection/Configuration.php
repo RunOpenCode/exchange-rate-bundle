@@ -45,7 +45,6 @@ class Configuration implements ConfigurationInterface
                 ->append($this->getRatesDefinition())
                 ->append($this->getFileRepositoryDefinition())
                 ->append($this->getSourcesDefinition())
-                ->append($this->getViewDefinition())
                 ->append($this->getAccessRolesDefinition())
                 ->append($this->getNotificationDefinition())
                 ->arrayNode('form_types')
@@ -129,50 +128,6 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Build configuration tree for view (controller).
-     *
-     * @return ArrayNodeDefinition
-     */
-    protected function getViewDefinition()
-    {
-        $node = new ArrayNodeDefinition('view');
-
-        $node
-            ->info('Configuration of administration interface.')
-            ->addDefaultsIfNotSet()
-            ->children()
-                ->scalarNode('base_template')
-                    ->info('Base decorator template.')
-                    ->defaultValue('@ExchangeRate/admin/base.html.twig')
-                ->end()
-                ->scalarNode('list')
-                    ->info('Template for list view.')
-                    ->defaultValue('@ExchangeRate/admin/list.html.twig')
-                ->end()
-                ->scalarNode('new')
-                    ->info('Template for create new exchange rate view.')
-                    ->defaultValue('@ExchangeRate/admin/new.html.twig')
-                ->end()
-                ->scalarNode('edit')
-                    ->info('Template for edit exchange rate view.')
-                    ->defaultValue('@ExchangeRate/admin/edit.html.twig')
-                ->end()
-                ->scalarNode('date_format')
-                    ->info('Date format in list view.')
-                    ->defaultValue('Y-m-d')
-                ->end()
-                ->scalarNode('time_format')
-                    ->info('Date/time format in list view.')
-                    ->defaultValue('H:i')
-                ->end()
-                ->booleanNode('secure')->defaultValue(true)->end()
-            ->end()
-        ->end();
-
-        return $node;
-    }
-
-    /**
      * Build configuration tree for access roles.
      *
      * @return ArrayNodeDefinition
@@ -209,7 +164,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Build configuration tree for e-mail notifications.
+     * Build configuration tree for notifications.
      *
      * @return ArrayNodeDefinition
      */

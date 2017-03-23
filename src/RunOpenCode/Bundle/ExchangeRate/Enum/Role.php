@@ -9,6 +9,11 @@
  */
 namespace RunOpenCode\Bundle\ExchangeRate;
 
+/**
+ * Class Role
+ *
+ * @package RunOpenCode\Bundle\ExchangeRate
+ */
 final class Role
 {
     /**

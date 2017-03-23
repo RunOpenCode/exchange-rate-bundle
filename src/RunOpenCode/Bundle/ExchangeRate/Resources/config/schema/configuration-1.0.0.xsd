@@ -117,6 +117,38 @@
                 </xsd:complexType>
             </xsd:element>
 
+            <xsd:element name="notifications" minOccurs="0" maxOccurs="1">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="email" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+
+                                <xsd:sequence>
+                                    <xsd:element name="from" minOccurs="1" maxOccurs="1">
+                                        <xsd:complexType mixed="true">
+                                            <xsd:simpleContent>
+                                                <xsd:extension base="textType">
+                                                    <xsd:attribute name="name" type="xsd:string" />
+                                                </xsd:extension>
+                                            </xsd:simpleContent>
+                                        </xsd:complexType>
+                                    </xsd:element>
+                                </xsd:sequence>
+
+                                <xsd:attribute name="event" use="required" type="xsd:string">
+                                    <xsd:simpleType>
+                                        <xsd:restriction base="xsd:string">
+                                            <xsd:enumeration value="fetch_rates_success" />
+                                            <xsd:enumeration value="fetch_rates_error" />
+                                        </xsd:restriction>
+                                    </xsd:simpleType>
+                                </xsd:attribute>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
         </xsd:sequence>
 
     </xsd:complexType>
