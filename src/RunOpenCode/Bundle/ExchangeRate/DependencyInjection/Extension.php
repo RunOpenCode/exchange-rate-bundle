@@ -10,11 +10,14 @@
 namespace RunOpenCode\Bundle\ExchangeRate\DependencyInjection;
 
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\Configuration as TreeConfiguration;
+use RunOpenCode\ExchangeRate\Configuration;
 use RunOpenCode\ExchangeRate\Utils\CurrencyCodeUtil;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension as BaseExtension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Class Extension
@@ -72,6 +75,7 @@ class Extension extends BaseExtension
             ->configureBaseCurrency($config, $container)
             ->configureRepository($config, $container)
             ->configureFileRepository($config, $container)
+            ->configureDoctrineDbalRepository($config, $container)
             ->configureController($config, $container)
             ->configureRates($config, $container)
             ->configureSimpleSources($config, $container)
@@ -80,7 +84,6 @@ class Extension extends BaseExtension
             ->configureCurrencyCodeType($config, $container)
             ->configureForeignCurrencyCodeType($config, $container)
             ->configureRateType($config, $container)
-            ->configureNotifications($config, $container)
         ;
     }
 
@@ -89,7 +92,9 @@ class Extension extends BaseExtension
      *
      * @param array $config Configuration parameters.
      * @param ContainerBuilder $container Service container.
+     *
      * @return Extension $this Fluent interface.
+     * @throws \RunOpenCode\ExchangeRate\Exception\UnknownCurrencyCodeException
      */
     protected function configureBaseCurrency(array $config, ContainerBuilder $container)
     {
@@ -104,6 +109,7 @@ class Extension extends BaseExtension
      *
      * @param array $config Configuration parameters.
      * @param ContainerBuilder $container Service container.
+     *
      * @return Extension $this Fluent interface.
      */
     protected function configureRates(array $config, ContainerBuilder $container)
@@ -112,7 +118,25 @@ class Extension extends BaseExtension
             throw new \RuntimeException('You have to configure which rates you would like to use in your project.');
         }
 
-        $container->setParameter('run_open_code.exchange_rate.registered_rates', $config['rates']);
+        foreach ($config['rates'] as $rate) {
+            $definition = new Definition(Configuration::class);
+
+            $arguments = [
+                $rate['currency_code'],
+                $rate['rate_type'],
+                $rate['source'],
+                (isset($rate['extra']) && $rate['extra']) ? $rate['extra'] : []
+            ];
+
+            $definition
+                ->setArguments($arguments)
+                ->setPublic(false)
+                ->addTag('run_open_code.exchange_rate.rate_configuration')
+                ;
+
+            $container->setDefinition(sprintf('run_open_code.exchange_rate.rate_configuration.%s.%s.%s', $rate['currency_code'], $rate['rate_type'], $rate['source']), $definition);
+        }
+
         return $this;
     }
 
@@ -121,6 +145,7 @@ class Extension extends BaseExtension
      *
      * @param array $config Configuration parameters.
      * @param ContainerBuilder $container Service container.
+     *
      * @return Extension $this Fluent interface.
      */
     protected function configureRepository(array $config, ContainerBuilder $container)
@@ -130,15 +155,43 @@ class Extension extends BaseExtension
     }
 
     /**
-     * Configure file repository, if used.
+     * Configure file repository.
      *
      * @param array $config Configuration parameters.
      * @param ContainerBuilder $container Service container.
+     *
      * @return Extension $this Fluent interface.
      */
     protected function configureFileRepository(array $config, ContainerBuilder $container)
     {
-        $container->setParameter('run_open_code.exchange_rate.repository.file_repository.path', $config['file_repository']['path']);
+        $defintion = $container->getDefinition('run_open_code.exchange_rate.repository.file_repository');
+
+        $defintion
+            ->setArguments([
+                $config['file_repository']['path'],
+            ]);
+
+        return $this;
+    }
+
+    /**
+     * Configure Doctrine Dbal repository.
+     *
+     * @param array $config Configuration parameters.
+     * @param ContainerBuilder $container Service container.
+     *
+     * @return Extension $this Fluent interface.
+     */
+    protected function configureDoctrineDbalRepository(array $config, ContainerBuilder $container)
+    {
+        $defintion = $container->getDefinition('run_open_code.exchange_rate.repository.doctrine_dbal_repository');
+
+        $defintion
+            ->setArguments([
+                new Reference($config['doctrine_dbal_repository']['connection']),
+                $config['doctrine_dbal_repository']['table_name'],
+            ]);
+
         return $this;
     }
 
@@ -151,11 +204,6 @@ class Extension extends BaseExtension
      */
     protected function configureController(array $config, ContainerBuilder $container)
     {
-        $container->setParameter(
-            'run_open_code.exchange_rate.controller.view_configuration',
-            $config['view']
-        );
-
         $container->setParameter(
             'run_open_code.exchange_rate.controller.access_roles_configuration',
             $config['access_roles']
@@ -278,22 +326,6 @@ class Extension extends BaseExtension
     protected function configureRateType(array $config, ContainerBuilder $container)
     {
         $container->setParameter('run_open_code.exchange_rate.form_type.rate_type', $config['form_types']['rate_type']);
-
-        return $this;
-    }
-
-    /**
-     * Configure internal notifications.
-     *
-     * @param array $config Configuration parameters.
-     * @param ContainerBuilder $container Service container.
-     * @return Extension $this Fluent interface.
-     */
-    protected function configureNotifications(array $config, ContainerBuilder $container)
-    {
-        if (!empty($config['notifications']['fetch']) && !empty($config['notifications']['fetch']['enabled'])) {
-            $container->setParameter('run_open_code.exchange_rate.notifications.fetch', $config['notifications']['fetch']);
-        }
 
         return $this;
     }

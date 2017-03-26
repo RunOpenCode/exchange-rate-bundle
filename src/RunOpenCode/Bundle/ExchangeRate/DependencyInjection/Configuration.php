@@ -9,7 +9,7 @@
  */
 namespace RunOpenCode\Bundle\ExchangeRate\DependencyInjection;
 
-use RunOpenCode\Bundle\ExchangeRate\Role;
+use RunOpenCode\Bundle\ExchangeRate\Enum\Role;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -36,7 +36,7 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('base_currency')
                     ->isRequired()
-                    ->info('Set base currency in which you are doing your business activities.')
+                    ->info('Set base currency in which you are doing your business activities.') // TODO Validate!!!
                 ->end()
                 ->scalarNode('repository')
                     ->defaultValue('file')
@@ -44,9 +44,9 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->append($this->getRatesDefinition())
                 ->append($this->getFileRepositoryDefinition())
+                ->append($this->getDoctrineDbalRepositoryDefinition())
                 ->append($this->getSourcesDefinition())
                 ->append($this->getAccessRolesDefinition())
-                ->append($this->getNotificationDefinition())
                 ->arrayNode('form_types')
                     ->addDefaultsIfNotSet()
                     ->children()
@@ -87,7 +87,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Build configuration tree for repository.
+     * Build configuration tree for file repository.
      *
      * @return ArrayNodeDefinition
      */
@@ -100,9 +100,36 @@ class Configuration implements ConfigurationInterface
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('path')
-                ->info('Absolute path to file where database file will be stored.')
-                ->defaultValue('%kernel.root_dir%/db/exchange_rates.dat')
+                    ->info('Absolute path to file where database file will be stored.')
+                    ->defaultValue('%kernel.root_dir%/db/exchange_rates.dat')
                 ->end()
+            ->end()
+        ->end();
+
+        return $node;
+    }
+
+    /**
+     * Build configuration tree for Doctrine Dbal repository.
+     *
+     * @return ArrayNodeDefinition
+     */
+    protected function getDoctrineDbalRepositoryDefinition()
+    {
+        $node = new ArrayNodeDefinition('doctrine_dbal_repository');
+
+        $node
+            ->info('Configuration for Doctrine Dbla repository (if used).')
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->scalarNode('connection')
+                    ->info('Which database connection to use.')
+                    ->defaultValue('doctrine.dbal.default_connection')
+                ->end()
+                ->scalarNode('table_name')
+                    ->info('Which table name to use for storing exchange rates.')
+                    ->defaultValue('runopencode_exchange_rate')
+                ->end()            
             ->end()
         ->end();
 
@@ -159,89 +186,6 @@ class Configuration implements ConfigurationInterface
             ->end()
         ->end();
 
-
-        return $node;
-    }
-
-    /**
-     * Build configuration tree for notifications.
-     *
-     * @return ArrayNodeDefinition
-     */
-    protected function getNotificationDefinition()
-    {
-        $node = new ArrayNodeDefinition('notifications');
-
-        $node
-            ->info('Notification settings.')
-            ->addDefaultsIfNotSet()
-            ->children()
-                ->arrayNode('fetch')
-                    ->children()
-                        ->booleanNode('enabled')
-                            ->info('Send e-mail report about fetch result and fetched rates.')
-                            ->defaultTrue()
-                        ->end()
-                        ->scalarNode('from')
-                            ->info('Mail sender address.')
-                            ->defaultNull()
-                        ->end()
-                        ->arrayNode('to')
-                            ->info('Recipients e-mail addresses.')
-                            ->prototype('scalar')->end()
-                        ->end()
-                        ->arrayNode('cc')
-                            ->info('Recipients e-mail addresses.')
-                            ->prototype('scalar')->end()
-                        ->end()
-                        ->arrayNode('bcc')
-                            ->info('Blank carbon copy recipients e-mail addresses.')
-                            ->prototype('scalar')->end()
-                        ->end()
-                        ->arrayNode('templates')
-                            ->addDefaultsIfNotSet()
-                            ->info('Enable/disable individual mail notifications.')
-                            ->children()
-                                ->arrayNode('success')
-                                    ->addDefaultsIfNotSet()
-                                    ->children()
-                                        ->booleanNode('enabled')
-                                            ->info('Enable/disable success notification.')
-                                            ->defaultTrue()
-                                        ->end()
-                                        ->scalarNode('subject')
-                                            ->info('Mail notification subject.')
-                                            ->defaultValue('System notification: exchange rates successfully fetched.')
-                                        ->end()
-                                        ->scalarNode('template')
-                                            ->info('Mail body template.')
-                                            ->defaultValue('@ExchangeRate/mail/success.html.twig')
-                                        ->end()
-                                    ->end()
-                                ->end()
-                                ->arrayNode('error')
-                                    ->addDefaultsIfNotSet()
-                                    ->children()
-                                        ->booleanNode('enabled')
-                                            ->info('Enable/disable success notification.')
-                                            ->defaultTrue()
-                                        ->end()
-                                        ->scalarNode('subject')
-                                            ->info('Mail notification subject.')
-                                            ->defaultValue('Error notification: exchange rates are not fetched.')
-                                        ->end()
-                                        ->scalarNode('template')
-                                            ->info('Mail body template.')
-                                            ->defaultValue('@ExchangeRate/mail/error.html.twig')
-                                        ->end()
-                                    ->end()
-                                ->end()
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
-            ->end()
-        ->end();
 
         return $node;
     }

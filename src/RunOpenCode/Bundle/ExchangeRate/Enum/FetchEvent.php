@@ -10,21 +10,21 @@
 namespace RunOpenCode\Bundle\ExchangeRate\Enum;
 
 /**
- * Class NotifyingEvent
+ * Class FetchEvent
  *
  * @package RunOpenCode\Bundle\ExchangeRate\Enum
  */
-final class NotifyingEvent
+final class FetchEvent
 {
     /**
      * Rates are successfully fetched.
      */
-    const FETCH_RATES_SUCCESS = 'fetch_rates_success';
+    const SUCCESS = 'success';
 
     /**
      * There has been an error when fetching rates.
      */
-    const FETCH_RATES_ERROR = 'fetch_rates_error';
+    const ERROR = 'error';
 
     private function __construct()
     {

@@ -31,8 +31,10 @@
     },
     "require": {
         "php": ">=7.0",
-        "symfony/framework-bundle": "~2.3|~3.0",
+        "symfony/framework-bundle": "~3.0",
         "runopencode/exchange-rate": "~2.0",
+        "symfony/validator": "~3.2",
+        "symfony/form": "~3.2",
         "roave/security-advisories": "dev-master"
     },
     "suggest": {
@@ -41,6 +43,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "~6.0",
+        "symfony/phpunit-bridge": "dev-master",
         "squizlabs/php_codesniffer": "~2.0",
         "phploc/phploc": "dev-master",
         "pdepend/pdepend" : "~2.5",
@@ -48,7 +51,6 @@
         "sebastian/phpcpd": "dev-master",
         "theseer/phpdox": "dev-master",
         "escapestudios/symfony2-coding-standard": "~2.0",
-        "symfony/phpunit-bridge": "~3.0",
         "symfony/debug": "~3.0",
         "matthiasnoback/symfony-dependency-injection-test": "~2.0"
     }
