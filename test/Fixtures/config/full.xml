@@ -29,10 +29,10 @@
             <run-open-code-exchange-rate-bundle:source name="test">SomeClass</run-open-code-exchange-rate-bundle:source>
         </run-open-code-exchange-rate-bundle:sources>
 
-        <run-open-code-exchange-rate-bundle:roles>
+        <run-open-code-exchange-rate-bundle:security>
             <run-open-code-exchange-rate-bundle:list>Pero</run-open-code-exchange-rate-bundle:list>
             <run-open-code-exchange-rate-bundle:list>Djuro</run-open-code-exchange-rate-bundle:list>
-        </run-open-code-exchange-rate-bundle:roles>
+        </run-open-code-exchange-rate-bundle:security>
 
         <run-open-code-exchange-rate-bundle:form-types>
 
@@ -53,12 +53,6 @@
             </run-open-code-exchange-rate-bundle:rate-type-type>
 
         </run-open-code-exchange-rate-bundle:form-types>
-        
-        <run-open-code-exchange-rate-bundle:notifications>
-            <run-open-code-exchange-rate-bundle:email event="fetch_rates_success">
-                <run-open-code-exchange-rate-bundle:from name="Nikola Svitlica">thecelavi@mac.com</run-open-code-exchange-rate-bundle:from>
-            </run-open-code-exchange-rate-bundle:email>
-        </run-open-code-exchange-rate-bundle:notifications>
 
     </run-open-code-exchange-rate-bundle:config>
 

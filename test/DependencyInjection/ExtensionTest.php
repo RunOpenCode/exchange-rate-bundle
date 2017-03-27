@@ -11,6 +11,8 @@ namespace RunOpenCode\Bundle\ExchangeRate\Tests\DependencyInjection;
 
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\Extension;
+use RunOpenCode\Bundle\ExchangeRate\Enum\Role;
+use RunOpenCode\Bundle\ExchangeRate\Security\AccessVoter;
 use RunOpenCode\ExchangeRate\Configuration;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -73,6 +75,38 @@ class ExtensionTest extends AbstractExtensionTestCase
     /**
      * @test
      */
+    public function itConfiguresSources()
+    {
+        $sources = [
+            'simple_source_1' => '\Simple\SourceClass1',
+            'simple_source_2' => '\Simple\SourceClass2',
+        ];
+
+        $this->load([
+            'base_currency' => 'RSD',
+            'rates' => [
+                ['currency_code' => 'EUR', 'rate_type' => 'median', 'source' => 'national_bank_of_serbia'],
+            ],
+            'sources' => $sources
+        ]);
+
+        $services = $this->container->findTaggedServiceIds('run_open_code.exchange_rate.source');
+
+        $this->assertEquals(2, count($services));
+
+        $configured = [];
+
+        foreach ($services as $id => $tags) {
+            $definition = $this->container->findDefinition($id);
+            $configured[$tags[0]['alias']] = $definition->getClass();
+        }
+
+        $this->assertEquals($sources, $configured);
+    }
+
+    /**
+     * @test
+     */
     public function itConfiguresRepository()
     {
         $this->load([
@@ -122,6 +156,47 @@ class ExtensionTest extends AbstractExtensionTestCase
 
         $this->assertContainerBuilderHasServiceDefinitionWithArgument('run_open_code.exchange_rate.repository.doctrine_dbal_repository', 0, new Reference('connection'));
         $this->assertContainerBuilderHasServiceDefinitionWithArgument('run_open_code.exchange_rate.repository.doctrine_dbal_repository', 1, 'table_name');
+    }
+
+    /**
+     * @test
+     */
+    public function itDisablesAccessVoter()
+    {
+        $this->load([
+            'base_currency' => 'RSD',
+            'rates' => [
+                ['currency_code' => 'EUR', 'rate_type' => 'median', 'source' => 'national_bank_of_serbia'],
+            ],
+            'security' => [
+                'enabled' => false,
+            ]
+        ]);
+
+        $this->assertContainerBuilderNotHasService('run_open_code.exchange_rate.security.access_voter');
+    }
+
+    /**
+     * @test
+     */
+    public function itConfiguresAccessVoter()
+    {
+        $roles = [
+            AccessVoter::VIEW => [ Role::MANAGE_RATE ],
+            AccessVoter::EDIT => [ Role::MANAGE_RATE ],
+            AccessVoter::DELETE => [ Role::MANAGE_RATE ],
+            AccessVoter::CREATE => [ Role::MANAGE_RATE ],
+        ];
+
+        $this->load([
+            'base_currency' => 'RSD',
+            'rates' => [
+                ['currency_code' => 'EUR', 'rate_type' => 'median', 'source' => 'national_bank_of_serbia'],
+            ],
+            'security' => $roles
+        ]);
+
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('run_open_code.exchange_rate.security.access_voter', 0, $roles);
     }
 
     /**

@@ -68,9 +68,10 @@
                 </xsd:complexType>
             </xsd:element>
             
-            <xsd:element name="roles" minOccurs="0" maxOccurs="1">
+            <xsd:element name="security" minOccurs="0" maxOccurs="1">
                 <xsd:complexType>
                     <xsd:sequence>
+                        <xsd:element name="enabled" minOccurs="0" maxOccurs="1" type="xsd:boolean"/>
                         <xsd:element name="list" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
                         <xsd:element name="create" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
                         <xsd:element name="edit" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>

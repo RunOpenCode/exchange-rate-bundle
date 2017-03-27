@@ -10,6 +10,7 @@
 namespace RunOpenCode\Bundle\ExchangeRate\DependencyInjection;
 
 use RunOpenCode\Bundle\ExchangeRate\Enum\Role;
+use RunOpenCode\Bundle\ExchangeRate\Security\AccessVoter;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -161,25 +162,29 @@ class Configuration implements ConfigurationInterface
      */
     protected function getAccessRolesDefinition()
     {
-        $node = new ArrayNodeDefinition('access_roles');
+        $node = new ArrayNodeDefinition('security');
 
         $node
-            ->info('Configuration of controller access roles.')
+            ->info('Configuration of security voter access roles.')
             ->addDefaultsIfNotSet()
             ->children()
-                ->arrayNode('list')
+                ->booleanNode('enabled')
+                    ->info('Enables or disables access controll.')
+                    ->defaultTrue()
+                ->end()
+                ->arrayNode(AccessVoter::VIEW)
                     ->defaultValue(array(Role::MANAGE_RATE, Role::VIEW_RATE))
                     ->prototype('scalar')->end()
                 ->end()
-                ->arrayNode('create')
+                ->arrayNode(AccessVoter::CREATE)
                     ->defaultValue(array(Role::MANAGE_RATE, Role::VIEW_RATE))
                     ->prototype('scalar')->end()
                 ->end()
-                ->arrayNode('edit')
+                ->arrayNode(AccessVoter::EDIT)
                     ->defaultValue(array(Role::MANAGE_RATE, Role::DELETE_RATE))
                     ->prototype('scalar')->end()
                 ->end()
-                ->arrayNode('delete')
+                ->arrayNode(AccessVoter::DELETE)
                     ->defaultValue(array(Role::MANAGE_RATE, Role::DELETE_RATE))
                     ->prototype('scalar')->end()
                 ->end()

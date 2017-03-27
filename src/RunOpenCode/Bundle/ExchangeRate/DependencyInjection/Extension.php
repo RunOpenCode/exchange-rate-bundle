@@ -10,6 +10,7 @@
 namespace RunOpenCode\Bundle\ExchangeRate\DependencyInjection;
 
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\Configuration as TreeConfiguration;
+use RunOpenCode\Bundle\ExchangeRate\Security\AccessVoter;
 use RunOpenCode\ExchangeRate\Configuration;
 use RunOpenCode\ExchangeRate\Utils\CurrencyCodeUtil;
 use Symfony\Component\Config\FileLocator;
@@ -64,10 +65,10 @@ class Extension extends BaseExtension
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/services'));
         $loader->load('repository.xml');
         $loader->load('command.xml');
-        $loader->load('controller.xml');
         $loader->load('form_type.xml');
         $loader->load('manager.xml');
         $loader->load('processor.xml');
+        $loader->load('security.xml');
         $loader->load('source.xml');
         $loader->load('validator.xml');
 
@@ -76,9 +77,9 @@ class Extension extends BaseExtension
             ->configureRepository($config, $container)
             ->configureFileRepository($config, $container)
             ->configureDoctrineDbalRepository($config, $container)
-            ->configureController($config, $container)
+            ->configureAccessVoter($config, $container)
             ->configureRates($config, $container)
-            ->configureSimpleSources($config, $container)
+            ->configureSources($config, $container)
             ->configureSourceType($config, $container)
             ->configureRateTypeType($config, $container)
             ->configureCurrencyCodeType($config, $container)
@@ -140,6 +141,32 @@ class Extension extends BaseExtension
         return $this;
     }
 
+
+    /**
+     * Configure sources which does not have to be explicitly added to service container.
+     *
+     * @param array $config Configuration parameters.
+     * @param ContainerBuilder $container Service container.
+     *
+     * @return Extension $this Fluent interface.
+     */
+    protected function configureSources(array $config, ContainerBuilder $container)
+    {
+        if (!empty($config['sources'])) {
+
+            foreach ($config['sources'] as $name => $class) {
+
+                $definition = new Definition($class);
+                $definition
+                    ->addTag('run_open_code.exchange_rate.source', ['alias' => $name]);
+
+                $container->setDefinition(sprintf('run_open_code.exchange_rate.source.%s', $name), $definition);
+            }
+        }
+
+        return $this;
+    }
+
     /**
      * Configure required processors.
      *
@@ -196,33 +223,30 @@ class Extension extends BaseExtension
     }
 
     /**
-     * Configure controller.
+     * Configure access voter.
      *
      * @param array $config Configuration parameters.
      * @param ContainerBuilder $container Service container.
-     * @return Extension $this Fluent interface.
-     */
-    protected function configureController(array $config, ContainerBuilder $container)
-    {
-        $container->setParameter(
-            'run_open_code.exchange_rate.controller.access_roles_configuration',
-            $config['access_roles']
-        );
-
-        return $this;
-    }
-
-    /**
-     * Configure simple sources which does not have to be explicitly added to service container.
      *
-     * @param array $config Configuration parameters.
-     * @param ContainerBuilder $container Service container.
      * @return Extension $this Fluent interface.
      */
-    protected function configureSimpleSources(array $config, ContainerBuilder $container)
+    protected function configureAccessVoter(array $config, ContainerBuilder $container)
     {
-        if (!empty($config['sources']) && count($config['sources']) > 0) {
-            $container->setParameter('run_open_code.exchange_rate.source.registered_simple_sources', $config['sources']);
+        if ($config['security']['enabled']) {
+
+            $container
+                ->getDefinition('run_open_code.exchange_rate.security.access_voter')
+                ->setArguments([
+                    [
+                        AccessVoter::VIEW => $config['security'][AccessVoter::VIEW],
+                        AccessVoter::CREATE => $config['security'][AccessVoter::CREATE],
+                        AccessVoter::EDIT => $config['security'][AccessVoter::EDIT],
+                        AccessVoter::DELETE => $config['security'][AccessVoter::DELETE],
+                    ]
+                ]);
+
+        } else {
+            $container->removeDefinition('run_open_code.exchange_rate.security.access_voter');
         }
 
         return $this;
