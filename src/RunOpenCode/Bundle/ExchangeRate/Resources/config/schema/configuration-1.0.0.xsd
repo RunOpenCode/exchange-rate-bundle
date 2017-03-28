@@ -10,7 +10,7 @@
 
     <xsd:complexType name="config">
 
-        <xsd:sequence>
+        <xsd:all>
 
             <xsd:element name="base-currency" type="xsd:string" minOccurs="1" maxOccurs="1" />
 
@@ -82,7 +82,7 @@
 
             <xsd:element name="form-types" minOccurs="0" maxOccurs="1">
                 <xsd:complexType>
-                    <xsd:sequence>
+                    <xsd:all>
 
                         <xsd:element name="source-type" minOccurs="0" maxOccurs="1">
                             <xsd:complexType>
@@ -98,7 +98,6 @@
                                 <xsd:sequence>
                                     <xsd:element name="choice-translation-domain" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
                                     <xsd:element name="preferred-choices" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
-                                    <xsd:element name="label-format" minOccurs="0" maxOccurs="1" type="xsd:string"/>
                                 </xsd:sequence>
                             </xsd:complexType>
                         </xsd:element>
@@ -121,11 +120,20 @@
                             </xsd:complexType>
                         </xsd:element>
 
-                    </xsd:sequence>
+                        <xsd:element name="foreign-currency-code-type" minOccurs="0" maxOccurs="1">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="choice-translation-domain" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+                                    <xsd:element name="preferred-choices" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+
+                    </xsd:all>
                 </xsd:complexType>
             </xsd:element>
 
-        </xsd:sequence>
+        </xsd:all>
 
     </xsd:complexType>
 

@@ -54,6 +54,7 @@ class Configuration implements ConfigurationInterface
                         ->append($this->getSourceTypeDefinition())
                         ->append($this->getRateTypeTypeDefinition())
                         ->append($this->getCurrencyCodeTypeDefinition())
+                        ->append($this->getForeignCurrencyCodeTypeDefinition())
                         ->append($this->getRateTypeDefinition())
                     ->end()
                 ->end()
@@ -209,7 +210,7 @@ class Configuration implements ConfigurationInterface
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('choice_translation_domain')->defaultValue('roc_exchange_rate')->end()
-                ->arrayNode('preferred_choices')->end()
+                ->arrayNode('preferred_choices')->prototype('scalar')->end()->end()
             ->end()
         ->end();
 
@@ -230,7 +231,7 @@ class Configuration implements ConfigurationInterface
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('choice_translation_domain')->defaultValue('roc_exchange_rate')->end()
-                ->arrayNode('preferred_choices')->end()
+                ->arrayNode('preferred_choices')->prototype('scalar')->end()->end()
             ->end()
         ->end();
 
@@ -251,7 +252,28 @@ class Configuration implements ConfigurationInterface
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('choice_translation_domain')->defaultValue('roc_exchange_rate')->end()
-                ->arrayNode('preferred_choices')->end()
+                ->arrayNode('preferred_choices')->prototype('scalar')->end()->end()
+            ->end()
+        ->end();
+
+        return $node;
+    }
+
+    /**
+     * Build configuration tree for "RunOpenCode\Bundle\ExchangeRate\Form\Type\ForeignCurrencyCodeType" default settings.
+     *
+     * @return ArrayNodeDefinition
+     */
+    protected function getForeignCurrencyCodeTypeDefinition()
+    {
+        $node = new ArrayNodeDefinition('foreign_currency_code_type');
+
+        $node
+            ->info('Modify default "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\ForeignCurrencyCodeType" settings.')
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->scalarNode('choice_translation_domain')->defaultValue('roc_exchange_rate')->end()
+                ->arrayNode('preferred_choices')->prototype('scalar')->end()->end()
             ->end()
         ->end();
 
@@ -272,8 +294,7 @@ class Configuration implements ConfigurationInterface
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('choice_translation_domain')->defaultValue('roc_exchange_rate')->end()
-                ->scalarNode('label_format')->defaultValue('{{currency-code}}, {{rate-type}} ({{source}})')->end()
-                ->arrayNode('preferred_choices')->end()
+                ->arrayNode('preferred_choices')->prototype('scalar')->end()->end()
             ->end()
         ->end();
 

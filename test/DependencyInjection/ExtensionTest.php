@@ -27,7 +27,7 @@ class ExtensionTest extends AbstractExtensionTestCase
             'base_currency' => 'RSD',
             'rates' => [
                 ['currency_code' => 'EUR', 'rate_type' => 'median', 'source' => 'national_bank_of_serbia'],
-            ]
+            ],
         ]);
 
         $this->assertContainerBuilderHasParameter('run_open_code.exchange_rate.base_currency', 'RSD');
@@ -46,7 +46,7 @@ class ExtensionTest extends AbstractExtensionTestCase
 
         $this->load([
             'base_currency' => 'RSD',
-            'rates' => $rates
+            'rates' => $rates,
         ]);
 
         $services = $this->container->findTaggedServiceIds('run_open_code.exchange_rate.rate_configuration');
@@ -87,7 +87,7 @@ class ExtensionTest extends AbstractExtensionTestCase
             'rates' => [
                 ['currency_code' => 'EUR', 'rate_type' => 'median', 'source' => 'national_bank_of_serbia'],
             ],
-            'sources' => $sources
+            'sources' => $sources,
         ]);
 
         $services = $this->container->findTaggedServiceIds('run_open_code.exchange_rate.source');
@@ -114,7 +114,7 @@ class ExtensionTest extends AbstractExtensionTestCase
             'rates' => [
                 ['currency_code' => 'EUR', 'rate_type' => 'median', 'source' => 'national_bank_of_serbia'],
             ],
-            'repository' => 'file'
+            'repository' => 'file',
         ]);
 
         $this->assertContainerBuilderHasParameter('run_open_code.exchange_rate.repository', 'file');
@@ -132,7 +132,7 @@ class ExtensionTest extends AbstractExtensionTestCase
             ],
             'file_repository' => [
                 'path' => 'path/to/file'
-            ]
+            ],
         ]);
 
         $this->assertContainerBuilderHasServiceDefinitionWithArgument('run_open_code.exchange_rate.repository.file_repository', 0, 'path/to/file');
@@ -151,7 +151,7 @@ class ExtensionTest extends AbstractExtensionTestCase
             'doctrine_dbal_repository' => [
                 'table_name' => 'table_name',
                 'connection' => 'connection'
-            ]
+            ],
         ]);
 
         $this->assertContainerBuilderHasServiceDefinitionWithArgument('run_open_code.exchange_rate.repository.doctrine_dbal_repository', 0, new Reference('connection'));
@@ -170,7 +170,7 @@ class ExtensionTest extends AbstractExtensionTestCase
             ],
             'security' => [
                 'enabled' => false,
-            ]
+            ],
         ]);
 
         $this->assertContainerBuilderNotHasService('run_open_code.exchange_rate.security.access_voter');
@@ -193,10 +193,70 @@ class ExtensionTest extends AbstractExtensionTestCase
             'rates' => [
                 ['currency_code' => 'EUR', 'rate_type' => 'median', 'source' => 'national_bank_of_serbia'],
             ],
-            'security' => $roles
+            'security' => $roles,
         ]);
 
         $this->assertContainerBuilderHasServiceDefinitionWithArgument('run_open_code.exchange_rate.security.access_voter', 0, $roles);
+    }
+
+    /**
+     * @test
+     */
+    public function itConfiguresFormTypes()
+    {
+        $this->load([
+            'base_currency' => 'RSD',
+            'rates' => [
+                ['currency_code' => 'EUR', 'rate_type' => 'median', 'source' => 'national_bank_of_serbia'],
+            ],
+            'form_types' => [
+                'source_type' => [
+                    'choice_translation_domain' => 'domain',
+                    'preferred_choices' => ['national_bank_of_serbia'],
+                ],
+                'rate_type' => [
+                    'choice_translation_domain' => 'domain',
+                    'preferred_choices' => ['national_bank_of_serbia.median.EUR'],
+                ],
+                'rate_type_type' => [
+                    'choice_translation_domain' => 'domain',
+                    'preferred_choices' => ['median'],
+                ],
+                'currency_code_type' => [
+                    'choice_translation_domain' => 'domain',
+                    'preferred_choices' => ['EUR'],
+                ],
+                'foreign_currency_code_type' => [
+                    'choice_translation_domain' => 'domain',
+                    'preferred_choices' => ['EUR'],
+                ],
+            ],
+        ]);
+
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('run_open_code.exchange_rate.form_type.source_type', 1, [
+            'choice_translation_domain' => 'domain',
+            'preferred_choices' => ['national_bank_of_serbia'],
+        ]);
+
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('run_open_code.exchange_rate.form_type.rate_type', 1, [
+            'choice_translation_domain' => 'domain',
+            'preferred_choices' => ['national_bank_of_serbia.median.EUR'],
+        ]);
+
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('run_open_code.exchange_rate.form_type.rate_type_type', 1, [
+            'choice_translation_domain' => 'domain',
+            'preferred_choices' => ['median'],
+        ]);
+
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('run_open_code.exchange_rate.form_type.currency_code_type', 2, [
+            'choice_translation_domain' => 'domain',
+            'preferred_choices' => ['EUR'],
+        ]);
+
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('run_open_code.exchange_rate.form_type.foreign_currency_code_type', 1, [
+            'choice_translation_domain' => 'domain',
+            'preferred_choices' => ['EUR'],
+        ]);
     }
 
     /**

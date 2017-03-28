@@ -21,30 +21,28 @@
 
     <services>
 
-        <service id="run_open_code.exchange_rate.form_type.rate_type" class="%run_open_code.exchange_rate.form_type.rate_type.class%">
+        <service id="run_open_code.exchange_rate.form_type.source_type" class="%run_open_code.exchange_rate.form_type.source_type.class%">
             <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
-            <argument type="service" id="translator" />
-            <argument type="collection" />
             <tag name="form.type" />
         </service>
 
-        <service id="run_open_code.exchange_rate.form_type.source_type" class="%run_open_code.exchange_rate.form_type.source_type.class%">
-            <argument type="collection" />
+        <service id="run_open_code.exchange_rate.form_type.rate_type" class="%run_open_code.exchange_rate.form_type.rate_type.class%">
+            <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
             <tag name="form.type" />
         </service>
 
         <service id="run_open_code.exchange_rate.form_type.rate_type_type" class="%run_open_code.exchange_rate.form_type.rate_type_type.class%">
-            <argument type="collection" />
+            <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
             <tag name="form.type" />
         </service>
 
         <service id="run_open_code.exchange_rate.form_type.currency_code_type" class="%run_open_code.exchange_rate.form_type.currency_code_type.class%">
-            <argument type="collection" />
+            <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
             <tag name="form.type" />
         </service>
 
         <service id="run_open_code.exchange_rate.form_type.foreign_currency_code_type" class="%run_open_code.exchange_rate.form_type.foreign_currency_code_type.class%">
-            <argument type="collection" />
+            <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
             <tag name="form.type" />
         </service>
 

@@ -9,6 +9,8 @@
  */
 namespace RunOpenCode\Bundle\ExchangeRate\Form\Type;
 
+use RunOpenCode\ExchangeRate\Configuration;
+use RunOpenCode\ExchangeRate\Contract\RatesConfigurationRegistryInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -27,10 +29,23 @@ class ForeignCurrencyCodeType extends AbstractType
      */
     protected $defaults;
 
-    public function __construct(array $defaults)
+    public function __construct(RatesConfigurationRegistryInterface $registry, array $defaults)
     {
+        $currencyCodes = [];
+
+        /**
+         * @var Configuration $configuration
+         */
+        foreach ($registry as $configuration) {
+            $currencyCode = $configuration->getCurrencyCode();
+            $currencyCodes[$currencyCode] = $currencyCode;
+        }
+
+        asort($currencyCodes);
+
         $this->defaults = array_merge(array(
-            'choice_translation_domain' => false
+            'choice_translation_domain' => false,
+            'choices' => $currencyCodes
         ), $defaults);
     }
 
@@ -39,7 +54,8 @@ class ForeignCurrencyCodeType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults($this->defaults);
+        $resolver
+            ->setDefaults($this->defaults);
     }
 
     /**
