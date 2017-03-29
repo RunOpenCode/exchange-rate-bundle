@@ -6,7 +6,7 @@
         xmlns:run-open-code-exchange-rate-bundle="http://www.runopencode.com/xsd-schema/exchange-rate-bundle"
         xsi:schemaLocation="http://symfony.com/schema/dic/services
                             http://symfony.com/schema/dic/services/services-1.0.xsd
-                            http://www.runopencode.com/xsd-schema/query-resources-loader-bundle
+                            http://www.runopencode.com/xsd-schema/exchange-rate-bundle
                             http://www.runopencode.com/xsd-schema/exchange-rate-bundle/configuration-1.0.0.xsd
                             "
 >
@@ -15,23 +15,34 @@
 
         <run-open-code-exchange-rate-bundle:base-currency>RSD</run-open-code-exchange-rate-bundle:base-currency>
 
-        <run-open-code-exchange-rate-bundle:repository>file</run-open-code-exchange-rate-bundle:repository>
+        <run-open-code-exchange-rate-bundle:repository>doctrine_dbal</run-open-code-exchange-rate-bundle:repository>
 
         <run-open-code-exchange-rate-bundle:rates>
-            <run-open-code-exchange-rate-bundle:rate currency-code="EUR" rate-type="median" source="national_bank_of_serbia" />
+            <run-open-code-exchange-rate-bundle:rate currency-code="EUR" rate-type="median" source="national_bank_of_serbia">
+                <run-open-code-exchange-rate-bundle:extra name="key">Value</run-open-code-exchange-rate-bundle:extra>
+                <run-open-code-exchange-rate-bundle:extra name="otherKey">OtherValue</run-open-code-exchange-rate-bundle:extra>
+            </run-open-code-exchange-rate-bundle:rate>
             <run-open-code-exchange-rate-bundle:rate currency-code="CHF" rate-type="median" source="national_bank_of_serbia" />
             <run-open-code-exchange-rate-bundle:rate currency-code="USD" rate-type="median" source="national_bank_of_serbia" />
         </run-open-code-exchange-rate-bundle:rates>
 
-        <run-open-code-exchange-rate-bundle:file-repository path="%kernel.root_dir%/db/exchange_rates.dat"/>
+        <run-open-code-exchange-rate-bundle:file-repository path="/path/to/file.dat"/>
+
+        <run-open-code-exchange-rate-bundle:doctrine-dbal-repository connection="default" table-name="table"/>
 
         <run-open-code-exchange-rate-bundle:sources>
             <run-open-code-exchange-rate-bundle:source name="test">SomeClass</run-open-code-exchange-rate-bundle:source>
         </run-open-code-exchange-rate-bundle:sources>
 
-        <run-open-code-exchange-rate-bundle:security>
-            <run-open-code-exchange-rate-bundle:list>Pero</run-open-code-exchange-rate-bundle:list>
-            <run-open-code-exchange-rate-bundle:list>Djuro</run-open-code-exchange-rate-bundle:list>
+        <run-open-code-exchange-rate-bundle:security enabled="false">
+            <run-open-code-exchange-rate-bundle:view>List1</run-open-code-exchange-rate-bundle:view>
+            <run-open-code-exchange-rate-bundle:view>List2</run-open-code-exchange-rate-bundle:view>
+            <run-open-code-exchange-rate-bundle:create>Create1</run-open-code-exchange-rate-bundle:create>
+            <run-open-code-exchange-rate-bundle:create>Create2</run-open-code-exchange-rate-bundle:create>
+            <run-open-code-exchange-rate-bundle:edit>Edit1</run-open-code-exchange-rate-bundle:edit>
+            <run-open-code-exchange-rate-bundle:edit>Edit2</run-open-code-exchange-rate-bundle:edit>
+            <run-open-code-exchange-rate-bundle:delete>Delete1</run-open-code-exchange-rate-bundle:delete>
+            <run-open-code-exchange-rate-bundle:delete>Delete2</run-open-code-exchange-rate-bundle:delete>
         </run-open-code-exchange-rate-bundle:security>
 
         <run-open-code-exchange-rate-bundle:form-types>
@@ -39,18 +50,42 @@
             <run-open-code-exchange-rate-bundle:source-type>
 
                 <run-open-code-exchange-rate-bundle:choice-translation-domain>roc</run-open-code-exchange-rate-bundle:choice-translation-domain>
-                <run-open-code-exchange-rate-bundle:preferred-choices>EUR</run-open-code-exchange-rate-bundle:preferred-choices>
-                <run-open-code-exchange-rate-bundle:preferred-choices>RSD</run-open-code-exchange-rate-bundle:preferred-choices>
+                <run-open-code-exchange-rate-bundle:preferred-choices>opt1</run-open-code-exchange-rate-bundle:preferred-choices>
+                <run-open-code-exchange-rate-bundle:preferred-choices>opt2</run-open-code-exchange-rate-bundle:preferred-choices>
 
             </run-open-code-exchange-rate-bundle:source-type>
 
             <run-open-code-exchange-rate-bundle:rate-type-type>
 
                 <run-open-code-exchange-rate-bundle:choice-translation-domain>roc</run-open-code-exchange-rate-bundle:choice-translation-domain>
-                <run-open-code-exchange-rate-bundle:preferred-choices>EUR</run-open-code-exchange-rate-bundle:preferred-choices>
-                <run-open-code-exchange-rate-bundle:preferred-choices>RSD</run-open-code-exchange-rate-bundle:preferred-choices>
+                <run-open-code-exchange-rate-bundle:preferred-choices>opt1</run-open-code-exchange-rate-bundle:preferred-choices>
+                <run-open-code-exchange-rate-bundle:preferred-choices>opt2</run-open-code-exchange-rate-bundle:preferred-choices>
 
             </run-open-code-exchange-rate-bundle:rate-type-type>
+
+            <run-open-code-exchange-rate-bundle:currency-code-type>
+
+                <run-open-code-exchange-rate-bundle:choice-translation-domain>roc</run-open-code-exchange-rate-bundle:choice-translation-domain>
+                <run-open-code-exchange-rate-bundle:preferred-choices>opt1</run-open-code-exchange-rate-bundle:preferred-choices>
+                <run-open-code-exchange-rate-bundle:preferred-choices>opt2</run-open-code-exchange-rate-bundle:preferred-choices>
+
+            </run-open-code-exchange-rate-bundle:currency-code-type>
+
+            <run-open-code-exchange-rate-bundle:foreign-currency-code-type>
+
+                <run-open-code-exchange-rate-bundle:choice-translation-domain>roc</run-open-code-exchange-rate-bundle:choice-translation-domain>
+                <run-open-code-exchange-rate-bundle:preferred-choices>opt1</run-open-code-exchange-rate-bundle:preferred-choices>
+                <run-open-code-exchange-rate-bundle:preferred-choices>opt2</run-open-code-exchange-rate-bundle:preferred-choices>
+
+            </run-open-code-exchange-rate-bundle:foreign-currency-code-type>
+
+            <run-open-code-exchange-rate-bundle:rate-type>
+
+                <run-open-code-exchange-rate-bundle:choice-translation-domain>roc</run-open-code-exchange-rate-bundle:choice-translation-domain>
+                <run-open-code-exchange-rate-bundle:preferred-choices>opt1</run-open-code-exchange-rate-bundle:preferred-choices>
+                <run-open-code-exchange-rate-bundle:preferred-choices>opt2</run-open-code-exchange-rate-bundle:preferred-choices>
+
+            </run-open-code-exchange-rate-bundle:rate-type>
 
         </run-open-code-exchange-rate-bundle:form-types>
 

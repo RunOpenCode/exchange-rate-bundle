@@ -1,0 +1,36 @@
+run_open_code_exchange_rate:
+    base_currency: RSD
+    repository: doctrine_dbal
+    rates:
+        - { currency_code: EUR, rate_type: median, source: national_bank_of_serbia, extra: [ { name: key, value: Value}, { name: otherKey, value: OtherValue } ] }
+        - { currency_code: CHF, rate_type: median, source: national_bank_of_serbia }
+        - { currency_code: USD, rate_type: median, source: national_bank_of_serbia }
+    file_repository:
+        path: /path/to/file.dat
+    doctrine_dbal_repository:
+        connection: default
+        table_name: table
+    sources:
+        test: SomeClass
+    security:
+        enabled: false
+        view: [ 'List1', 'List2' ]
+        create: [ 'Create1', 'Create2' ]
+        edit: [ 'Edit1', 'Edit2' ]
+        delete: [ 'Delete1', 'Delete2' ]
+    form_types:
+        source_type:
+            choice_translation_domain: roc
+            preferred_choices: [ 'opt1', 'opt2']
+        rate_type_type:
+            choice_translation_domain: roc
+            preferred_choices: [ 'opt1', 'opt2']
+        currency_code_type:
+            choice_translation_domain: roc
+            preferred_choices: [ 'opt1', 'opt2']
+        foreign_currency_code_type:
+            choice_translation_domain: roc
+            preferred_choices: [ 'opt1', 'opt2']
+        rate_type:
+            choice_translation_domain: roc
+            preferred_choices: [ 'opt1', 'opt2']

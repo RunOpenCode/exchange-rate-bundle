@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+
+<container
+        xmlns="http://symfony.com/schema/dic/services"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:run-open-code-exchange-rate-bundle="http://www.runopencode.com/xsd-schema/exchange-rate-bundle"
+        xsi:schemaLocation="http://symfony.com/schema/dic/services
+                            http://symfony.com/schema/dic/services/services-1.0.xsd
+                            http://www.runopencode.com/xsd-schema/exchange-rate-bundle
+                            http://www.runopencode.com/xsd-schema/exchange-rate-bundle/configuration-1.0.0.xsd
+                            "
+>
+
+    <run-open-code-exchange-rate-bundle:config>
+
+        <run-open-code-exchange-rate-bundle:base-currency>RSD</run-open-code-exchange-rate-bundle:base-currency>
+
+        <run-open-code-exchange-rate-bundle:rates>
+            <run-open-code-exchange-rate-bundle:rate currency-code="EUR" rate-type="median" source="national_bank_of_serbia">
+                <run-open-code-exchange-rate-bundle:extra name="key">Value</run-open-code-exchange-rate-bundle:extra>
+                <run-open-code-exchange-rate-bundle:extra name="otherKey">OtherValue</run-open-code-exchange-rate-bundle:extra>
+            </run-open-code-exchange-rate-bundle:rate>
+            <run-open-code-exchange-rate-bundle:rate currency-code="CHF" rate-type="median" source="national_bank_of_serbia" />
+            <run-open-code-exchange-rate-bundle:rate currency-code="USD" rate-type="median" source="national_bank_of_serbia" />
+        </run-open-code-exchange-rate-bundle:rates>
+
+    </run-open-code-exchange-rate-bundle:config>
+
+</container>

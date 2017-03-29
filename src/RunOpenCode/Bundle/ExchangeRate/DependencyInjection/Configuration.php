@@ -37,7 +37,7 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('base_currency')
                     ->isRequired()
-                    ->info('Set base currency in which you are doing your business activities.') // TODO Validate!!!
+                    ->info('Set base currency in which you are doing your business activities.')
                 ->end()
                 ->scalarNode('repository')
                     ->defaultValue('file')
@@ -72,7 +72,19 @@ class Configuration implements ConfigurationInterface
     protected function getRatesDefinition()
     {
         $node = new ArrayNodeDefinition('rates');
+
         $node
+            ->beforeNormalization()
+                ->ifTrue(function ($value) {
+                    return array_key_exists('rate', $value);
+                })
+                ->then(function ($value) {
+                    return $value['rate'];
+                })
+            ->end();
+
+        $node
+            ->fixXmlConfig('rate')
             ->info('Configuration of each individual rate with which you intend to work with.')
             ->requiresAtLeastOneElement()
                 ->prototype('array')
@@ -80,7 +92,14 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('currency_code')->isRequired()->end()
                         ->scalarNode('rate_type')->isRequired()->end()
                         ->scalarNode('source')->isRequired()->end()
-                        ->arrayNode('extra')->end()
+                        ->arrayNode('extra')
+                            ->useAttributeAsKey('name')
+                            ->prototype('array')
+                                ->children()
+                                    ->variableNode('value')->isRequired()->end()
+                                ->end()
+                            ->end()
+                        ->end()
                     ->end()
                 ->end()
             ->end();
@@ -103,7 +122,7 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('path')
                     ->info('Absolute path to file where database file will be stored.')
-                    ->defaultValue('%kernel.root_dir%/db/exchange_rates.dat')
+                    ->defaultValue('%kernel.root_dir%/../var/db/exchange_rates.dat')
                 ->end()
             ->end()
         ->end();
@@ -178,11 +197,11 @@ class Configuration implements ConfigurationInterface
                     ->prototype('scalar')->end()
                 ->end()
                 ->arrayNode(AccessVoter::CREATE)
-                    ->defaultValue(array(Role::MANAGE_RATE, Role::VIEW_RATE))
+                    ->defaultValue(array(Role::MANAGE_RATE, Role::CREATE_RATE))
                     ->prototype('scalar')->end()
                 ->end()
                 ->arrayNode(AccessVoter::EDIT)
-                    ->defaultValue(array(Role::MANAGE_RATE, Role::DELETE_RATE))
+                    ->defaultValue(array(Role::MANAGE_RATE, Role::EDIT_RATE))
                     ->prototype('scalar')->end()
                 ->end()
                 ->arrayNode(AccessVoter::DELETE)

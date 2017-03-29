@@ -20,13 +20,11 @@
                 <xsd:complexType>
                     <xsd:sequence>
                         <xsd:element name="rate" minOccurs="1" maxOccurs="unbounded">
-                            <xsd:complexType mixed="true">
+                            <xsd:complexType>
                                 <xsd:sequence>
-                                    <xsd:element name="extra" minOccurs="0" maxOccurs="unbounded">
-                                        <xsd:complexType>
-                                            <xsd:sequence>
-                                                <xsd:any maxOccurs="unbounded" processContents="lax" />
-                                            </xsd:sequence>
+                                    <xsd:element name="extra" minOccurs="0" maxOccurs="unbounded" default="null">
+                                        <xsd:complexType mixed="true">
+                                            <xsd:attribute name="name" type="xsd:string" use="required"/>
                                         </xsd:complexType>
                                     </xsd:element>
                                 </xsd:sequence>
@@ -71,12 +69,12 @@
             <xsd:element name="security" minOccurs="0" maxOccurs="1">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element name="enabled" minOccurs="0" maxOccurs="1" type="xsd:boolean"/>
-                        <xsd:element name="list" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+                        <xsd:element name="view" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
                         <xsd:element name="create" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
                         <xsd:element name="edit" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
                         <xsd:element name="delete" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
                     </xsd:sequence>
+                    <xsd:attribute name="enabled" type="xsd:boolean" use="optional"/>
                 </xsd:complexType>
             </xsd:element>
 
