@@ -52,6 +52,6 @@
         "theseer/phpdox": "dev-master",
         "escapestudios/symfony2-coding-standard": "~2.0",
         "symfony/debug": "~3.0",
-        "matthiasnoback/symfony-dependency-injection-test": "~2.0"
+        "matthiasnoback/symfony-dependency-injection-test": "dev-master"
     }
 }

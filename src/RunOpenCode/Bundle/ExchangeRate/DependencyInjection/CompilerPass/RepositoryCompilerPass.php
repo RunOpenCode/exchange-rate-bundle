@@ -11,6 +11,7 @@ namespace RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
 /**
  * Class RepositoryCompilerPass
@@ -26,27 +27,24 @@ class RepositoryCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $knownRepositories = $this->getKnownRepositoryAliases();
-        $repositoryServiceId = $container->getParameter('run_open_code.exchange_rate.repository');
+        $repository = $container->getParameter('run_open_code.exchange_rate.repository');
 
-        $repositoryServiceId = isset($knownRepositories[$repositoryServiceId]) ? $knownRepositories[$repositoryServiceId] : $repositoryServiceId;
-
-        if (!$container->hasDefinition($repositoryServiceId)) {
-            throw new \RuntimeException(sprintf('Unknown repository service "%s" referenced in configuration.', $repositoryServiceId));
+        if ($container->hasDefinition($repository)) {
+            $container->setDefinition('run_open_code.exchange_rate.repository', $repository);
+            return;
         }
 
-        $container->setDefinition('run_open_code.exchange_rate.repository', $container->getDefinition($repositoryServiceId));
-    }
+        foreach ($container->findTaggedServiceIds('run_open_code.exchange_rate.repository') as $id => $tags) {
 
-    /**
-     * Get known repository aliases which can be used in configuration instead of full service name.
-     *
-     * @return array
-     */
-    protected function getKnownRepositoryAliases()
-    {
-        return array(
-            'file' => 'run_open_code.exchange_rate.repository.file_repository'
-        );
+            foreach ($tags as $attributes) {
+                
+                if (isset($attributes['alias']) && $repository === $attributes['alias']) {
+                    $container->setDefinition('run_open_code.exchange_rate.repository', $id);
+                    return;
+                }
+            }
+        }
+
+        throw new ServiceNotFoundException(sprintf('Repository service "%s" does not exists.', $repository));
     }
 }

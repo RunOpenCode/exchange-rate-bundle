@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "40a7d032c5638b9a5fa361b49f3d9f29",
+    "content-hash": "d716dedb2c6084211b9768e5d8d84c0a",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -2268,16 +2268,16 @@
         },
         {
             "name": "matthiasnoback/symfony-dependency-injection-test",
-            "version": "v2.0.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/matthiasnoback/SymfonyDependencyInjectionTest.git",
-                "reference": "55c7be9cf700eaeeadf7164a4c4cccd946efb5bb"
+                "reference": "09833e217f4da582e892a231ee04d4d9a9c7059c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/matthiasnoback/SymfonyDependencyInjectionTest/zipball/55c7be9cf700eaeeadf7164a4c4cccd946efb5bb",
-                "reference": "55c7be9cf700eaeeadf7164a4c4cccd946efb5bb",
+                "url": "https://api.github.com/repos/matthiasnoback/SymfonyDependencyInjectionTest/zipball/09833e217f4da582e892a231ee04d4d9a9c7059c",
+                "reference": "09833e217f4da582e892a231ee04d4d9a9c7059c",
                 "shasum": ""
             },
             "require": {
@@ -2314,7 +2314,7 @@
                 "dependency injection",
                 "phpunit"
             ],
-            "time": "2017-02-08T11:26:19+00:00"
+            "time": "2017-03-20T15:33:52+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -3025,16 +3025,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "6.0.10",
+            "version": "6.0.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "8a536f409ebae632b92b7e7288e068248fe365ed"
+                "reference": "de3690a9f4109e3ef0f36e0ba1227e986818275b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/8a536f409ebae632b92b7e7288e068248fe365ed",
-                "reference": "8a536f409ebae632b92b7e7288e068248fe365ed",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/de3690a9f4109e3ef0f36e0ba1227e986818275b",
+                "reference": "de3690a9f4109e3ef0f36e0ba1227e986818275b",
                 "shasum": ""
             },
             "require": {
@@ -3103,7 +3103,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-03-19T16:54:28+00:00"
+            "time": "2017-03-29T12:34:07+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -3626,16 +3626,16 @@
         },
         {
             "name": "sebastian/object-reflector",
-            "version": "1.1.0",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/object-reflector.git",
-                "reference": "afd5797e7af7c9f529879ad5e8e8abe126c89dab"
+                "reference": "773f97c67f28de00d397be301821b06708fca0be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/object-reflector/zipball/afd5797e7af7c9f529879ad5e8e8abe126c89dab",
-                "reference": "afd5797e7af7c9f529879ad5e8e8abe126c89dab",
+                "url": "https://api.github.com/repos/sebastianbergmann/object-reflector/zipball/773f97c67f28de00d397be301821b06708fca0be",
+                "reference": "773f97c67f28de00d397be301821b06708fca0be",
                 "shasum": ""
             },
             "require": {
@@ -3667,7 +3667,7 @@
             ],
             "description": "Allows reflection of object attributes, including inherited and non-public ones",
             "homepage": "https://github.com/sebastianbergmann/object-reflector/",
-            "time": "2017-03-16T14:05:21+00:00"
+            "time": "2017-03-29T09:07:27+00:00"
         },
         {
             "name": "sebastian/phpcpd",
@@ -4058,7 +4058,7 @@
             ],
             "description": "Symfony PHPUnit Bridge",
             "homepage": "https://symfony.com",
-            "time": "2017-03-20T13:28:31+00:00"
+            "time": "2017-03-20 13:28:31"
         },
         {
             "name": "symfony/yaml",
@@ -4352,7 +4352,8 @@
         "phploc/phploc": 20,
         "phpmd/phpmd": 0,
         "sebastian/phpcpd": 20,
-        "theseer/phpdox": 20
+        "theseer/phpdox": 20,
+        "matthiasnoback/symfony-dependency-injection-test": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
