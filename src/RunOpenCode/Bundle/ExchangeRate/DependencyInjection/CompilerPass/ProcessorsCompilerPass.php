@@ -27,9 +27,9 @@ class ProcessorsCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if ($container->hasDefinition('run_open_code.exchange_rate.registry.processors')) {
+        if ($container->has('run_open_code.exchange_rate.registry.processors')) {
 
-            $definition = $container->getDefinition('run_open_code.exchange_rate.registry.processors');
+            $definition = $container->findDefinition('run_open_code.exchange_rate.registry.processors');
 
             $processors = array();
 

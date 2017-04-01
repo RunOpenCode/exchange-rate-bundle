@@ -6,7 +6,6 @@
 >
     <parameters>
 
-        <parameter key="run_open_code.exchange_rate.repository" />
         <parameter key="run_open_code.exchange_rate.repository.file_repository.class">RunOpenCode\ExchangeRate\Repository\FileRepository</parameter>
         <parameter key="run_open_code.exchange_rate.repository.doctrine_dbal_repository.class">RunOpenCode\ExchangeRate\Repository\DoctrineDbalRepository</parameter>
 
@@ -14,7 +13,7 @@
 
     <services>
 
-        <service id="run_open_code.exchange_rate.repository" synthetic="true"/>
+        <service id="run_open_code.exchange_rate.repository" alias="run_open_code.exchange_rate.repository.file_repository"/>
 
         <service id="run_open_code.exchange_rate.repository.file_repository" class="%run_open_code.exchange_rate.repository.file_repository.class%" public="false">
             <tag name="run_open_code.exchange_rate.repository" alias="file" />
