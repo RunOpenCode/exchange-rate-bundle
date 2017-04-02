@@ -154,7 +154,7 @@ class Extension extends BaseExtension
 
                 $definition = new Definition($class);
                 $definition
-                    ->addTag('run_open_code.exchange_rate.source', ['alias' => $name]);
+                    ->addTag('run_open_code.exchange_rate.source', ['name' => $name]);
 
                 $container->setDefinition(sprintf('run_open_code.exchange_rate.source.%s', $name), $definition);
             }

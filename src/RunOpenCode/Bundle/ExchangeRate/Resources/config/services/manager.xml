@@ -11,9 +11,7 @@
 
         <parameter key="run_open_code.exchange_rate.base_currency" />
 
-        <parameter key="run_open_code.exchange_rate.registry.rates.class">RunOpenCode\Bundle\ExchangeRate\Registry\RatesConfigurationRegistry</parameter>
-
-        <parameter key="run_open_code.exchange_rate.registered_rates" type="collection" />
+        <parameter key="run_open_code.exchange_rate.registry.rates.class">RunOpenCode\ExchangeRate\Registry\RatesConfigurationRegistry</parameter>
 
     </parameters>
 
@@ -29,9 +27,7 @@
 
         <service id="roc.exchange_rate" alias="run_open_code.exchange_rate" />
 
-        <service id="run_open_code.exchange_rate.registry.rates" class="%run_open_code.exchange_rate.registry.rates.class%" public="false">
-            <argument>%run_open_code.exchange_rate.registered_rates%</argument>
-        </service>
+        <service id="run_open_code.exchange_rate.registry.rates" class="%run_open_code.exchange_rate.registry.rates.class%" public="false"/>
 
     </services>
 

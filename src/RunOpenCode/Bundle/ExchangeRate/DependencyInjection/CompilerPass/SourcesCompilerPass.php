@@ -11,7 +11,7 @@ namespace RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
@@ -34,102 +34,44 @@ class SourcesCompilerPass implements CompilerPassInterface
 
             $requiredSources = $this->getRequiredSources($container);
 
-            $availableSources = array_merge(
-                $this->getRegisteredContainerSources($container),
-                $this->getRegisteredSimpleSources($container)
-            );
+            foreach ($container->findTaggedServiceIds('run_open_code.exchange_rate.source') as $id => $tags) {
 
-            if (count($availableSources) === 0) {
-                throw new \RuntimeException('There is no available exchange rate source service registered in Service Container.');
+                foreach ($tags as $attributes) {
+
+                    if (
+                        !empty($attributes['name'])
+                        &&
+                        isset($requiredSources[$attributes['name']])
+                    ) {
+                        $definition->addMethodCall('add', [new Reference($id)]);
+                        unset($requiredSources[$attributes['name']]);
+
+                        continue 2;
+                    }
+                }
             }
 
-
-            foreach ($requiredSources as $requiredSource) {
-
-                if (array_key_exists($requiredSource, $availableSources)) {
-
-                    $definition->addMethodCall('add', array(
-                        new Reference($availableSources[$requiredSource])
-                    ));
-                } else {
-                    throw new \RuntimeException(sprintf('Required source "%s" is not available in Service Container.', $requiredSource));
-                }
+            if (count($requiredSources) > 0) {
+                throw new ServiceNotFoundException(reset($requiredSources));
             }
         }
     }
 
     /**
-     * Get list of required sources.
+     * Get list of required sources services.
      *
      * @param ContainerBuilder $container
      * @return array
      */
     protected function getRequiredSources(ContainerBuilder $container)
     {
-        $rates = $container->getParameter('run_open_code.exchange_rate.registered_rates');
+        $sources = [];
 
-        return array_unique(array_map(function($rateConfiguration) {
-            return $rateConfiguration['source'];
-        }, $rates));
-    }
-
-    /**
-     * Get sources which are registered as tagged services via service container.
-     *
-     * @param ContainerBuilder $container
-     * @return array
-     */
-    protected function getRegisteredContainerSources(ContainerBuilder $container)
-    {
-        $availableSources = array();
-
-        foreach ($container->findTaggedServiceIds('run_open_code.exchange_rate.source') as $id => $tags) {
-
-            foreach ($tags as $attributes) {
-
-                if (!empty($attributes['alias'])) {
-                    $availableSources[$attributes['alias']] = $id;
-                    continue;
-                }
-            }
+        foreach ($container->findTaggedServiceIds('run_open_code.exchange_rate.rate_configuration') as $id => $tags) {
+            $source = $container->getDefinition($id)->getArgument(2);
+            $sources[$source] = $source;
         }
 
-        return $availableSources;
-    }
-
-    /**
-     * Get simple sources which are registered as simple class name via configuration.
-     *
-     * @param ContainerBuilder $container
-     * @return array
-     */
-    protected function getRegisteredSimpleSources(ContainerBuilder $container)
-    {
-        /**
-         * @var array $sources
-         */
-        if ($container->hasParameter('run_open_code.exchange_rate.source.registered_simple_sources')) {
-
-            $availableSources = array();
-
-            foreach ($container->getParameter('run_open_code.exchange_rate.source.registered_simple_sources') as $key => $class) {
-
-                $definition = new Definition($class);
-
-                $definition
-                    ->setPublic(false)
-                    ->addTag('run_open_code.exchange_rate.source', array(
-                        'alias' => $key
-                    ));
-
-                $container->setDefinition(($id = sprintf('run_open_code.exchange_rate.source.simple.%s', $key)), $definition);
-
-                $availableSources[$key] = $id;
-            }
-
-            return $availableSources;
-        }
-
-        return array();
+        return $sources;
     }
 }

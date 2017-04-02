@@ -98,7 +98,7 @@ class ExtensionTest extends AbstractExtensionTestCase
 
         foreach ($services as $id => $tags) {
             $definition = $this->container->findDefinition($id);
-            $configured[$tags[0]['alias']] = $definition->getClass();
+            $configured[$tags[0]['name']] = $definition->getClass();
         }
 
         $this->assertEquals($sources, $configured);
