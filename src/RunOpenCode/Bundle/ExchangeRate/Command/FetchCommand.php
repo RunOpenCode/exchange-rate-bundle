@@ -9,18 +9,19 @@
  */
 namespace RunOpenCode\Bundle\ExchangeRate\Command;
 
-use RunOpenCode\Bundle\ExchangeRate\Contract\NotificationInterface;
+use RunOpenCode\Bundle\ExchangeRate\Event\FetchEvents;
+use RunOpenCode\Bundle\ExchangeRate\Exception\InvalidArgumentException;
 use RunOpenCode\ExchangeRate\Contract\ManagerInterface;
 use RunOpenCode\ExchangeRate\Contract\RateInterface;
 use RunOpenCode\ExchangeRate\Contract\SourceInterface;
 use RunOpenCode\ExchangeRate\Contract\SourcesRegistryInterface;
-use RunOpenCode\ExchangeRate\Log\LoggerAwareTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Console\Style\OutputStyle;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
  * Class FetchCommand
@@ -31,7 +32,10 @@ use Symfony\Component\Console\Style\OutputStyle;
  */
 class FetchCommand extends Command
 {
-    use LoggerAwareTrait;
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
 
     /**
      * @var ManagerInterface
@@ -46,49 +50,14 @@ class FetchCommand extends Command
     /**
      * @var SymfonyStyle
      */
-    protected $outputStyle;
+    protected $output;
 
-    /**
-     * @var NotificationInterface[]
-     */
-    protected $successNotifications;
-
-    /**
-     * @var NotificationInterface[]
-     */
-    protected $errorNotifications;
-
-    public function __construct(ManagerInterface $manager, SourcesRegistryInterface $sourcesRegistry)
+    public function __construct(EventDispatcherInterface $eventDispatcher, ManagerInterface $manager, SourcesRegistryInterface $sourcesRegistry)
     {
         parent::__construct();
+        $this->eventDispatcher = $eventDispatcher;
         $this->manager = $manager;
         $this->sourcesRegistry = $sourcesRegistry;
-        $this->successNotifications = [];
-        $this->errorNotifications = [];
-    }
-
-    /**
-     * Add success notification to command notifications stack.
-     *
-     * @param NotificationInterface $notification Success notification to add.
-     * @return FetchCommand $this Fluent interface.
-     */
-    public function addSuccessNotification(NotificationInterface $notification)
-    {
-        $this->successNotifications[] = $notification;
-        return $this;
-    }
-
-    /**
-     * Add error notification to command notifications stack.
-     *
-     * @param NotificationInterface $notification Error notification to add.
-     * @return FetchCommand $this Fluent interface.
-     */
-    public function addErrorNotification(NotificationInterface $notification)
-    {
-        $this->errorNotifications[] = $notification;
-        return $this;
     }
 
     /**
@@ -97,11 +66,14 @@ class FetchCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('roc:exchange-rate:fetch')
+            ->setName('runopencode:exchange-rate:fetch')
+            ->setAliases([
+                'roc:exchange-rate:fetch'
+            ])
             ->setDescription('Fetch exchange rates from sources.')
             ->addOption('date', 'd', InputOption::VALUE_OPTIONAL, 'State on which date exchange rates should be fetched.')
             ->addOption('source', 'src', InputOption::VALUE_OPTIONAL, 'State which sources should be contacted only, separated with comma.')
-            ->addOption('silent', null, InputOption::VALUE_OPTIONAL, 'In silent mode, rates are fetched, but no notification is being fired on any event.', false)
+            ->addOption('silent', null, InputOption::VALUE_OPTIONAL, 'In silent mode, rates are fetched, but no event will be fired.', false)
         ;
     }
 
@@ -110,239 +82,117 @@ class FetchCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $outputStyle = new SymfonyStyle($input, $output);
+        $this->output = new SymfonyStyle($input, $output);
 
-        try {
-            $this
-                ->cleanInputDate($input, $outputStyle)
-                ->cleanInputSources($input, $outputStyle);
-        } catch (\Exception $e) {
+        $date = (null !== $input->getOption('date')) ? $this->sanitizeDate($input->getOption('date')) : new \DateTime('now');
+        $sources = $this->sanitizeSources($input->getOption('source'));
 
-            $this->getLogger()->critical('Unable to execute command. Reason: "{message}".', array(
-                'message' => $e->getMessage(),
-                'exception' => $e
-            ));
+        $this->output->title(sprintf('Fetching rates for sources "%s" on "%s".', implode('", "', $sources), $date->format('Y-m-d')));
 
-            return;
-        }
+        $errors = false;
 
-        $this->displayCommandBegin($input, $outputStyle);
+        foreach ($sources as $source) {
 
-        try {
+            try {
+                $rates = $this->manager->fetch($source, $date);
 
-            $rates = $this->doFetch($input);
+                $rows = array_map(function(RateInterface $rate) {
+                    return [
+                        $rate->getCurrencyCode(),
+                        $rate->getRateType(),
+                        $rate->getValue(),
+                    ];
+                }, $rates);
 
-        } catch (\Exception $e) {
+                $this->output->section(sprintf('Fetched rates for source: "%s"', $source));
+                $this->output->table(['Currency code', 'Rate type', 'Value'], $rows);
 
-            $this->displayCommandError($outputStyle);
+                if (!$input->getOption('silent')) {
+                    $this->eventDispatcher->dispatch(FetchEvents::SUCCESS, new GenericEvent($sources, ['rates' => $rates]));
+                }
+            } catch (\Exception $e) {
+                $this->output->error(sprintf('Could not fetch rates from source "%s".', $source));
+                $errors = true;
 
-            if (!$input->getOption('silent')) {
-                $this->dispatchErrorNotifications($input->getOption('source'), $input->getOption('date'));
+                if (!$input->getOption('silent')) {
+                    $this->eventDispatcher->dispatch(FetchEvents::ERROR, new GenericEvent($sources, ['exception' => $e]));
+                }
             }
-
-            $this->getLogger()->critical('Unable to fetch rates. Reason: "{message}".', array(
-                'message' => $e->getMessage(),
-                'exception' => $e
-            ));
-
-            return;
+        }
+        
+        if ($errors) {
+            $this->output->error('Could not fetch all rates.');
+            return -1;
         }
 
-        $this->displayCommandSuccess($outputStyle);
-
-        if (!$input->getOption('silent')) {
-            $this->dispatchSuccessNotifications($input->getOption('source'), $input->getOption('date'), $rates);
-        }
-
-        $this->getLogger()->info('Successfully fetched rates "{rates}".', array(
-            'rates' => implode(', ', array_map(function(RateInterface $rate) {
-                return sprintf('%s => %s', $rate->getBaseCurrencyCode(), $rate->getCurrencyCode());
-            }, $rates))
-        ));
+        $this->output->success('Rates successfully fetched.');
+        return 0;
     }
 
     /**
-     * Clean date from console input.
+     * Sanitizes a date from console input.
      *
-     * @param InputInterface $input Console input.
-     * @param OutputStyle $outputStyle Output style to use.
-     * @return FetchCommand $this Fluent interface.
+     * @param string|\DateTime $dateString A date
      *
-     * @throws \Exception
+     * @return \DateTime
+     *
+     * @throws InvalidArgumentException
      */
-    protected function cleanInputDate(InputInterface $input, OutputStyle $outputStyle)
+    protected function sanitizeDate($dateString)
     {
-        $date = $input->getOption('date');
-
-        if (!empty($date)) {
-            $date = \DateTime::createFromFormat('Y-m-d', $date);
-
-            if ($date === false) {
-                $outputStyle->error('Invalid date format provided, expected format is "Y-m-d".');
-                throw new \Exception;
-            }
-        } else {
-            $date = new \DateTime('now');
+        if ($dateString instanceof \DateTime) {
+            return $dateString;
         }
 
-        $input->setOption('date', $date);
+        $date = \DateTime::createFromFormat('Y-m-d', $dateString);
 
-        return $this;
+        if ($date instanceof \DateTime) {
+            return $date;
+        }
+
+        $date = new \DateTime($dateString);
+
+        if ($date instanceof \DateTime) {
+            return $date;
+        }
+
+        throw new InvalidArgumentException(sprintf('Provided date "%s" is provided in unknown format. You should use "Y-m-d" instead.', $dateString));
     }
 
     /**
      * Clean sources from console input.
      *
-     * @param InputInterface $input Console input.
-     * @param OutputStyle $outputStyle Output style to use.
-     * @return FetchCommand $this Fluent interface.
+     * @param mixed $sourcesString A sources.
      *
-     * @throws \Exception
+     * @return array|null
+     *
+     * @throws InvalidArgumentException
      */
-    protected function cleanInputSources(InputInterface $input, OutputStyle $outputStyle)
+    protected function sanitizeSources($sourcesString)
     {
-        $sources = $input->getOption('source');
+        $sources = $sourcesString;
 
-        if (!empty($sources)) {
+        if (is_string($sources)) {
             $sources = array_map('trim', explode(',', $sources));
+        }
 
-            foreach ($sources as $source) {
+        if (null === $sources || (is_array($sources) && count($sources) === 0)) {
 
-                if (!$this->sourcesRegistry->has($source)) {
+            return array_map(function(SourceInterface $source) {
+                return $source->getName();
+            }, $this->sourcesRegistry->all());
+        }
 
-                    $outputStyle->error(sprintf('Invalid source name "%s" provided, available sources are "%s".', $source, implode(', ', array_map(function(SourceInterface $source) {
-                        return $source->getName();
-                    }, $this->sourcesRegistry->all()))));
+        if (!is_array($sources) && !$sources instanceof \Traversable) {
+            throw new InvalidArgumentException(sprintf('Expected collection of sources as string, \Traversable or array, got "%s".', is_object($sourcesString) ? get_class($sourcesString) : gettype($sourcesString)));
+        }
 
-                    throw new \Exception;
-                }
+        foreach ($sources as $source) {
+            if (!$this->sourcesRegistry->has($source)) {
+                throw new InvalidArgumentException(sprintf('Unknown source "%s" provided.', $source));
             }
         }
 
-        $input->setOption('source', $sources);
-
-        return $this;
-    }
-
-    /**
-     * Display command begin note.
-     *
-     * @param InputInterface $input Console input.
-     * @param OutputStyle $outputStyle Console style.
-     * @return FetchCommand $this Fluent interface.
-     */
-    protected function displayCommandBegin(InputInterface $input, OutputStyle $outputStyle)
-    {
-        $outputStyle->title('Exchange rates:');
-        $outputStyle->text(
-            sprintf(
-                'Fetching from %s for date %s....',
-                ($input->getOption('source') ? sprintf('"%s"', implode('", "', $input->getOption('source'))) : 'all sources'),
-                $input->getOption('date')->format('Y-m-d')
-            )
-        );
-
-        return $this;
-    }
-
-    /**
-     * Do fetch rates.
-     *
-     * @param InputInterface $input Console input.
-     * @return RateInterface[] Fetched rates.
-     * @throws \Exception
-     */
-    protected function doFetch(InputInterface $input)
-    {
-        try {
-
-            $rates = $this->manager->fetch($input->getOption('source'), $input->getOption('date'));
-
-            $this->getLogger()->info(sprintf('Rates fetched from %s for date %s.', $input->getOption('source') ? sprintf('"%s"', implode('", "', $input->getOption('source'))) : 'all sources', $input->getOption('date')->format('Y-m-d')));
-
-        } catch (\Exception $e) {
-
-            $this->getLogger()->critical('Unable to fetch rates.', array(
-                'date' => $input->getOption('date')->format('Y-m-d'),
-                'sources' => $input->getOption('source') ? sprintf('"%s"', implode('", "', $input->getOption('source'))) : 'All sources',
-                'exception' => array(
-                    'message' => $e->getMessage(),
-                    'code' => $e->getCode(),
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'trace' => $e->getTraceAsString()
-                )
-            ));
-
-            throw $e;
-        }
-
-        return $rates;
-    }
-
-    /**
-     * Display command success note.
-     *
-     * @param OutputStyle $outputStyle
-     * @return FetchCommand $this Fluent interface.
-     */
-    protected function displayCommandSuccess(OutputStyle $outputStyle)
-    {
-        $outputStyle->success('Exchange rates successfully fetched.');
-        return $this;
-    }
-
-    /**
-     * Display command error note.
-     *
-     * @param OutputStyle $outputStyle
-     * @return FetchCommand $this Fluent interface.
-     */
-    protected function displayCommandError(OutputStyle $outputStyle)
-    {
-        $outputStyle->error('Unable to fetch data from source(s). See log for details.');
-        return $this;
-    }
-
-    /**
-     * Dispatch success notifications.
-     *
-     * @param null|array $source Sources for which command is executed.
-     * @param \DateTime $date Date for which rates are fetched.
-     * @param RateInterface[] $rates Fetched rates
-     * @return FetchCommand $this Fluent interface.
-     */
-    protected function dispatchSuccessNotifications($source, \DateTime $date, array $rates)
-    {
-        foreach ($this->successNotifications as $notification) {
-
-            $notification->notify(array(
-                'source' => $source,
-                'date' => $date,
-                'rates' => $rates
-            ));
-        }
-
-        return $this;
-    }
-
-    /**
-     * Dispatch error notifications.
-     *
-     * @param null|array $source Sources for which command is executed.
-     * @param \DateTime $date Date for which rates are fetched.
-     * @return FetchCommand $this Fluent interface.
-     */
-    protected function dispatchErrorNotifications($source, \DateTime $date)
-    {
-        foreach ($this->errorNotifications as $notification) {
-
-            $notification->notify(array(
-                'source' => $source,
-                'date' => $date
-            ));
-        }
-
-        return $this;
+        return $sources;
     }
 }
