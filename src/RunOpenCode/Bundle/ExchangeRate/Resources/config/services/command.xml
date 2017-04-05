@@ -9,23 +9,21 @@
 
         <parameter key="run_open_code.exchange_rate.command.fetch.class">RunOpenCode\Bundle\ExchangeRate\Command\FetchCommand</parameter>
 
-        <parameter key="run_open_code.exchange_rate.command.configuration_debug.class">RunOpenCode\Bundle\ExchangeRate\Command\ConfigurationDebugCommand</parameter>
+        <parameter key="run_open_code.exchange_rate.command.debug.class">RunOpenCode\Bundle\ExchangeRate\Command\DebugCommand</parameter>
 
     </parameters>
 
     <services>
 
-
         <service id="run_open_code.exchange_rate.command.fetch" class="%run_open_code.exchange_rate.command.fetch.class%">
+            <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="run_open_code.exchange_rate" />
             <argument type="service" id="run_open_code.exchange_rate.registry.sources" />
-            <call method="setLogger">
-                <argument type="service" id="logger" />
-            </call>
             <tag name="console.command" />
         </service>
 
-        <service id="run_open_code.exchange_rate.command.configuration_debug" class="%run_open_code.exchange_rate.command.configuration_debug.class%">
+        <service id="run_open_code.exchange_rate.command.debug" class="%run_open_code.exchange_rate.command.debug.class%">
+            <argument>%run_open_code.exchange_rate.base_currency%</argument>
             <argument type="service" id="run_open_code.exchange_rate.registry.sources" />
             <argument type="service" id="run_open_code.exchange_rate.registry.processors" />
             <argument type="service" id="run_open_code.exchange_rate.registry.rates" />

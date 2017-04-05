@@ -11,6 +11,7 @@ namespace RunOpenCode\Bundle\ExchangeRate\Command;
 
 use RunOpenCode\Bundle\ExchangeRate\Event\FetchEvents;
 use RunOpenCode\Bundle\ExchangeRate\Exception\InvalidArgumentException;
+use RunOpenCode\Bundle\ExchangeRate\Exception\RuntimeException;
 use RunOpenCode\ExchangeRate\Contract\ManagerInterface;
 use RunOpenCode\ExchangeRate\Contract\RateInterface;
 use RunOpenCode\ExchangeRate\Contract\SourceInterface;
@@ -83,10 +84,8 @@ class FetchCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->output = new SymfonyStyle($input, $output);
-
         $date = (null !== $input->getOption('date')) ? $this->sanitizeDate($input->getOption('date')) : new \DateTime('now');
         $sources = $this->sanitizeSources($input->getOption('source'));
-
         $this->output->title(sprintf('Fetching rates for sources "%s" on "%s".', implode('", "', $sources), $date->format('Y-m-d')));
 
         $errors = false;
@@ -96,6 +95,10 @@ class FetchCommand extends Command
             try {
                 $rates = $this->manager->fetch($source, $date);
 
+                if (0 === count($rates)) {
+                    throw new RuntimeException(sprintf('No rate fetched from source "%s".', $source));
+                }
+
                 $rows = array_map(function(RateInterface $rate) {
                     return [
                         $rate->getCurrencyCode(),
@@ -104,14 +107,14 @@ class FetchCommand extends Command
                     ];
                 }, $rates);
 
-                $this->output->section(sprintf('Fetched rates for source: "%s"', $source));
+                $this->output->section(sprintf('Fetched rates for source "%s":', $source));
                 $this->output->table(['Currency code', 'Rate type', 'Value'], $rows);
 
                 if (!$input->getOption('silent')) {
                     $this->eventDispatcher->dispatch(FetchEvents::SUCCESS, new GenericEvent($sources, ['rates' => $rates]));
                 }
             } catch (\Exception $e) {
-                $this->output->error(sprintf('Could not fetch rates from source "%s".', $source));
+                $this->output->error(sprintf('Could not fetch rates from source "%s" (%s).', $source, $e->getMessage()));
                 $errors = true;
 
                 if (!$input->getOption('silent')) {
@@ -119,7 +122,7 @@ class FetchCommand extends Command
                 }
             }
         }
-        
+
         if ($errors) {
             $this->output->error('Could not fetch all rates.');
             return -1;
@@ -140,9 +143,6 @@ class FetchCommand extends Command
      */
     protected function sanitizeDate($dateString)
     {
-        if ($dateString instanceof \DateTime) {
-            return $dateString;
-        }
 
         $date = \DateTime::createFromFormat('Y-m-d', $dateString);
 
@@ -150,7 +150,12 @@ class FetchCommand extends Command
             return $date;
         }
 
-        $date = new \DateTime($dateString);
+        try {
+            $date = new \DateTime($dateString);
+        } catch (\Exception $e) {
+            // noop
+        }
+
 
         if ($date instanceof \DateTime) {
             return $date;
@@ -181,10 +186,6 @@ class FetchCommand extends Command
             return array_map(function(SourceInterface $source) {
                 return $source->getName();
             }, $this->sourcesRegistry->all());
-        }
-
-        if (!is_array($sources) && !$sources instanceof \Traversable) {
-            throw new InvalidArgumentException(sprintf('Expected collection of sources as string, \Traversable or array, got "%s".', is_object($sourcesString) ? get_class($sourcesString) : gettype($sourcesString)));
         }
 
         foreach ($sources as $source) {
