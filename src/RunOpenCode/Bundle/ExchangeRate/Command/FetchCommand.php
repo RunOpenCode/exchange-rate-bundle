@@ -111,14 +111,14 @@ class FetchCommand extends Command
                 $this->output->table(['Currency code', 'Rate type', 'Value'], $rows);
 
                 if (!$input->getOption('silent')) {
-                    $this->eventDispatcher->dispatch(FetchEvents::SUCCESS, new GenericEvent($sources, ['rates' => $rates]));
+                    $this->eventDispatcher->dispatch(FetchEvents::SUCCESS, new GenericEvent($source, ['rates' => $rates]));
                 }
             } catch (\Exception $e) {
                 $this->output->error(sprintf('Could not fetch rates from source "%s" (%s).', $source, $e->getMessage()));
                 $errors = true;
 
                 if (!$input->getOption('silent')) {
-                    $this->eventDispatcher->dispatch(FetchEvents::ERROR, new GenericEvent($sources, ['exception' => $e]));
+                    $this->eventDispatcher->dispatch(FetchEvents::ERROR, new GenericEvent($source, ['exception' => $e]));
                 }
             }
         }

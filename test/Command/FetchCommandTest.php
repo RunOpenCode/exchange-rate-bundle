@@ -11,6 +11,7 @@ namespace RunOpenCode\Bundle\ExchangeRate\Tests\DependencyInjection;
 
 use PHPUnit\Framework\TestCase;
 use RunOpenCode\Bundle\ExchangeRate\Command\FetchCommand;
+use RunOpenCode\Bundle\ExchangeRate\Event\FetchEvents;
 use RunOpenCode\ExchangeRate\Configuration;
 use RunOpenCode\ExchangeRate\Contract\ManagerInterface;
 use RunOpenCode\ExchangeRate\Contract\SourceInterface;
@@ -167,6 +168,103 @@ class FetchCommandTest extends TestCase
         $application->find('runopencode:exchange-rate:fetch')->run(new ArrayInput([
             '--source' => 'missing_source',
         ]), new NullOutput());
+    }
+
+    /**
+     * @test
+     */
+    public function whenRatesCouldNotBeFetchedItErrorsOut()
+    {
+        $manager = $this->getManager();
+
+        $manager
+            ->method('fetch')
+            ->willReturn([]);
+
+        $application = $this->buildApplication(null, $manager);
+
+        $returnValue = $application->find('runopencode:exchange-rate:fetch')->run(new ArrayInput([
+            '--source' => 'source_1',
+        ]), new NullOutput());
+
+        $this->assertEquals(-1, $returnValue);
+    }
+
+    /**
+     * @test
+     */
+    public function itNotifiesAboutSuccessAndErrors()
+    {
+        $manager = $this->getManager();
+
+        $ed = $this->getEventDispatcher();
+        $ed
+            ->expects($spy = $this->any())
+            ->method('dispatch');
+
+        $manager
+            ->method('fetch')
+            ->will($this->onConsecutiveCalls(
+                [
+                    $rate = new Rate('source_1', 10, 'EUR', 'median', new \DateTime(), 'RSD'),
+                ],
+                [
+
+                ]
+            ));
+
+        $application = $this->buildApplication($ed, $manager);
+
+        $returnValue = $application->find('runopencode:exchange-rate:fetch')->run(new ArrayInput([
+            '--source' => 'source_1, source_2',
+        ]), new NullOutput());
+
+        $invocations = $spy->getInvocations();
+        $this->assertEquals(2, count($invocations));
+
+        $this->assertEquals(FetchEvents::SUCCESS, $invocations[0]->parameters[0]);
+        $this->assertEquals('source_1', $invocations[0]->parameters[1]->getSubject());
+        $this->assertEquals([$rate], $invocations[0]->parameters[1]->getArgument('rates'));
+
+        $this->assertEquals(FetchEvents::ERROR, $invocations[1]->parameters[0]);
+        $this->assertEquals('source_2', $invocations[1]->parameters[1]->getSubject());
+        $this->assertInstanceOf(\Exception::class, $invocations[1]->parameters[1]->getArgument('exception'));
+
+        $this->assertEquals(-1, $returnValue);
+    }
+
+    /**
+     * @test
+     */
+    public function itDoesNotNotifiesWhenSilenced()
+    {
+        $manager = $this->getManager();
+
+        $ed = $this->getEventDispatcher();
+        $ed
+            ->expects($spy = $this->any())
+            ->method('dispatch');
+
+        $manager
+            ->method('fetch')
+            ->will($this->onConsecutiveCalls(
+                [
+                    $rate = new Rate('source_1', 10, 'EUR', 'median', new \DateTime(), 'RSD'),
+                ],
+                [
+
+                ]
+            ));
+
+        $application = $this->buildApplication($ed, $manager);
+
+        $returnValue = $application->find('runopencode:exchange-rate:fetch')->run(new ArrayInput([
+            '--source' => 'source_1, source_2',
+            '--silent' => true
+        ]), new NullOutput());
+
+        $invocations = $spy->getInvocations();
+        $this->assertEquals(0, count($invocations));
     }
 
     /**

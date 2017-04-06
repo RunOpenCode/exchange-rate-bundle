@@ -19,12 +19,12 @@ final class FetchEvents
     /**
      * Rates are successfully fetched.
      */
-    const SUCCESS = 'success';
+    const SUCCESS = 'runopencode.exchange_rate.fetch.success';
 
     /**
      * There has been an error when fetching rates.
      */
-    const ERROR = 'error';
+    const ERROR = 'runopencode.exchange_rate.fetch.error';
 
     private function __construct()
     {
