@@ -7,42 +7,42 @@
 
     <parameters>
 
-        <parameter key="run_open_code.exchange_rate.form_type.rate_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\RateType</parameter>
+        <parameter key="runopencode.exchange_rate.form_type.rate_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\RateType</parameter>
 
-        <parameter key="run_open_code.exchange_rate.form_type.source_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\SourceType</parameter>
+        <parameter key="runopencode.exchange_rate.form_type.source_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\SourceType</parameter>
 
-        <parameter key="run_open_code.exchange_rate.form_type.rate_type_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\RateTypeType</parameter>
+        <parameter key="runopencode.exchange_rate.form_type.rate_type_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\RateTypeType</parameter>
 
-        <parameter key="run_open_code.exchange_rate.form_type.currency_code_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\CurrencyCodeType</parameter>
+        <parameter key="runopencode.exchange_rate.form_type.currency_code_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\CurrencyCodeType</parameter>
 
-        <parameter key="run_open_code.exchange_rate.form_type.foreign_currency_code_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\ForeignCurrencyCodeType</parameter>
+        <parameter key="runopencode.exchange_rate.form_type.foreign_currency_code_type.class">RunOpenCode\Bundle\ExchangeRate\Form\Type\ForeignCurrencyCodeType</parameter>
 
     </parameters>
 
     <services>
 
-        <service id="run_open_code.exchange_rate.form_type.source_type" class="%run_open_code.exchange_rate.form_type.source_type.class%">
-            <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
+        <service id="runopencode.exchange_rate.form_type.source_type" class="%runopencode.exchange_rate.form_type.source_type.class%">
+            <argument type="service" id="runopencode.exchange_rate.registry.rates"/>
             <tag name="form.type" />
         </service>
 
-        <service id="run_open_code.exchange_rate.form_type.rate_type" class="%run_open_code.exchange_rate.form_type.rate_type.class%">
-            <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
+        <service id="runopencode.exchange_rate.form_type.rate_type" class="%runopencode.exchange_rate.form_type.rate_type.class%">
+            <argument type="service" id="runopencode.exchange_rate.registry.rates"/>
             <tag name="form.type" />
         </service>
 
-        <service id="run_open_code.exchange_rate.form_type.rate_type_type" class="%run_open_code.exchange_rate.form_type.rate_type_type.class%">
-            <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
+        <service id="runopencode.exchange_rate.form_type.rate_type_type" class="%runopencode.exchange_rate.form_type.rate_type_type.class%">
+            <argument type="service" id="runopencode.exchange_rate.registry.rates"/>
             <tag name="form.type" />
         </service>
 
-        <service id="run_open_code.exchange_rate.form_type.currency_code_type" class="%run_open_code.exchange_rate.form_type.currency_code_type.class%">
-            <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
+        <service id="runopencode.exchange_rate.form_type.currency_code_type" class="%runopencode.exchange_rate.form_type.currency_code_type.class%">
+            <argument type="service" id="runopencode.exchange_rate.registry.rates"/>
             <tag name="form.type" />
         </service>
 
-        <service id="run_open_code.exchange_rate.form_type.foreign_currency_code_type" class="%run_open_code.exchange_rate.form_type.foreign_currency_code_type.class%">
-            <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
+        <service id="runopencode.exchange_rate.form_type.foreign_currency_code_type" class="%runopencode.exchange_rate.form_type.foreign_currency_code_type.class%">
+            <argument type="service" id="runopencode.exchange_rate.registry.rates"/>
             <tag name="form.type" />
         </service>
 

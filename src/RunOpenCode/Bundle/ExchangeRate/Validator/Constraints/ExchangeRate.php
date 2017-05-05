@@ -25,7 +25,7 @@ class ExchangeRate extends Constraint
      */
     public function validatedBy()
     {
-        return 'run_open_code.exchange_rate.rate_validator';
+        return 'runopencode.exchange_rate.rate_validator';
     }
 
     /**

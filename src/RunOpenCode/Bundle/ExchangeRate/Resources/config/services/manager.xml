@@ -7,27 +7,27 @@
 
     <parameters>
 
-        <parameter key="run_open_code.exchange_rate.class">RunOpenCode\ExchangeRate\Manager</parameter>
+        <parameter key="runopencode.exchange_rate.class">RunOpenCode\ExchangeRate\Manager</parameter>
 
-        <parameter key="run_open_code.exchange_rate.base_currency" />
+        <parameter key="runopencode.exchange_rate.base_currency" />
 
-        <parameter key="run_open_code.exchange_rate.registry.rates.class">RunOpenCode\ExchangeRate\Registry\RatesConfigurationRegistry</parameter>
+        <parameter key="runopencode.exchange_rate.registry.rates.class">RunOpenCode\ExchangeRate\Registry\RatesConfigurationRegistry</parameter>
 
     </parameters>
 
     <services>
 
-        <service id="run_open_code.exchange_rate" class="%run_open_code.exchange_rate.class%">
-            <argument>%run_open_code.exchange_rate.base_currency%</argument>
-            <argument type="service" id="run_open_code.exchange_rate.repository"/>
-            <argument type="service" id="run_open_code.exchange_rate.registry.sources"/>
-            <argument type="service" id="run_open_code.exchange_rate.registry.processors"/>
-            <argument type="service" id="run_open_code.exchange_rate.registry.rates"/>
+        <service id="runopencode.exchange_rate" class="%runopencode.exchange_rate.class%">
+            <argument>%runopencode.exchange_rate.base_currency%</argument>
+            <argument type="service" id="runopencode.exchange_rate.repository"/>
+            <argument type="service" id="runopencode.exchange_rate.registry.sources"/>
+            <argument type="service" id="runopencode.exchange_rate.registry.processors"/>
+            <argument type="service" id="runopencode.exchange_rate.registry.rates"/>
         </service>
 
-        <service id="roc.exchange_rate" alias="run_open_code.exchange_rate" />
+        <service id="roc.exchange_rate" alias="runopencode.exchange_rate" />
 
-        <service id="run_open_code.exchange_rate.registry.rates" class="%run_open_code.exchange_rate.registry.rates.class%" public="false"/>
+        <service id="runopencode.exchange_rate.registry.rates" class="%runopencode.exchange_rate.registry.rates.class%" public="false"/>
 
     </services>
 

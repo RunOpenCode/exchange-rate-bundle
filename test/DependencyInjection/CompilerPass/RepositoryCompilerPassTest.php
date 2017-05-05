@@ -22,11 +22,11 @@ class RepositoryCompilerPassTest extends AbstractCompilerPassTestCase
     public function itRegistersServiceAsRepository()
     {
         $this->setDefinition('some_dummy_repository', new Definition('DummyClass'));
-        $this->setParameter('run_open_code.exchange_rate.repository', 'some_dummy_repository');
+        $this->setParameter('runopencode.exchange_rate.repository', 'some_dummy_repository');
 
         $this->compile();
 
-        $this->assertContainerBuilderHasService('run_open_code.exchange_rate.repository', 'DummyClass');
+        $this->assertContainerBuilderHasService('runopencode.exchange_rate.repository', 'DummyClass');
     }
 
     /**
@@ -36,15 +36,15 @@ class RepositoryCompilerPassTest extends AbstractCompilerPassTestCase
     {
         $definition = new Definition('DummyClass');
         $definition
-            ->addTag('run_open_code.exchange_rate.repository', ['alias' => 'repository_service']);
+            ->addTag('runopencode.exchange_rate.repository', ['alias' => 'repository_service']);
 
         $this->setDefinition('some_dummy_repository', $definition);
 
-        $this->setParameter('run_open_code.exchange_rate.repository', 'repository_service');
+        $this->setParameter('runopencode.exchange_rate.repository', 'repository_service');
 
         $this->compile();
 
-        $this->assertContainerBuilderHasService('run_open_code.exchange_rate.repository', 'DummyClass');
+        $this->assertContainerBuilderHasService('runopencode.exchange_rate.repository', 'DummyClass');
     }
 
     /**
@@ -53,7 +53,7 @@ class RepositoryCompilerPassTest extends AbstractCompilerPassTestCase
      */
     public function itReportsMissingRepositoryService()
     {
-        $this->setParameter('run_open_code.exchange_rate.repository', 'missing_service');
+        $this->setParameter('runopencode.exchange_rate.repository', 'missing_service');
 
         $this->compile();
     }

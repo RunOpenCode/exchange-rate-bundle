@@ -7,27 +7,27 @@
 
     <parameters>
 
-        <parameter key="run_open_code.exchange_rate.command.fetch.class">RunOpenCode\Bundle\ExchangeRate\Command\FetchCommand</parameter>
+        <parameter key="runopencode.exchange_rate.command.fetch.class">RunOpenCode\Bundle\ExchangeRate\Command\FetchCommand</parameter>
 
-        <parameter key="run_open_code.exchange_rate.command.debug.class">RunOpenCode\Bundle\ExchangeRate\Command\DebugCommand</parameter>
+        <parameter key="runopencode.exchange_rate.command.debug.class">RunOpenCode\Bundle\ExchangeRate\Command\DebugCommand</parameter>
 
     </parameters>
 
     <services>
 
-        <service id="run_open_code.exchange_rate.command.fetch" class="%run_open_code.exchange_rate.command.fetch.class%">
+        <service id="runopencode.exchange_rate.command.fetch" class="%runopencode.exchange_rate.command.fetch.class%">
             <argument type="service" id="event_dispatcher"/>
-            <argument type="service" id="run_open_code.exchange_rate" />
-            <argument type="service" id="run_open_code.exchange_rate.registry.sources" />
+            <argument type="service" id="runopencode.exchange_rate" />
+            <argument type="service" id="runopencode.exchange_rate.registry.sources" />
             <tag name="console.command" />
         </service>
 
-        <service id="run_open_code.exchange_rate.command.debug" class="%run_open_code.exchange_rate.command.debug.class%">
-            <argument>%run_open_code.exchange_rate.base_currency%</argument>
-            <argument type="service" id="run_open_code.exchange_rate.registry.sources" />
-            <argument type="service" id="run_open_code.exchange_rate.registry.processors" />
-            <argument type="service" id="run_open_code.exchange_rate.registry.rates" />
-            <argument type="service" id="run_open_code.exchange_rate.repository" />
+        <service id="runopencode.exchange_rate.command.debug" class="%runopencode.exchange_rate.command.debug.class%">
+            <argument>%runopencode.exchange_rate.base_currency%</argument>
+            <argument type="service" id="runopencode.exchange_rate.registry.sources" />
+            <argument type="service" id="runopencode.exchange_rate.registry.processors" />
+            <argument type="service" id="runopencode.exchange_rate.registry.rates" />
+            <argument type="service" id="runopencode.exchange_rate.repository" />
             <tag name="console.command" />
         </service>
 

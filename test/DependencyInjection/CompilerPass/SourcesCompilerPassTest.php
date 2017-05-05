@@ -24,14 +24,14 @@ class SourcesCompilerPassTest extends AbstractCompilerPassTestCase
         $rateConfiguration1 = new Definition();
         $rateConfiguration1
             ->setArguments(['currency_code', 'rate_type', 'source_1'])
-            ->addTag('run_open_code.exchange_rate.rate_configuration');
+            ->addTag('runopencode.exchange_rate.rate_configuration');
 
         $this->setDefinition('source_1_service', $rateConfiguration1);
 
         $rateConfiguration2 = new Definition();
         $rateConfiguration2
             ->setArguments(['currency_code', 'rate_type', 'source_2'])
-            ->addTag('run_open_code.exchange_rate.rate_configuration');
+            ->addTag('runopencode.exchange_rate.rate_configuration');
 
         $this->setDefinition('source_2_service', $rateConfiguration2);
     }
@@ -41,19 +41,19 @@ class SourcesCompilerPassTest extends AbstractCompilerPassTestCase
      */
     public function itRegistersRequiredSourcesIntoSourceRegistry()
     {
-        $this->setDefinition('run_open_code.exchange_rate.registry.sources', new Definition());
+        $this->setDefinition('runopencode.exchange_rate.registry.sources', new Definition());
 
         $source1 = new Definition();
         $source1
-            ->addTag('run_open_code.exchange_rate.source', ['name' => 'source_1']);
+            ->addTag('runopencode.exchange_rate.source', ['name' => 'source_1']);
 
         $source2 = new Definition();
         $source2
-            ->addTag('run_open_code.exchange_rate.source', ['name' => 'source_2']);
+            ->addTag('runopencode.exchange_rate.source', ['name' => 'source_2']);
 
         $source3 = new Definition();
         $source3
-            ->addTag('run_open_code.exchange_rate.source', ['name' => 'source_3']);
+            ->addTag('runopencode.exchange_rate.source', ['name' => 'source_3']);
 
         $this->setDefinition('source_service_1', $source1);
         $this->setDefinition('source_service_2', $source2);
@@ -61,9 +61,9 @@ class SourcesCompilerPassTest extends AbstractCompilerPassTestCase
 
         $this->compile();
 
-        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall('run_open_code.exchange_rate.registry.sources', 'add', [new Reference('source_service_1')]);
-        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall('run_open_code.exchange_rate.registry.sources', 'add', [new Reference('source_service_2')]);
-        $this->assertEquals(2, count($this->container->findDefinition('run_open_code.exchange_rate.registry.sources')->getMethodCalls()));
+        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall('runopencode.exchange_rate.registry.sources', 'add', [new Reference('source_service_1')]);
+        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall('runopencode.exchange_rate.registry.sources', 'add', [new Reference('source_service_2')]);
+        $this->assertEquals(2, count($this->container->findDefinition('runopencode.exchange_rate.registry.sources')->getMethodCalls()));
     }
 
     /**
@@ -72,15 +72,15 @@ class SourcesCompilerPassTest extends AbstractCompilerPassTestCase
      */
     public function itThrowsExceptionWhenSourceIsMissing()
     {
-        $this->setDefinition('run_open_code.exchange_rate.registry.sources', new Definition());
+        $this->setDefinition('runopencode.exchange_rate.registry.sources', new Definition());
 
         $source1 = new Definition();
         $source1
-            ->addTag('run_open_code.exchange_rate.source', ['name' => 'source_1']);
+            ->addTag('runopencode.exchange_rate.source', ['name' => 'source_1']);
 
         $source3 = new Definition();
         $source3
-            ->addTag('run_open_code.exchange_rate.source', ['name' => 'source_3']);
+            ->addTag('runopencode.exchange_rate.source', ['name' => 'source_3']);
 
         $this->setDefinition('source_service_1', $source1);
         $this->setDefinition('source_service_3', $source3);

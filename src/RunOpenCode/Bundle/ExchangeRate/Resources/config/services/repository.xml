@@ -6,21 +6,21 @@
 >
     <parameters>
 
-        <parameter key="run_open_code.exchange_rate.repository.file_repository.class">RunOpenCode\ExchangeRate\Repository\FileRepository</parameter>
-        <parameter key="run_open_code.exchange_rate.repository.doctrine_dbal_repository.class">RunOpenCode\ExchangeRate\Repository\DoctrineDbalRepository</parameter>
+        <parameter key="runopencode.exchange_rate.repository.file_repository.class">RunOpenCode\ExchangeRate\Repository\FileRepository</parameter>
+        <parameter key="runopencode.exchange_rate.repository.doctrine_dbal_repository.class">RunOpenCode\ExchangeRate\Repository\DoctrineDbalRepository</parameter>
 
     </parameters>
 
     <services>
 
-        <service id="run_open_code.exchange_rate.repository" alias="run_open_code.exchange_rate.repository.file_repository"/>
+        <service id="runopencode.exchange_rate.repository" alias="runopencode.exchange_rate.repository.file_repository"/>
 
-        <service id="run_open_code.exchange_rate.repository.file_repository" class="%run_open_code.exchange_rate.repository.file_repository.class%" public="false">
-            <tag name="run_open_code.exchange_rate.repository" alias="file" />
+        <service id="runopencode.exchange_rate.repository.file_repository" class="%runopencode.exchange_rate.repository.file_repository.class%" public="false">
+            <tag name="runopencode.exchange_rate.repository" alias="file" />
         </service>
         
-        <service id="run_open_code.exchange_rate.repository.doctrine_dbal_repository" class="%run_open_code.exchange_rate.repository.doctrine_dbal_repository.class%" public="false">
-            <tag name="run_open_code.exchange_rate.repository" alias="doctrine_dbal" />
+        <service id="runopencode.exchange_rate.repository.doctrine_dbal_repository" class="%runopencode.exchange_rate.repository.doctrine_dbal_repository.class%" public="false">
+            <tag name="runopencode.exchange_rate.repository" alias="doctrine_dbal" />
         </service>
 
     </services>

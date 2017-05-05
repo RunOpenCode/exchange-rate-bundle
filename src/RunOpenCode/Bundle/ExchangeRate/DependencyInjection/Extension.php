@@ -34,7 +34,7 @@ class Extension extends BaseExtension
      */
     public function getAlias()
     {
-        return "run_open_code_exchange_rate";
+        return "runopencode_exchange_rate";
     }
 
     /**
@@ -100,7 +100,7 @@ class Extension extends BaseExtension
     protected function configureBaseCurrency(array $config, ContainerBuilder $container)
     {
         $baseCurrency = CurrencyCodeUtil::clean($config['base_currency']);
-        $container->setParameter('run_open_code.exchange_rate.base_currency', $baseCurrency);
+        $container->setParameter('runopencode.exchange_rate.base_currency', $baseCurrency);
 
         return $this;
     }
@@ -128,10 +128,10 @@ class Extension extends BaseExtension
             $definition
                 ->setArguments($arguments)
                 ->setPublic(false)
-                ->addTag('run_open_code.exchange_rate.rate_configuration')
+                ->addTag('runopencode.exchange_rate.rate_configuration')
                 ;
 
-            $container->setDefinition(sprintf('run_open_code.exchange_rate.rate_configuration.%s.%s.%s', $rate['currency_code'], $rate['rate_type'], $rate['source']), $definition);
+            $container->setDefinition(sprintf('runopencode.exchange_rate.rate_configuration.%s.%s.%s', $rate['currency_code'], $rate['rate_type'], $rate['source']), $definition);
         }
 
         return $this;
@@ -154,9 +154,9 @@ class Extension extends BaseExtension
 
                 $definition = new Definition($class);
                 $definition
-                    ->addTag('run_open_code.exchange_rate.source', ['name' => $name]);
+                    ->addTag('runopencode.exchange_rate.source', ['name' => $name]);
 
-                $container->setDefinition(sprintf('run_open_code.exchange_rate.source.%s', $name), $definition);
+                $container->setDefinition(sprintf('runopencode.exchange_rate.source.%s', $name), $definition);
             }
         }
 
@@ -173,7 +173,7 @@ class Extension extends BaseExtension
      */
     protected function configureRepository(array $config, ContainerBuilder $container)
     {
-        $container->setParameter('run_open_code.exchange_rate.repository', $config['repository']);
+        $container->setParameter('runopencode.exchange_rate.repository', $config['repository']);
         return $this;
     }
 
@@ -187,7 +187,7 @@ class Extension extends BaseExtension
      */
     protected function configureFileRepository(array $config, ContainerBuilder $container)
     {
-        $defintion = $container->getDefinition('run_open_code.exchange_rate.repository.file_repository');
+        $defintion = $container->getDefinition('runopencode.exchange_rate.repository.file_repository');
 
         $defintion
             ->setArguments([
@@ -207,7 +207,7 @@ class Extension extends BaseExtension
      */
     protected function configureDoctrineDbalRepository(array $config, ContainerBuilder $container)
     {
-        $defintion = $container->getDefinition('run_open_code.exchange_rate.repository.doctrine_dbal_repository');
+        $defintion = $container->getDefinition('runopencode.exchange_rate.repository.doctrine_dbal_repository');
 
         $defintion
             ->setArguments([
@@ -231,7 +231,7 @@ class Extension extends BaseExtension
         if ($config['security']['enabled']) {
 
             $container
-                ->getDefinition('run_open_code.exchange_rate.security.access_voter')
+                ->getDefinition('runopencode.exchange_rate.security.access_voter')
                 ->setArguments([
                     [
                         AccessVoter::VIEW => $config['security'][AccessVoter::VIEW],
@@ -242,7 +242,7 @@ class Extension extends BaseExtension
                 ]);
 
         } else {
-            $container->removeDefinition('run_open_code.exchange_rate.security.access_voter');
+            $container->removeDefinition('runopencode.exchange_rate.security.access_voter');
         }
 
         return $this;
@@ -258,7 +258,7 @@ class Extension extends BaseExtension
      */
     protected function configureSourceType(array $config, ContainerBuilder $container)
     {
-        $definition = $container->getDefinition('run_open_code.exchange_rate.form_type.source_type');
+        $definition = $container->getDefinition('runopencode.exchange_rate.form_type.source_type');
 
         $arguments = $definition->getArguments();
 
@@ -279,7 +279,7 @@ class Extension extends BaseExtension
      */
     protected function configureRateTypeType(array $config, ContainerBuilder $container)
     {
-        $definition = $container->getDefinition('run_open_code.exchange_rate.form_type.rate_type_type');
+        $definition = $container->getDefinition('runopencode.exchange_rate.form_type.rate_type_type');
 
         $arguments = $definition->getArguments();
 
@@ -299,7 +299,7 @@ class Extension extends BaseExtension
      */
     protected function configureCurrencyCodeType(array $config, ContainerBuilder $container)
     {
-        $definition = $container->getDefinition('run_open_code.exchange_rate.form_type.currency_code_type');
+        $definition = $container->getDefinition('runopencode.exchange_rate.form_type.currency_code_type');
 
         $arguments = $definition->getArguments();
 
@@ -322,7 +322,7 @@ class Extension extends BaseExtension
     protected function configureForeignCurrencyCodeType(array $config, ContainerBuilder $container)
     {
 
-        $definition = $container->getDefinition('run_open_code.exchange_rate.form_type.foreign_currency_code_type');
+        $definition = $container->getDefinition('runopencode.exchange_rate.form_type.foreign_currency_code_type');
 
         $arguments = $definition->getArguments();
 
@@ -343,7 +343,7 @@ class Extension extends BaseExtension
      */
     protected function configureRateType(array $config, ContainerBuilder $container)
     {
-        $definition = $container->getDefinition('run_open_code.exchange_rate.form_type.rate_type');
+        $definition = $container->getDefinition('runopencode.exchange_rate.form_type.rate_type');
 
         $arguments = $definition->getArguments();
 

@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace RunOpenCode\Bundle\ExchangeRate\Form\Type;
+namespace RunOpenCode\Bundle\ExchangeRate\Form;
 
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -28,7 +28,7 @@ class NewType extends BaseType
             'mapped' => false,
             'placeholder' => '',
             'label' => 'exchange_rate.form.fields.rate',
-            'translation_domain' => 'roc_exchange_rate'
+            'translation_domain' => 'runopencode_exchange_rate'
         ));
     }
 }

@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace RunOpenCode\Bundle\ExchangeRate\Form\Type;
+namespace RunOpenCode\Bundle\ExchangeRate\Form;
 
 use RunOpenCode\Bundle\ExchangeRate\Model\Rate;
 use Symfony\Component\Form\AbstractType;
@@ -34,18 +34,18 @@ abstract class BaseType extends AbstractType
     {
         $builder->add('value', NumberType::class, array(
             'label' => 'exchange_rate.form.fields.value',
-            'translation_domain' => 'roc_exchange_rate'
+            'translation_domain' => 'runopencode_exchange_rate'
         ));
 
         $builder->add('date', DateType::class, array(
             'label' => 'exchange_rate.form.fields.date',
-            'translation_domain' => 'roc_exchange_rate'
+            'translation_domain' => 'runopencode_exchange_rate'
         ));
 
         $builder->add('rate', RateType::class, array(
             'mapped' => false,
             'label' => 'exchange_rate.form.fields.rate',
-            'translation_domain' => 'roc_exchange_rate'
+            'translation_domain' => 'runopencode_exchange_rate'
         ));
 
         $builder->addEventListener(FormEvents::POST_SET_DATA, \Closure::bind(function(FormEvent $event) {

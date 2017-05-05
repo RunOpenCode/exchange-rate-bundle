@@ -46,11 +46,11 @@ class ConfigurationTest extends AbstractExtensionConfigurationTestCase
                 AccessVoter::DELETE => [Role::MANAGE_RATE, Role::DELETE_RATE],
             ],
             'form_types' => [
-                'source_type' => [ 'choice_translation_domain' => 'roc_exchange_rate', 'preferred_choices' => [] ],
-                'rate_type_type' => [ 'choice_translation_domain' => 'roc_exchange_rate', 'preferred_choices' => [] ],
-                'currency_code_type' => [ 'choice_translation_domain' => 'roc_exchange_rate', 'preferred_choices' => [] ],
-                'foreign_currency_code_type' => [ 'choice_translation_domain' => 'roc_exchange_rate', 'preferred_choices' => [] ],
-                'rate_type' => [ 'choice_translation_domain' => 'roc_exchange_rate', 'preferred_choices' => [] ],
+                'source_type' => [ 'choice_translation_domain' => 'runopencode_exchange_rate', 'preferred_choices' => [] ],
+                'rate_type_type' => [ 'choice_translation_domain' => 'runopencode_exchange_rate', 'preferred_choices' => [] ],
+                'currency_code_type' => [ 'choice_translation_domain' => 'runopencode_exchange_rate', 'preferred_choices' => [] ],
+                'foreign_currency_code_type' => [ 'choice_translation_domain' => 'runopencode_exchange_rate', 'preferred_choices' => [] ],
+                'rate_type' => [ 'choice_translation_domain' => 'runopencode_exchange_rate', 'preferred_choices' => [] ],
             ],
         ], [
             __DIR__.'/../Fixtures/config/minimum.xml'

@@ -7,7 +7,7 @@
         <script type="text/javascript">
             function runOpenCodeExchangeRateListOnDeleteItemAction (elem) {
 
-                if (confirm('{{ 'exchange_rate.list.actions.delete.question'|trans({}, 'roc_exchange_rate') }}')) {
+                if (confirm('{{ 'exchange_rate.list.actions.delete.question'|trans({}, 'runopencode_exchange_rate') }}')) {
                     var
                             form = document.createElement('form'),
                             hiddenField = document.createElement('input')
@@ -38,7 +38,7 @@
             {% for type, messages in app.session.flashbag.all %}
                 {% for message in messages %}
                     <div class="{{ type ? type : '' }}">
-                        {{ message|trans({}, 'roc_exchange_rate') }}
+                        {{ message|trans({}, 'runopencode_exchange_rate') }}
                     </div>
                 {% endfor %}
             {% endfor %}
@@ -56,28 +56,28 @@
                     {% block table_headings %}
 
                         <th>
-                            {{ 'exchange_rate.list.table.headings.source'|trans({}, 'roc_exchange_rate') }}
+                            {{ 'exchange_rate.list.table.headings.source'|trans({}, 'runopencode_exchange_rate') }}
                         </th>
                         <th>
-                            {{ 'exchange_rate.list.table.headings.rate_type'|trans({}, 'roc_exchange_rate') }}
+                            {{ 'exchange_rate.list.table.headings.rate_type'|trans({}, 'runopencode_exchange_rate') }}
                         </th>
                         <th>
-                            {{ 'exchange_rate.list.table.headings.currency_code'|trans({}, 'roc_exchange_rate') }}
+                            {{ 'exchange_rate.list.table.headings.currency_code'|trans({}, 'runopencode_exchange_rate') }}
                         </th>
                         <th>
-                            {{ 'exchange_rate.list.table.headings.value'|trans({}, 'roc_exchange_rate') }}
+                            {{ 'exchange_rate.list.table.headings.value'|trans({}, 'runopencode_exchange_rate') }}
                         </th>
                         <th>
-                            {{ 'exchange_rate.list.table.headings.date'|trans({}, 'roc_exchange_rate') }}
+                            {{ 'exchange_rate.list.table.headings.date'|trans({}, 'runopencode_exchange_rate') }}
                         </th>
                         <th>
-                            {{ 'exchange_rate.list.table.headings.modified_at'|trans({}, 'roc_exchange_rate') }}
+                            {{ 'exchange_rate.list.table.headings.modified_at'|trans({}, 'runopencode_exchange_rate') }}
                         </th>
 
                         {% if not secure or is_granted(access_roles.edit) or is_granted(access_roles.delete) %}
 
                             <th>
-                                {{ 'exchange_rate.list.table.headings.actions'|trans({}, 'roc_exchange_rate') }}
+                                {{ 'exchange_rate.list.table.headings.actions'|trans({}, 'runopencode_exchange_rate') }}
                             </th>
 
                         {% endif %}
@@ -94,10 +94,10 @@
 
                         <tr>
                             <td>
-                                {{ ('exchange_rate.source.' ~ rate.sourceName)|trans({}, 'roc_exchange_rate') }}
+                                {{ ('exchange_rate.source.' ~ rate.sourceName)|trans({}, 'runopencode_exchange_rate') }}
                             </td>
                             <td>
-                                {{ ('exchange_rate.rate_type.' ~ rate.sourceName ~ '.' ~ rate.rateType)|trans({}, 'roc_exchange_rate') }}
+                                {{ ('exchange_rate.rate_type.' ~ rate.sourceName ~ '.' ~ rate.rateType)|trans({}, 'runopencode_exchange_rate') }}
                             </td>
                             <td>
                                 {{ rate.currencyCode }}
@@ -118,13 +118,13 @@
 
                                     {% if not secure or is_granted(access_roles.edit) %}
 
-                                        <a href="{{ path('roc_exchange_rate_edit', {
+                                        <a href="{{ path('runopencode_exchange_rate_edit', {
                                             date: rate.date|date('Y-m-d'),
                                             currency_code: rate.currencyCode,
                                             rate_type: rate.rateType,
                                             source: rate.sourceName
                                         }) }}">
-                                            {{ 'exchange_rate.list.object_actions.edit'|trans({}, 'roc_exchange_rate') }}
+                                            {{ 'exchange_rate.list.object_actions.edit'|trans({}, 'runopencode_exchange_rate') }}
                                         </a>
 
                                     {% endif %}
@@ -132,13 +132,13 @@
                                     {% if not secure or is_granted(access_roles.delete) %}
 
                                         <a
-                                                href="{{ path('roc_exchange_rate_delete', {
+                                                href="{{ path('runopencode_exchange_rate_delete', {
                                                     date: rate.date|date('Y-m-d'),
                                                     currency_code: rate.currencyCode,
                                                     rate_type: rate.rateType,
                                                     source: rate.sourceName
                                                 }) }}"
-                                                data-csrf-token="{{ csrf_token(path('roc_exchange_rate_delete', {
+                                                data-csrf-token="{{ csrf_token(path('runopencode_exchange_rate_delete', {
                                                     date: rate.date|date('Y-m-d'),
                                                     currency_code: rate.currencyCode,
                                                     rate_type: rate.rateType,
@@ -146,7 +146,7 @@
                                                 })) }}"
                                                 onclick="return runOpenCodeExchangeRateListOnDeleteItemAction(this);"
                                         >
-                                            {{ 'exchange_rate.list.object_actions.delete'|trans({}, 'roc_exchange_rate') }}
+                                            {{ 'exchange_rate.list.object_actions.delete'|trans({}, 'runopencode_exchange_rate') }}
                                         </a>
 
                                     {% endif %}
@@ -165,7 +165,7 @@
                         <tr>
                             <td colspan="6">
                                 {% block no_data_advisory_note %}
-                                    {{ 'exchange_rate.advisory.no_data'|trans({}, 'roc_exchange_rate') }}
+                                    {{ 'exchange_rate.advisory.no_data'|trans({}, 'runopencode_exchange_rate') }}
                                 {% endblock no_data_advisory_note %}
                             </td>
                         </tr>
@@ -185,7 +185,7 @@
         {{ form_widget(filter) }}
 
         <button type="submit">
-            {{ 'exchange_rate.filter.submit'|trans({}, 'roc_exchange_rate') }}
+            {{ 'exchange_rate.filter.submit'|trans({}, 'runopencode_exchange_rate') }}
         </button>
 
         {{ form_end(filter) }}
@@ -199,8 +199,8 @@
         {% block list_actions_add_new %}
 
             {% if not secure or is_granted(access_roles.create) %}
-                <a href="{{ path('roc_exchange_rate_new') }}">
-                    {{ 'exchange_rate.list.list_actions.add_new'|trans({}, 'roc_exchange_rate') }}
+                <a href="{{ path('runopencode_exchange_rate_new') }}">
+                    {{ 'exchange_rate.list.list_actions.add_new'|trans({}, 'runopencode_exchange_rate') }}
                 </a>
             {% endif %}
 

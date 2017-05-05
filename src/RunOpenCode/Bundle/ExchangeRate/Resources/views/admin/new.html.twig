@@ -1,6 +1,6 @@
 {% extends base_template %}
 
-{% block title %}{{ 'exchange_rate.form.title.new'|trans({}, 'roc_exchange_rate') }}{% endblock title %}
+{% block title %}{{ 'exchange_rate.form.title.new'|trans({}, 'runopencode_exchange_rate') }}{% endblock title %}
 
 {% block body %}
 
@@ -11,7 +11,7 @@
             {{ form_widget(form) }}
 
             <button type="submit">
-                {{ 'exchange_rate.form.actions.save'|trans({}, 'roc_exchange_rate') }}
+                {{ 'exchange_rate.form.actions.save'|trans({}, 'runopencode_exchange_rate') }}
             </button>
 
         {{ form_end(form) }}
@@ -23,8 +23,8 @@
         {% block new_actions_goto_list %}
 
             {% if not secure or is_granted(access_roles.list) %}
-                <a href="{{ path('roc_exchange_rate_list') }}">
-                    {{ 'exchange_rate.form.actions.list'|trans({}, 'roc_exchange_rate') }}
+                <a href="{{ path('runopencode_exchange_rate_list') }}">
+                    {{ 'exchange_rate.form.actions.list'|trans({}, 'runopencode_exchange_rate') }}
                 </a>
             {% endif %}
 

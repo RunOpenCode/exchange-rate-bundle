@@ -42,7 +42,7 @@ class RateTypeType extends AbstractType
         }
 
         $this->defaults = array_merge(array(
-            'choice_translation_domain' => 'roc_exchange_rate',
+            'choice_translation_domain' => 'runopencode_exchange_rate',
             'choices' => $choices
         ), $defaults);
     }

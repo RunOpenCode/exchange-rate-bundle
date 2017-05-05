@@ -31,7 +31,7 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
 
-        $rootNode = $treeBuilder->root('run_open_code_exchange_rate');
+        $rootNode = $treeBuilder->root('runopencode_exchange_rate');
 
         $rootNode
             ->children()
@@ -228,7 +228,7 @@ class Configuration implements ConfigurationInterface
             ->info('Modify default "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\SourceType" settings.')
             ->addDefaultsIfNotSet()
             ->children()
-                ->scalarNode('choice_translation_domain')->defaultValue('roc_exchange_rate')->end()
+                ->scalarNode('choice_translation_domain')->defaultValue('runopencode_exchange_rate')->end()
                 ->arrayNode('preferred_choices')->prototype('scalar')->end()->end()
             ->end()
         ->end();
@@ -249,7 +249,7 @@ class Configuration implements ConfigurationInterface
             ->info('Modify default "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\RateTypeType" settings.')
             ->addDefaultsIfNotSet()
             ->children()
-                ->scalarNode('choice_translation_domain')->defaultValue('roc_exchange_rate')->end()
+                ->scalarNode('choice_translation_domain')->defaultValue('runopencode_exchange_rate')->end()
                 ->arrayNode('preferred_choices')->prototype('scalar')->end()->end()
             ->end()
         ->end();
@@ -270,7 +270,7 @@ class Configuration implements ConfigurationInterface
             ->info('Modify default "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\CurrencyCodeType" settings.')
             ->addDefaultsIfNotSet()
             ->children()
-                ->scalarNode('choice_translation_domain')->defaultValue('roc_exchange_rate')->end()
+                ->scalarNode('choice_translation_domain')->defaultValue('runopencode_exchange_rate')->end()
                 ->arrayNode('preferred_choices')->prototype('scalar')->end()->end()
             ->end()
         ->end();
@@ -291,7 +291,7 @@ class Configuration implements ConfigurationInterface
             ->info('Modify default "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\ForeignCurrencyCodeType" settings.')
             ->addDefaultsIfNotSet()
             ->children()
-                ->scalarNode('choice_translation_domain')->defaultValue('roc_exchange_rate')->end()
+                ->scalarNode('choice_translation_domain')->defaultValue('runopencode_exchange_rate')->end()
                 ->arrayNode('preferred_choices')->prototype('scalar')->end()->end()
             ->end()
         ->end();
@@ -312,7 +312,7 @@ class Configuration implements ConfigurationInterface
             ->info('Modify default "RunOpenCode\\Bundle\\ExchangeRate\\Form\\Type\\RateType" settings.')
             ->addDefaultsIfNotSet()
             ->children()
-                ->scalarNode('choice_translation_domain')->defaultValue('roc_exchange_rate')->end()
+                ->scalarNode('choice_translation_domain')->defaultValue('runopencode_exchange_rate')->end()
                 ->arrayNode('preferred_choices')->prototype('scalar')->end()->end()
             ->end()
         ->end();

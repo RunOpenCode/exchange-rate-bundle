@@ -30,7 +30,7 @@ class ExtensionTest extends AbstractExtensionTestCase
             ],
         ]);
 
-        $this->assertContainerBuilderHasParameter('run_open_code.exchange_rate.base_currency', 'RSD');
+        $this->assertContainerBuilderHasParameter('runopencode.exchange_rate.base_currency', 'RSD');
     }
 
     /**
@@ -49,7 +49,7 @@ class ExtensionTest extends AbstractExtensionTestCase
             'rates' => $rates,
         ]);
 
-        $services = $this->container->findTaggedServiceIds('run_open_code.exchange_rate.rate_configuration');
+        $services = $this->container->findTaggedServiceIds('runopencode.exchange_rate.rate_configuration');
 
         $this->assertEquals(3, count($services));
 
@@ -90,7 +90,7 @@ class ExtensionTest extends AbstractExtensionTestCase
             'sources' => $sources,
         ]);
 
-        $services = $this->container->findTaggedServiceIds('run_open_code.exchange_rate.source');
+        $services = $this->container->findTaggedServiceIds('runopencode.exchange_rate.source');
 
         $this->assertEquals(2, count($services));
 
@@ -117,7 +117,7 @@ class ExtensionTest extends AbstractExtensionTestCase
             'repository' => 'file',
         ]);
 
-        $this->assertContainerBuilderHasParameter('run_open_code.exchange_rate.repository', 'file');
+        $this->assertContainerBuilderHasParameter('runopencode.exchange_rate.repository', 'file');
     }
 
     /**
@@ -135,7 +135,7 @@ class ExtensionTest extends AbstractExtensionTestCase
             ],
         ]);
 
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument('run_open_code.exchange_rate.repository.file_repository', 0, 'path/to/file');
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('runopencode.exchange_rate.repository.file_repository', 0, 'path/to/file');
     }
 
     /**
@@ -154,8 +154,8 @@ class ExtensionTest extends AbstractExtensionTestCase
             ],
         ]);
 
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument('run_open_code.exchange_rate.repository.doctrine_dbal_repository', 0, new Reference('connection'));
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument('run_open_code.exchange_rate.repository.doctrine_dbal_repository', 1, 'table_name');
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('runopencode.exchange_rate.repository.doctrine_dbal_repository', 0, new Reference('connection'));
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('runopencode.exchange_rate.repository.doctrine_dbal_repository', 1, 'table_name');
     }
 
     /**
@@ -173,7 +173,7 @@ class ExtensionTest extends AbstractExtensionTestCase
             ],
         ]);
 
-        $this->assertContainerBuilderNotHasService('run_open_code.exchange_rate.security.access_voter');
+        $this->assertContainerBuilderNotHasService('runopencode.exchange_rate.security.access_voter');
     }
 
     /**
@@ -196,7 +196,7 @@ class ExtensionTest extends AbstractExtensionTestCase
             'security' => $roles,
         ]);
 
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument('run_open_code.exchange_rate.security.access_voter', 0, $roles);
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('runopencode.exchange_rate.security.access_voter', 0, $roles);
     }
 
     /**
@@ -233,27 +233,27 @@ class ExtensionTest extends AbstractExtensionTestCase
             ],
         ]);
 
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument('run_open_code.exchange_rate.form_type.source_type', 1, [
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('runopencode.exchange_rate.form_type.source_type', 1, [
             'choice_translation_domain' => 'domain',
             'preferred_choices' => ['national_bank_of_serbia'],
         ]);
 
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument('run_open_code.exchange_rate.form_type.rate_type', 1, [
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('runopencode.exchange_rate.form_type.rate_type', 1, [
             'choice_translation_domain' => 'domain',
             'preferred_choices' => ['national_bank_of_serbia.median.EUR'],
         ]);
 
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument('run_open_code.exchange_rate.form_type.rate_type_type', 1, [
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('runopencode.exchange_rate.form_type.rate_type_type', 1, [
             'choice_translation_domain' => 'domain',
             'preferred_choices' => ['median'],
         ]);
 
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument('run_open_code.exchange_rate.form_type.currency_code_type', 2, [
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('runopencode.exchange_rate.form_type.currency_code_type', 2, [
             'choice_translation_domain' => 'domain',
             'preferred_choices' => ['EUR'],
         ]);
 
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument('run_open_code.exchange_rate.form_type.foreign_currency_code_type', 1, [
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('runopencode.exchange_rate.form_type.foreign_currency_code_type', 1, [
             'choice_translation_domain' => 'domain',
             'preferred_choices' => ['EUR'],
         ]);

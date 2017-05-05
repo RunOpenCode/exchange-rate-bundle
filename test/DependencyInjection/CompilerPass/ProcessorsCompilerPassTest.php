@@ -22,23 +22,23 @@ class ProcessorsCompilerPassTest extends AbstractCompilerPassTestCase
      */
     public function itRegistersProcessors()
     {
-        $this->setDefinition('run_open_code.exchange_rate.registry.processors', new Definition());
+        $this->setDefinition('runopencode.exchange_rate.registry.processors', new Definition());
 
         $processor1 = new Definition();
         $processor1
-            ->addTag('run_open_code.exchange_rate.processor', [ 'priority' => 10 ]);
+            ->addTag('runopencode.exchange_rate.processor', [ 'priority' => 10 ]);
 
         $processor2 = new Definition();
         $processor2
-            ->addTag('run_open_code.exchange_rate.processor', [ 'priority' => 20 ]);
+            ->addTag('runopencode.exchange_rate.processor', [ 'priority' => 20 ]);
 
         $processor3 = new Definition();
         $processor3
-            ->addTag('run_open_code.exchange_rate.processor', []);
+            ->addTag('runopencode.exchange_rate.processor', []);
 
         $processor4 = new Definition();
         $processor4
-            ->addTag('run_open_code.exchange_rate.processor', [ 'priority' => -5 ]);
+            ->addTag('runopencode.exchange_rate.processor', [ 'priority' => -5 ]);
 
         $this->setDefinition('processor1', $processor1);
         $this->setDefinition('processor2', $processor2);
@@ -47,10 +47,10 @@ class ProcessorsCompilerPassTest extends AbstractCompilerPassTestCase
 
         $this->compile();
 
-        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall('run_open_code.exchange_rate.registry.processors', 'add', [new Reference('processor4')], 0);
-        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall('run_open_code.exchange_rate.registry.processors', 'add', [new Reference('processor3')], 1);
-        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall('run_open_code.exchange_rate.registry.processors', 'add', [new Reference('processor1')], 2);
-        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall('run_open_code.exchange_rate.registry.processors', 'add', [new Reference('processor2')], 3);
+        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall('runopencode.exchange_rate.registry.processors', 'add', [new Reference('processor4')], 0);
+        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall('runopencode.exchange_rate.registry.processors', 'add', [new Reference('processor3')], 1);
+        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall('runopencode.exchange_rate.registry.processors', 'add', [new Reference('processor1')], 2);
+        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall('runopencode.exchange_rate.registry.processors', 'add', [new Reference('processor2')], 3);
     }
 
     /**

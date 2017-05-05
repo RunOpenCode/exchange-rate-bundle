@@ -9,9 +9,9 @@
  */
 namespace RunOpenCode\Bundle\ExchangeRate\Controller;
 
-use RunOpenCode\Bundle\ExchangeRate\Form\Type\EditType;
-use RunOpenCode\Bundle\ExchangeRate\Form\Type\FilterType;
-use RunOpenCode\Bundle\ExchangeRate\Form\Type\NewType;
+use RunOpenCode\Bundle\ExchangeRate\Form\EditType;
+use RunOpenCode\Bundle\ExchangeRate\Form\FilterType;
+use RunOpenCode\Bundle\ExchangeRate\Form\NewType;
 use RunOpenCode\ExchangeRate\Contract\RateInterface;
 use RunOpenCode\ExchangeRate\Contract\RepositoryInterface;
 use RunOpenCode\Bundle\ExchangeRate\Model\Rate;
@@ -107,14 +107,14 @@ class ExchangeRateController extends Controller
             $rate = $form->getData();
 
             if ($this->repository->has($rate->getSourceName(), $rate->getCurrencyCode(), $rate->getDate(), $rate->getRateType())) {
-                $form->addError(new FormError($this->get('translator')->trans('exchange_rate.form.error.new_exists', array(), 'roc_exchange_rate')));
+                $form->addError(new FormError($this->get('translator')->trans('exchange_rate.form.error.new_exists', array(), 'runopencode_exchange_rate')));
             } else {
                 $this->repository->save(array(
                     $form->getData()
                 ));
 
-                $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('exchange_rate.flash.new.success', array(), 'roc_exchange_rate'));
-                return $this->redirectToRoute('roc_exchange_rate_list');
+                $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('exchange_rate.flash.new.success', array(), 'runopencode_exchange_rate'));
+                return $this->redirectToRoute('runopencode_exchange_rate_list');
             }
         }
 
@@ -146,8 +146,8 @@ class ExchangeRateController extends Controller
                 $form->getData()
             ));
 
-            $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('exchange_rate.flash.edit.success', array(), 'roc_exchange_rate'));
-            return $this->redirectToRoute('roc_exchange_rate_list');
+            $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('exchange_rate.flash.edit.success', array(), 'runopencode_exchange_rate'));
+            return $this->redirectToRoute('runopencode_exchange_rate_list');
         }
 
         return $this->render($this->templates['edit'], array(
@@ -176,8 +176,8 @@ class ExchangeRateController extends Controller
 
         $this->repository->delete(array($rate));
 
-        $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('exchange_rate.flash.delete.success', array(), 'roc_exchange_rate'));
-        return $this->redirectToRoute('roc_exchange_rate_list');
+        $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans('exchange_rate.flash.delete.success', array(), 'runopencode_exchange_rate'));
+        return $this->redirectToRoute('runopencode_exchange_rate_list');
     }
 
     /**

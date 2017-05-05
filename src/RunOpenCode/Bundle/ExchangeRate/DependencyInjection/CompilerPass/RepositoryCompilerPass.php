@@ -28,23 +28,23 @@ class RepositoryCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
 
-        if (!$container->hasParameter('run_open_code.exchange_rate.repository')) {
+        if (!$container->hasParameter('runopencode.exchange_rate.repository')) {
             return;
         }
 
-        $repository = $container->getParameter('run_open_code.exchange_rate.repository');
+        $repository = $container->getParameter('runopencode.exchange_rate.repository');
 
         if ($container->has($repository)) {
-            $container->setAlias('run_open_code.exchange_rate.repository', $repository);
+            $container->setAlias('runopencode.exchange_rate.repository', $repository);
             return;
         }
 
-        foreach ($container->findTaggedServiceIds('run_open_code.exchange_rate.repository') as $id => $tags) {
+        foreach ($container->findTaggedServiceIds('runopencode.exchange_rate.repository') as $id => $tags) {
 
             foreach ($tags as $attributes) {
 
                 if (isset($attributes['alias']) && $repository === $attributes['alias']) {
-                    $container->setDefinition('run_open_code.exchange_rate.repository', $container->findDefinition($id));
+                    $container->setDefinition('runopencode.exchange_rate.repository', $container->findDefinition($id));
                     return;
                 }
             }

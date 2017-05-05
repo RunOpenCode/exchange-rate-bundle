@@ -1,4 +1,4 @@
-run_open_code_exchange_rate:
+runopencode_exchange_rate:
     base_currency: RSD
     repository: doctrine_dbal
     rates:

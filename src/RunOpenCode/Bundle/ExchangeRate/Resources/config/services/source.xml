@@ -7,13 +7,13 @@
 
     <parameters>
 
-        <parameter key="run_open_code.exchange_rate.registry.sources.class">RunOpenCode\ExchangeRate\Registry\SourcesRegistry</parameter>
+        <parameter key="runopencode.exchange_rate.registry.sources.class">RunOpenCode\ExchangeRate\Registry\SourcesRegistry</parameter>
 
     </parameters>
 
     <services>
 
-        <service id="run_open_code.exchange_rate.registry.sources" class="%run_open_code.exchange_rate.registry.sources.class%" public="false" />
+        <service id="runopencode.exchange_rate.registry.sources" class="%runopencode.exchange_rate.registry.sources.class%" public="false" />
 
     </services>
 

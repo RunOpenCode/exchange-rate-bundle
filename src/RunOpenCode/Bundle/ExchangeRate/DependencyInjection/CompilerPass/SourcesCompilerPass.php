@@ -28,13 +28,13 @@ class SourcesCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if ($container->hasDefinition('run_open_code.exchange_rate.registry.sources')) {
+        if ($container->hasDefinition('runopencode.exchange_rate.registry.sources')) {
 
-            $definition = $container->getDefinition('run_open_code.exchange_rate.registry.sources');
+            $definition = $container->getDefinition('runopencode.exchange_rate.registry.sources');
 
             $requiredSources = $this->getRequiredSources($container);
 
-            foreach ($container->findTaggedServiceIds('run_open_code.exchange_rate.source') as $id => $tags) {
+            foreach ($container->findTaggedServiceIds('runopencode.exchange_rate.source') as $id => $tags) {
 
                 foreach ($tags as $attributes) {
 
@@ -67,7 +67,7 @@ class SourcesCompilerPass implements CompilerPassInterface
     {
         $sources = [];
 
-        foreach ($container->findTaggedServiceIds('run_open_code.exchange_rate.rate_configuration') as $id => $tags) {
+        foreach ($container->findTaggedServiceIds('runopencode.exchange_rate.rate_configuration') as $id => $tags) {
             $source = $container->getDefinition($id)->getArgument(2);
             $sources[$source] = $source;
         }

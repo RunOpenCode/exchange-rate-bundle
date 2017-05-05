@@ -1,3 +1,22 @@
+filter:
+    fields:
+        onDate:
+            label: Date
+            placeholder: Pick a date...
+        sourceName:
+            label: Source
+            placeholder: Choose rate source...
+        rateType:
+            label: Rate type
+            placeholder: Choose rate source...
+        currencyCode:
+            label: Currency code
+            placeholder: Choose currency code...
+    submit: Apply
+
+
+
+
 exchange_rate:
 
     source:
@@ -65,4 +84,14 @@ exchange_rate:
             save: Save
             add_new: Add new
     filter:
+        fields:
+            onDate:
+                label: Date
+                placeholder: Choose date...
+            sourceName:
+                label: Source
+                placeholder: Choose rate source...
+            rateType:
+                label: Rate type
+                placeholder: Choose rate source...
         submit: Apply

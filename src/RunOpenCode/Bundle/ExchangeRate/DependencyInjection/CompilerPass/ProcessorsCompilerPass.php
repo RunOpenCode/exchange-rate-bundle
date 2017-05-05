@@ -27,13 +27,13 @@ class ProcessorsCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if ($container->has('run_open_code.exchange_rate.registry.processors')) {
+        if ($container->has('runopencode.exchange_rate.registry.processors')) {
 
-            $definition = $container->findDefinition('run_open_code.exchange_rate.registry.processors');
+            $definition = $container->findDefinition('runopencode.exchange_rate.registry.processors');
 
             $processors = array();
 
-            foreach ($container->findTaggedServiceIds('run_open_code.exchange_rate.processor') as $id => $tags) {
+            foreach ($container->findTaggedServiceIds('runopencode.exchange_rate.processor') as $id => $tags) {
 
                 foreach ($tags as $attributes) {
                     $processors[$id] = !empty($attributes['priority']) ? (int)$attributes['priority'] : 0;
