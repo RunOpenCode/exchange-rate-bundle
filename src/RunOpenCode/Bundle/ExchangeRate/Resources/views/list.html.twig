@@ -1,1 +1,11 @@
-This should not be empty
+{% extends '@ExchangeRate/layout.html.twig' %}
+
+{% block body %}
+
+    {% block exchange_rates %}
+
+        {% include '@ExchangeRate/_table.html.twig' with { 'rates': rates } %}
+
+    {% endblock exchange_rates %}
+
+{% endblock body %}

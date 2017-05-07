@@ -118,6 +118,14 @@ abstract class AbstractControllerTest extends TestCase
         $this
             ->mockSecurityAuthorizationChecker($container, $configuration);
 
+        $container->get('twig')->addFunction(new \Twig_Function('path', function($path, array $params = []) {
+            return $path;
+        }));
+
+        $container->get('twig')->addFunction(new \Twig_Function('csrf_token', function () {
+            return 'csrf_token';
+        }));
+
         return $container;
     }
 
@@ -133,6 +141,10 @@ abstract class AbstractControllerTest extends TestCase
             ->willReturn($configuration['grant_access']);
 
         $container->set('security.authorization_checker', $securityAuthorizationChecker);
+
+        $container->get('twig')->addFunction(new \Twig_Function('is_granted', function () use ($configuration) {
+            return $configuration['grant_access'];
+        }));
 
         return $this;
     }

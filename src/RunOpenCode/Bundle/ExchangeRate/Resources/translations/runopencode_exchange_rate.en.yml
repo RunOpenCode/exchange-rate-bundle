@@ -1,3 +1,13 @@
+table:
+        heading:
+            source: Source
+            rateType: Rate type
+            currencyCode: Currency code
+            value: Value
+            date: Date
+            modifiedAt: Modified on
+            actions: Actions
+        empty: There are no rates to display.
 filter:
     fields:
         onDate:
@@ -17,81 +27,81 @@ filter:
 
 
 
-exchange_rate:
-
-    source:
-        national_bank_of_serbia: National bank of Serbia
-        banca_intesa_serbia: Banca Intesa Serbia
-
-    rate_type:
-        national_bank_of_serbia:
-            default: Middle exchange rate
-            foreign_cash_buying: Buying foreign cash rate
-            foreign_cash_selling: Selling foreign cash rate
-            foreign_exchange_buying: Buying foreign exchange rate
-            foreign_exchange_selling: Selling foreign exchange rate
-        banca_intesa_serbia:
-            default: Middle exchange rate
-            foreign_cash_buying: Buying foreign cash rate
-            foreign_cash_selling: Selling foreign cash rate
-            foreign_exchange_buying: Buying foreign exchange rate
-            foreign_exchange_selling: Selling foreign exchange rate
-
-    page_title: Exchange rates
-
-    flash:
-        new:
-            success: You have successfully added new exchange rate.
-        edit:
-            success: You have successfully updated exchange rate.
-        delete:
-            success: You have successfully deleted exchange rate.
-    advisory:
-        no_data: There are no rates at the moment.
-    list:
-        object_actions:
-            edit: Edit
-            delete: Delete
-
-        list_actions:
-            add_new: Add new
-
-        table:
-            headings:
-                source: Source
-                rate_type: Rate type
-                currency_code: Currency code
-                value: Value
-                date: Date
-                modified_at: Modified at
-                actions: Actions
-
-        actions:
-            delete:
-                question: Are you sure that you want to delete this rate?
-    form:
-        title:
-            new: Add new exchange rate
-            edit: Modify exchange rate
-        fields:
-            value: Value
-            date: Date
-            rate: Rate
-        error:
-            new_exists: That rate already exists.
-        actions:
-            list: List
-            save: Save
-            add_new: Add new
-    filter:
-        fields:
-            onDate:
-                label: Date
-                placeholder: Choose date...
-            sourceName:
-                label: Source
-                placeholder: Choose rate source...
-            rateType:
-                label: Rate type
-                placeholder: Choose rate source...
-        submit: Apply
+#exchange_rate:
+#
+#    source:
+#        national_bank_of_serbia: National bank of Serbia
+#        banca_intesa_serbia: Banca Intesa Serbia
+#
+#    rate_type:
+#        national_bank_of_serbia:
+#            default: Middle exchange rate
+#            foreign_cash_buying: Buying foreign cash rate
+#            foreign_cash_selling: Selling foreign cash rate
+#            foreign_exchange_buying: Buying foreign exchange rate
+#            foreign_exchange_selling: Selling foreign exchange rate
+#        banca_intesa_serbia:
+#            default: Middle exchange rate
+#            foreign_cash_buying: Buying foreign cash rate
+#            foreign_cash_selling: Selling foreign cash rate
+#            foreign_exchange_buying: Buying foreign exchange rate
+#            foreign_exchange_selling: Selling foreign exchange rate
+#
+#    page_title: Exchange rates
+#
+#    flash:
+#        new:
+#            success: You have successfully added new exchange rate.
+#        edit:
+#            success: You have successfully updated exchange rate.
+#        delete:
+#            success: You have successfully deleted exchange rate.
+#    advisory:
+#        no_data: There are no rates at the moment.
+#    list:
+#        object_actions:
+#            edit: Edit
+#            delete: Delete
+#
+#        list_actions:
+#            add_new: Add new
+#
+#        table:
+#            headings:
+#                source: Source
+#                rate_type: Rate type
+#                currency_code: Currency code
+#                value: Value
+#                date: Date
+#                modified_at: Modified at
+#                actions: Actions
+#
+#        actions:
+#            delete:
+#                question: Are you sure that you want to delete this rate?
+#    form:
+#        title:
+#            new: Add new exchange rate
+#            edit: Modify exchange rate
+#        fields:
+#            value: Value
+#            date: Date
+#            rate: Rate
+#        error:
+#            new_exists: That rate already exists.
+#        actions:
+#            list: List
+#            save: Save
+#            add_new: Add new
+#    filter:
+#        fields:
+#            onDate:
+#                label: Date
+#                placeholder: Choose date...
+#            sourceName:
+#                label: Source
+#                placeholder: Choose rate source...
+#            rateType:
+#                label: Rate type
+#                placeholder: Choose rate source...
+#        submit: Apply

@@ -1,0 +1,109 @@
+<table>
+    <thead>
+        <tr>
+            {% block thead %}
+                <th>
+                    {{ 'table.heading.source'|trans({}, 'runopencode_exchange_rate') }}
+                </th>
+                <th>
+                    {{ 'table.heading.rateType'|trans({}, 'runopencode_exchange_rate') }}
+                </th>
+                <th>
+                    {{ 'table.heading.currencyCode'|trans({}, 'runopencode_exchange_rate') }}
+                </th>
+                <th>
+                    {{ 'table.heading.value'|trans({}, 'runopencode_exchange_rate') }}
+                </th>
+                <th>
+                    {{ 'table.heading.date'|trans({}, 'runopencode_exchange_rate') }}
+                </th>
+                <th>
+                    {{ 'table.heading.modifiedAt'|trans({}, 'runopencode_exchange_rate') }}
+                </th>
+                <th>
+                    {{ 'table.heading.actions'|trans({}, 'runopencode_exchange_rate') }}
+                </th>
+            {% endblock thead %}
+        </tr>
+    </thead>
+    <tbody>
+        {% block tbody %}
+
+            {% for rate in rates %}
+
+                {% block trow %}
+
+                    <tr>
+                        <td>
+                            {{ ('exchange_rate.source.' ~ rate.sourceName) | trans({}, 'runopencode_exchange_rate') }}
+                        </td>
+                        <td>
+                            {{ ('exchange_rate.rate_type.' ~ rate.sourceName ~ '.' ~ rate.rateType) | trans({}, 'runopencode_exchange_rate') }}
+                        </td>
+                        <td>
+                            {{ rate.currencyCode }}
+                        </td>
+                        <td>
+                            {{ rate.value }}
+                        </td>
+                        <td>
+                            {{ rate.date|date(date_format) }}
+                        </td>
+                        <td>
+                            {{ rate.modifiedAt|date(date_format) }} {{ rate.modifiedAt|date(time_format) }}
+                        </td>
+                        <td>
+                            {% if is_granted('EDIT', rate) %}
+
+                                <a href="{{ path('runopencode_exchange_rate_edit', {
+                                    date: rate.date|date('Y-m-d'),
+                                    currency_code: rate.currencyCode,
+                                    rate_type: rate.rateType,
+                                    source: rate.sourceName
+                                }) }}">
+                                    {{ 'objectAction.edit'|trans({}, 'runopencode_exchange_rate') }}
+                                </a>
+
+                            {% endif %}
+
+                            {% if is_granted('DELETE', rate) %}
+
+                                <a
+                                        href="{{ path('runopencode_exchange_rate_delete', {
+                                            date: rate.date|date('Y-m-d'),
+                                            currency_code: rate.currencyCode,
+                                            rate_type: rate.rateType,
+                                            source: rate.sourceName
+                                        }) }}"
+                                        data-csrf-token="{{ csrf_token(path('runopencode_exchange_rate_delete', {
+                                            date: rate.date|date('Y-m-d'),
+                                            currency_code: rate.currencyCode,
+                                            rate_type: rate.rateType,
+                                            source: rate.sourceName
+                                        })) }}"
+                                >
+                                    {{ 'objectAction.edit.delete'|trans({}, 'runopencode_exchange_rate') }}
+                                </a>
+
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                {% endblock trow %}
+
+            {% else %}
+
+                <tr>
+                    <td colspan="7">
+                        {% block advisory %}
+                            {{ 'table.empty'|trans({}, 'runopencode_exchange_rate') }}
+                        {% endblock advisory %}
+                    </td>
+                </tr>
+
+            {% endfor %}
+
+        {% endblock tbody %}
+
+    </tbody>
+</table>

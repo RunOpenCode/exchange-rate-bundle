@@ -10,6 +10,7 @@
 namespace RunOpenCode\Bundle\ExchangeRate\Tests\Controller;
 
 use RunOpenCode\Bundle\ExchangeRate\Controller\ListController;
+use RunOpenCode\ExchangeRate\Model\Rate;
 use Symfony\Component\HttpFoundation\Request;
 
 class ListControllerTest extends AbstractControllerTest
@@ -29,16 +30,27 @@ class ListControllerTest extends AbstractControllerTest
     /**
      * @test
      */
-    public function itListsAll()
+    public function itRendersList()
     {
         $controller = new ListController();
-        $controller->setContainer($this->getContainer([
+        $container = $this->getContainer([
             'grant_access' => true
-        ]));
+        ]);
 
+        $controller->setContainer($container);
+
+        // Empty list
         $response = $controller->indexAction(Request::createFromGlobals());
+        $this->assertContains('table.empty', $response->getContent());
 
-        $this->assertContains('empty', $response->getContent());
+        // Add a rate to repository
+        $container->get('runopencode.exchange_rate.repository')->save([
+            new Rate('source', 10, 'EUR', 'median', new \DateTime('now'), 'RSD')
+        ]);
+
+        // List is not empty
+        $response = $controller->indexAction(Request::createFromGlobals());
+        $this->assertNotContains('table.empty', $response->getContent());
     }
 }
 
