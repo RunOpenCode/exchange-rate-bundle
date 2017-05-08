@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class ExchangeRate extends Constraint
 {
-    public $message = 'Provided currency code and rate type is not valid in this context.';
+    public $message = 'runopencode.exchange_rate.rate_validator.invalid';
 
     /**
      * {@inheritdoc}

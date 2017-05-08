@@ -4,8 +4,14 @@
 
     {% block exchange_rates %}
 
-        {% include '@ExchangeRate/_table.html.twig' with { 'rates': rates } %}
+        {% include '@ExchangeRate/_table.html.twig' with { 'rates': rates } only %}
 
     {% endblock exchange_rates %}
+
+    {% block filters %}
+
+        {% include '@ExchangeRate/_filter_form.html.twig' with { 'form': form } %}
+
+    {% endblock %}
 
 {% endblock body %}

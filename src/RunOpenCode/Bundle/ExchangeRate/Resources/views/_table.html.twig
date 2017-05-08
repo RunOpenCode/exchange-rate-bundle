@@ -47,10 +47,10 @@
                             {{ rate.value }}
                         </td>
                         <td>
-                            {{ rate.date|date(date_format) }}
+                            {{ rate.date|date('Y-m-d') }}
                         </td>
                         <td>
-                            {{ rate.modifiedAt|date(date_format) }} {{ rate.modifiedAt|date(time_format) }}
+                            {{ rate.modifiedAt|date('Y-m-d H:i:s') }}
                         </td>
                         <td>
                             {% if is_granted('EDIT', rate) %}

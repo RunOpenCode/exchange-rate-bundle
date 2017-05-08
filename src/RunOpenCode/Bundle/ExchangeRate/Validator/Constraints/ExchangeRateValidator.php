@@ -9,7 +9,9 @@
  */
 namespace RunOpenCode\Bundle\ExchangeRate\Validator\Constraints;
 
+use RunOpenCode\Bundle\ExchangeRate\Exception\InvalidArgumentException;
 use RunOpenCode\ExchangeRate\Configuration;
+use RunOpenCode\ExchangeRate\Contract\RateInterface;
 use RunOpenCode\ExchangeRate\Contract\RatesConfigurationRegistryInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -38,6 +40,19 @@ class ExchangeRateValidator extends ConstraintValidator
      */
     public function validate($rate, Constraint $constraint)
     {
+        if (!$constraint instanceof ExchangeRate) {
+            throw new InvalidArgumentException(sprintf('Expected instance of "%s", got "%s".', ExchangeRate::class, get_class($constraint)));
+        }
+
+        if (null === $rate) {
+            return;
+        }
+
+        if (!$rate instanceof RateInterface) {
+            throw new InvalidArgumentException(sprintf('Expected instance of "%s", got "%s".', RateInterface::class, get_class($rate)));
+        }
+
+
         if ($rate->getCurrencyCode() && $rate->getRateType()) {
             /**
              * @var Configuration $rateConfiguration
@@ -57,7 +72,8 @@ class ExchangeRateValidator extends ConstraintValidator
             /**
              * @var ExchangeRate $constraint
              */
-            $this->context->buildViolation($constraint->message)
+            $this->context
+                ->buildViolation($constraint->message)
                 ->addViolation();
         }
     }
