@@ -29,7 +29,7 @@ class RateTypeType extends AbstractType
      */
     protected $defaults;
 
-    public function __construct(RatesConfigurationRegistryInterface $registry, array $defaults)
+    public function __construct(RatesConfigurationRegistryInterface $registry, array $defaults = [])
     {
         $choices = [];
 

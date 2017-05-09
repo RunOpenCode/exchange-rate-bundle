@@ -12,6 +12,7 @@ namespace RunOpenCode\Bundle\ExchangeRate\Form\Type;
 use RunOpenCode\ExchangeRate\Configuration;
 use RunOpenCode\ExchangeRate\Contract\RatesConfigurationRegistryInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -28,7 +29,7 @@ class RateType extends AbstractType
      */
     protected $defaults;
 
-    public function __construct(RatesConfigurationRegistryInterface $registry, array $defaults)
+    public function __construct(RatesConfigurationRegistryInterface $registry, array $defaults = [])
     {
         $choices = [];
 
@@ -53,5 +54,13 @@ class RateType extends AbstractType
     {
         $resolver
             ->setDefaults($this->defaults);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return ChoiceType::class;
     }
 }

@@ -29,7 +29,7 @@ class CurrencyCodeType extends AbstractType
      */
     protected $defaults;
 
-    public function __construct(RatesConfigurationRegistryInterface $registry, $baseCurrencyCode, array $defaults)
+    public function __construct(RatesConfigurationRegistryInterface $registry, $baseCurrencyCode, array $defaults = [])
     {
         $currencyCodes = [];
 

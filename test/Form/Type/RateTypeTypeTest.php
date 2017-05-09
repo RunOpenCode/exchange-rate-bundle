@@ -10,18 +10,18 @@
 namespace RunOpenCode\Bundle\ExchangeRate\Tests\Form\Type;
 
 use PHPUnit\Framework\TestCase;
-use RunOpenCode\Bundle\ExchangeRate\Form\Type\CurrencyCodeType;
+use RunOpenCode\Bundle\ExchangeRate\Form\Type\RateTypeType;
 use RunOpenCode\ExchangeRate\Configuration;
 use RunOpenCode\ExchangeRate\Registry\RatesConfigurationRegistry;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class CurrencyCodeTypeTest
+ * Class RateTypeTypeTest
  *
  * @package RunOpenCode\Bundle\ExchangeRate\Tests\Form\Type
  */
-class CurrencyCodeTypeTest extends TestCase
+class RateTypeTypeTest extends TestCase
 {
     /**
      * @test
@@ -30,12 +30,12 @@ class CurrencyCodeTypeTest extends TestCase
     {
         $ratesRegistry = new RatesConfigurationRegistry([
             new Configuration('EUR', 'median', 'nbs'),
-            new Configuration('CHF', 'median', 'nbs'),
-            new Configuration('USD', 'median', 'nbs'),
+            new Configuration('EUR', 'buying', 'nbs'),
+            new Configuration('EUR', 'selling', 'nbs'),
         ]);
 
-        $type = new CurrencyCodeType($ratesRegistry, 'RSD', [
-            'preferred_choices' => ['EUR', 'RSD']
+        $type = new RateTypeType($ratesRegistry, [
+            'preferred_choices' => ['median']
         ]);
 
         $resolver = new OptionsResolver();
@@ -45,16 +45,14 @@ class CurrencyCodeTypeTest extends TestCase
         $defaults = $resolver->resolve([]);
 
         $this->assertEquals([
-            'choice_translation_domain' => false,
+            'choice_translation_domain' => 'runopencode_exchange_rate',
             'choices' => [
-                'RSD' => 'RSD',
-                'EUR' => 'EUR',
-                'CHF' => 'CHF',
-                'USD' => 'USD',
+                'median' => 'median',
+                'buying' => 'buying',
+                'selling' => 'selling',
             ],
             'preferred_choices' => [
-                'EUR',
-                'RSD',
+                'median'
             ]
         ], $defaults);
     }
@@ -66,11 +64,11 @@ class CurrencyCodeTypeTest extends TestCase
     {
         $ratesRegistry = new RatesConfigurationRegistry([
             new Configuration('EUR', 'median', 'nbs'),
-            new Configuration('CHF', 'median', 'nbs'),
-            new Configuration('USD', 'median', 'nbs'),
+            new Configuration('EUR', 'buying', 'nbs'),
+            new Configuration('EUR', 'selling', 'nbs'),
         ]);
 
-        $type = new CurrencyCodeType($ratesRegistry, 'RSD');
+        $type = new RateTypeType($ratesRegistry);
 
         $this->assertEquals(ChoiceType::class, $type->getParent());
     }

@@ -10,18 +10,18 @@
 namespace RunOpenCode\Bundle\ExchangeRate\Tests\Form\Type;
 
 use PHPUnit\Framework\TestCase;
-use RunOpenCode\Bundle\ExchangeRate\Form\Type\CurrencyCodeType;
+use RunOpenCode\Bundle\ExchangeRate\Form\Type\RateType;
 use RunOpenCode\ExchangeRate\Configuration;
 use RunOpenCode\ExchangeRate\Registry\RatesConfigurationRegistry;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class CurrencyCodeTypeTest
+ * Class RateTypeTest
  *
  * @package RunOpenCode\Bundle\ExchangeRate\Tests\Form\Type
  */
-class CurrencyCodeTypeTest extends TestCase
+class RateTypeTest extends TestCase
 {
     /**
      * @test
@@ -34,8 +34,8 @@ class CurrencyCodeTypeTest extends TestCase
             new Configuration('USD', 'median', 'nbs'),
         ]);
 
-        $type = new CurrencyCodeType($ratesRegistry, 'RSD', [
-            'preferred_choices' => ['EUR', 'RSD']
+        $type = new RateType($ratesRegistry, [
+            'preferred_choices' => ['nbs.median.EUR', 'nbs.median.CHF']
         ]);
 
         $resolver = new OptionsResolver();
@@ -45,16 +45,15 @@ class CurrencyCodeTypeTest extends TestCase
         $defaults = $resolver->resolve([]);
 
         $this->assertEquals([
-            'choice_translation_domain' => false,
+            'choice_translation_domain' => 'runopencode_exchange_rate',
             'choices' => [
-                'RSD' => 'RSD',
-                'EUR' => 'EUR',
-                'CHF' => 'CHF',
-                'USD' => 'USD',
+                'nbs.median.EUR' => 'nbs.median.EUR',
+                'nbs.median.CHF' => 'nbs.median.CHF',
+                'nbs.median.USD' => 'nbs.median.USD',
             ],
             'preferred_choices' => [
-                'EUR',
-                'RSD',
+                'nbs.median.EUR',
+                'nbs.median.CHF',
             ]
         ], $defaults);
     }
@@ -70,7 +69,7 @@ class CurrencyCodeTypeTest extends TestCase
             new Configuration('USD', 'median', 'nbs'),
         ]);
 
-        $type = new CurrencyCodeType($ratesRegistry, 'RSD');
+        $type = new RateType($ratesRegistry);
 
         $this->assertEquals(ChoiceType::class, $type->getParent());
     }
