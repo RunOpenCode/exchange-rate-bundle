@@ -8,6 +8,7 @@
  * file that was distributed with this source code.
  */
 namespace RunOpenCode\Bundle\ExchangeRate\Tests\Validator\Constraints;
+
 use PHPUnit\Framework\TestCase;
 use RunOpenCode\Bundle\ExchangeRate\Validator\Constraints\ExchangeRate;
 
