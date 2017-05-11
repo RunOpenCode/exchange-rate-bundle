@@ -13,6 +13,8 @@ namespace RunOpenCode\Bundle\ExchangeRate\Enum;
  * Class Role
  *
  * @package RunOpenCode\Bundle\ExchangeRate
+ *
+ * @codeCoverageIgnore
  */
 final class Role
 {

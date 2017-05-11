@@ -13,6 +13,8 @@ namespace RunOpenCode\Bundle\ExchangeRate\Event;
  * Class FetchEvent
  *
  * @package RunOpenCode\Bundle\ExchangeRate\Event
+ *
+ * @codeCoverageIgnore
  */
 final class FetchEvents
 {

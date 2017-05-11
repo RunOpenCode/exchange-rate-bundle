@@ -84,6 +84,29 @@ class ExchangeRateValidatorTest extends TestCase
     /**
      * @test
      */
+    public function validationPassOnNull()
+    {
+        $registry = new RatesConfigurationRegistry([
+            new Configuration('EUR', 'median', 'dummy_source')
+        ]);
+
+        $validator = new ExchangeRateValidator($registry);
+
+        $validationContext = $this->getMockBuilder(ExecutionContextInterface::class)->getMock();
+
+        $validationContext
+            ->expects($this->never())
+            ->method('buildViolation')
+            ->willReturn($validationContext);
+
+        $validator->initialize($validationContext);
+
+        $validator->validate(null, new ExchangeRate());
+    }
+
+    /**
+     * @test
+     */
     public function validationFails()
     {
         $registry = new RatesConfigurationRegistry([

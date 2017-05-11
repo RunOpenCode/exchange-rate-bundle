@@ -63,11 +63,7 @@ class AccessVoter extends Voter
     {
         $attribute = strtolower($attribute);
 
-        if (in_array($attribute, [ self::EDIT, self::DELETE ], true)) {
-            return $subject instanceof RateInterface;
-        }
-
-        if (self::VIEW === $attribute && $subject instanceof RateInterface) {
+        if ($subject instanceof RateInterface && in_array($attribute, [ self::EDIT, self::DELETE, self::VIEW ], true)) {
             return true;
         }
 
