@@ -78,8 +78,6 @@ class AccessVoter extends Voter
             in_array($attribute, [ self::VIEW, self::CREATE], true)
             &&
             is_string($subject)
-            &&
-            class_exists($subject)
         ) {
             return (new \ReflectionClass($subject))->implementsInterface(RateInterface::class);
         }
@@ -110,7 +108,6 @@ class AccessVoter extends Voter
         $tokenRoles = array_filter(array_map(function(RoleInterface $role) {
             return $role->getRole() ?: false;
         }, $token->getRoles()));
-
 
         foreach ($tokenRoles as $tokenRole) {
             foreach ($roles as $role) {

@@ -1,3 +1,5 @@
+imports:
+    - { resource: security.yml }
 framework:
     test: ~
     session:
@@ -36,8 +38,8 @@ runopencode_exchange_rate:
         test_source: RunOpenCode\Bundle\ExchangeRate\Tests\Fixture\Source\DummySource
     security:
         enabled: true
-        view: [ 'VIEW' ]
-        create: [ 'CREATE' ]
-        edit: [ 'EDIT' ]
-        delete: [ 'DELETE' ]
+        view: [ 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN' ]
+        create: [ 'ROLE_SUPER_ADMIN' ]
+        edit: [ 'ROLE_SUPER_ADMIN' ]
+        delete: [ 'ROLE_SUPER_ADMIN' ]
 

@@ -13,15 +13,49 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ListControllerTest extends WebTestCase
 {
-    public function testShowPost()
+    /**
+     * @test
+     */
+    public function itDeniesAccess()
     {
-        $client = static::createClient();
+        $client = static::createClient([], [
+            'PHP_AUTH_USER' => 'foo',
+            'PHP_AUTH_PW'   => 'foo',
+        ]);
 
-        $crawler = $client->request('GET', '/post/hello-world');
+        $client->request('GET', $this->get('router')->generate('runopencode_exchange_rate_list'));
 
-        $this->assertGreaterThan(
-            0,
-            $crawler->filter('html:contains("Hello World")')->count()
-        );
+        $response = $client->getResponse();
+
+        $this->assertEquals(403, $response->getStatusCode());
+
+    }
+
+    /**
+     * @test
+     */
+    public function itGrantsAccess()
+    {
+        $client = static::createClient([], [
+            'PHP_AUTH_USER' => 'bar',
+            'PHP_AUTH_PW'   => 'bar',
+        ]);
+
+        $client->request('GET', $this->get('router')->generate('runopencode_exchange_rate_list'));
+
+        $response = $client->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    /**
+     * Get service
+     *
+     * @param string $id
+     * @return object
+     */
+    private function get($id)
+    {
+        return self::$kernel->getContainer()->get($id);
     }
 }

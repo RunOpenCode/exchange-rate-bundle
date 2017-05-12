@@ -4,6 +4,7 @@ namespace RunOpenCode\Bundle\ExchangeRate\Controller;
 
 use RunOpenCode\Bundle\ExchangeRate\Form\FilterType;
 use RunOpenCode\Bundle\ExchangeRate\Security\AccessVoter;
+use RunOpenCode\ExchangeRate\Contract\RateInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +18,7 @@ class ListController extends Controller
 {
     public function indexAction(Request $request)
     {
-        if (!$this->isGranted(AccessVoter::VIEW)) {
+        if (!$this->isGranted(AccessVoter::VIEW, RateInterface::class)) {
             throw $this->createAccessDeniedException();
         }
 

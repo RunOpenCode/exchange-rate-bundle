@@ -13,7 +13,9 @@
 
     <services>
 
-        <service id="runopencode.exchange_rate.security.access_voter" class="%runopencode.exchange_rate.security.access_voter.class%" />
+        <service id="runopencode.exchange_rate.security.access_voter" class="%runopencode.exchange_rate.security.access_voter.class%" public="false">
+            <tag name="security.voter" />
+        </service>
 
     </services>
 

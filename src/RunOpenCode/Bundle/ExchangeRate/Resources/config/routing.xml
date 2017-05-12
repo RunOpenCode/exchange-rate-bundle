@@ -5,7 +5,7 @@
         http://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="runopencode_exchange_rate_list" path="/exchange-rates">
-        <default key="_controller">RunOpenCode\Bundle\ExchangeRate\Controller\ListController::index</default>
+        <default key="_controller">RunOpenCode\Bundle\ExchangeRate\Controller\ListController::indexAction</default>
     </route>
 
     <route id="runopencode_exchange_rate_new" path="/exchange-rates/new">
