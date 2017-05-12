@@ -1,3 +1,4 @@
 vendor
 build/
 cache.properties
+test/Fixtures/project/var

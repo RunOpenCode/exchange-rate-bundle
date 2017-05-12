@@ -2,6 +2,10 @@
 
 <phpunit bootstrap="./vendor/autoload.php" colors="true">
 
+    <php>
+        <server name="KERNEL_DIR" value="./test/Fixtures/project/app/" />
+    </php>
+
     <testsuites>
 
         <testsuite name="Exchange rate bundle test suite">
