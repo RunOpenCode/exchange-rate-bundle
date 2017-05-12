@@ -36,6 +36,7 @@ class RepositoryCompilerPass implements CompilerPassInterface
 
         if ($container->has($repository)) {
             $container->setAlias('runopencode.exchange_rate.repository', $repository);
+            $container->findDefinition('runopencode.exchange_rate.repository')->setPublic(true);
             return;
         }
 
@@ -44,7 +45,9 @@ class RepositoryCompilerPass implements CompilerPassInterface
             foreach ($tags as $attributes) {
 
                 if (isset($attributes['alias']) && $repository === $attributes['alias']) {
-                    $container->setDefinition('runopencode.exchange_rate.repository', $container->findDefinition($id));
+                    $definition = $container->findDefinition($id);
+                    $container->setDefinition('runopencode.exchange_rate.repository', $definition);
+                    $definition->setPublic(true);
                     return;
                 }
             }
