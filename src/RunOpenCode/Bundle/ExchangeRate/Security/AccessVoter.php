@@ -46,6 +46,13 @@ class AccessVoter extends Voter
      */
     protected $roles;
 
+    /**
+     * AccessVoter constructor.
+     *
+     * @param array $roles
+     *
+     * @codeCoverageIgnore
+     */
     public function __construct(array $roles = [])
     {
         $this->roles = array_merge([
@@ -101,8 +108,9 @@ class AccessVoter extends Voter
     private function hasAnyRole(TokenInterface $token, array $roles)
     {
         $tokenRoles = array_filter(array_map(function(RoleInterface $role) {
-            return $role->getRole() ?? false;
+            return $role->getRole() ?: false;
         }, $token->getRoles()));
+
 
         foreach ($tokenRoles as $tokenRole) {
             foreach ($roles as $role) {
