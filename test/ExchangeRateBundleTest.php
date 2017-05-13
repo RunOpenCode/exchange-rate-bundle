@@ -11,6 +11,7 @@ namespace RunOpenCode\Bundle\ExchangeRate\Tests;
 
 use PHPUnit\Framework\TestCase;
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\ProcessorsCompilerPass;
+use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\RatesConfigurationRegistryCompilerPass;
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\RepositoryCompilerPass;
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\SourcesCompilerPass;
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\Extension;
@@ -40,7 +41,7 @@ class ExchangeRateBundleTest extends TestCase
         $container = $this->getMockBuilder(ContainerBuilder::class)->getMock();
 
         $container
-            ->expects($spy = $this->exactly(3))
+            ->expects($spy = $this->exactly(4))
             ->method('addCompilerPass')
             ->willReturn($container);
 
@@ -60,11 +61,12 @@ class ExchangeRateBundleTest extends TestCase
             $registeredCompilerPasses[] = get_class($invocation->parameters[0]);
         }
 
-        $this->assertCount(3, $invocations);
+        $this->assertCount(4, $invocations);
         $this->assertEquals([
             RepositoryCompilerPass::class,
             SourcesCompilerPass::class,
             ProcessorsCompilerPass::class,
+            RatesConfigurationRegistryCompilerPass::class
         ], $registeredCompilerPasses);
     }
 }

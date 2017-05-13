@@ -10,6 +10,7 @@
 namespace RunOpenCode\Bundle\ExchangeRate;
 
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\ProcessorsCompilerPass;
+use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\RatesConfigurationRegistryCompilerPass;
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\RepositoryCompilerPass;
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\CompilerPass\SourcesCompilerPass;
 use RunOpenCode\Bundle\ExchangeRate\DependencyInjection\Extension;
@@ -39,6 +40,6 @@ class ExchangeRateBundle extends Bundle
             ->addCompilerPass(new RepositoryCompilerPass())
             ->addCompilerPass(new SourcesCompilerPass())
             ->addCompilerPass(new ProcessorsCompilerPass())
-            ;
+            ->addCompilerPass(new RatesConfigurationRegistryCompilerPass());
     }
 }

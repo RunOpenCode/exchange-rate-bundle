@@ -13,6 +13,7 @@ use RunOpenCode\Bundle\ExchangeRate\Form\Type\ForeignCurrencyCodeType;
 use RunOpenCode\Bundle\ExchangeRate\Form\Type\RateTypeType;
 use RunOpenCode\Bundle\ExchangeRate\Form\Type\SourceType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -56,6 +57,7 @@ class FilterType extends AbstractType
                 'required' => false,
                 'translation_domain' => 'runopencode_exchange_rate',
             ])
+            ->add('submit', ButtonType::class)
             ->setMethod('GET')
         ;
     }
