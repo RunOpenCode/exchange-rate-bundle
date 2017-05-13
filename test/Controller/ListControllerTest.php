@@ -12,6 +12,11 @@ namespace RunOpenCode\Bundle\ExchangeRate\Tests\Controller;
 use RunOpenCode\ExchangeRate\Model\Rate;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
+/**
+ * Class ListControllerTest
+ *
+ * @package RunOpenCode\Bundle\ExchangeRate\Tests\Controller
+ */
 class ListControllerTest extends WebTestCase
 {
     /**
