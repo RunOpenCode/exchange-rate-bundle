@@ -55,35 +55,43 @@
                         <td>
                             {% if is_granted('EDIT', rate) %}
 
-                                <a href="{{ path('runopencode_exchange_rate_edit', {
-                                    date: rate.date|date('Y-m-d'),
-                                    currency_code: rate.currencyCode,
-                                    rate_type: rate.rateType,
-                                    source: rate.sourceName
-                                }) }}">
-                                    {{ 'objectAction.edit'|trans({}, 'runopencode_exchange_rate') }}
-                                </a>
+                                {% block object_action_edit %}
+
+                                    <a href="{{ path('runopencode_exchange_rate_edit', {
+                                        date: rate.date|date('Y-m-d'),
+                                        currency_code: rate.currencyCode,
+                                        rate_type: rate.rateType,
+                                        source: rate.sourceName
+                                    }) }}">
+                                        {{ 'actions.object.edit'|trans({}, 'runopencode_exchange_rate') }}
+                                    </a>
+
+                                {% endblock object_action_edit %}
 
                             {% endif %}
 
                             {% if is_granted('DELETE', rate) %}
 
-                                <a
-                                        href="{{ path('runopencode_exchange_rate_delete', {
-                                            date: rate.date|date('Y-m-d'),
-                                            currency_code: rate.currencyCode,
-                                            rate_type: rate.rateType,
-                                            source: rate.sourceName
-                                        }) }}"
-                                        data-csrf-token="{{ csrf_token(path('runopencode_exchange_rate_delete', {
-                                            date: rate.date|date('Y-m-d'),
-                                            currency_code: rate.currencyCode,
-                                            rate_type: rate.rateType,
-                                            source: rate.sourceName
-                                        })) }}"
-                                >
-                                    {{ 'objectAction.edit.delete'|trans({}, 'runopencode_exchange_rate') }}
-                                </a>
+                                {% block object_action_delete %}
+
+                                    <a
+                                            href="{{ path('runopencode_exchange_rate_delete', {
+                                                date: rate.date|date('Y-m-d'),
+                                                currency_code: rate.currencyCode,
+                                                rate_type: rate.rateType,
+                                                source: rate.sourceName
+                                            }) }}"
+                                            data-csrf-token="{{ csrf_token(path('runopencode_exchange_rate_delete', {
+                                                date: rate.date|date('Y-m-d'),
+                                                currency_code: rate.currencyCode,
+                                                rate_type: rate.rateType,
+                                                source: rate.sourceName
+                                            })) }}"
+                                    >
+                                        {{ 'actions.object.delete'|trans({}, 'runopencode_exchange_rate') }}
+                                    </a>
+
+                                {% endblock object_action_delete %}
 
                             {% endif %}
                         </td>

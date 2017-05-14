@@ -24,6 +24,33 @@ filter:
             label: Currency code
             placeholder: Choose currency code...
     submit.label: Apply
+form:
+    fields:
+        rate:
+            label: Rate type
+        date:
+            label: Date
+        value:
+            label: Exchange rate
+    submit.label: Save
+
+actions:
+    object:
+        edit: Edit
+        delete: Delete
+    generic:
+        create: Add new
+
+flash:
+    form.error: Form has error.
+    create:
+        success: You have successfully created new exchange rate.
+        error:
+            exists: That rate already exists.
+            unknown: Could not create new exchange rate for unknown reason. Contact administrator.
+    edit:
+        success: You have successfully modified exchange rate.
+        error.unknown: Could not save exchange rate for unknown reason. Contact administrator.
 
 
 

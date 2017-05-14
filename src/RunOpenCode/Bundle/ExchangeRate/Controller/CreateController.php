@@ -9,57 +9,41 @@
  */
 namespace RunOpenCode\Bundle\ExchangeRate\Controller;
 
-use RunOpenCode\Bundle\ExchangeRate\Form\Dto\Rate as DtoRate;
 use RunOpenCode\Bundle\ExchangeRate\Form\FormType;
 use RunOpenCode\Bundle\ExchangeRate\Security\AccessVoter;
 use RunOpenCode\ExchangeRate\Contract\RateInterface;
-use RunOpenCode\ExchangeRate\Contract\RepositoryInterface;
 use RunOpenCode\ExchangeRate\Model\Rate;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class EditController
+ * Class CreateController
  *
  * @package RunOpenCode\Bundle\ExchangeRate\Controller
  */
-class EditController extends Controller
+class CreateController extends Controller
 {
     /**
      * Main controller action
      *
      * @param Request $request
-     * @param $source
-     * @param $rateType
-     * @param $currencyCode
-     * @param \DateTime $date
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction(Request $request, $source, $rateType, $currencyCode, \DateTime $date)
+    public function indexAction(Request $request)
     {
-        /**
-         * @var RepositoryInterface $repository
-         */
-        $repository = $this->get('runopencode.exchange_rate.repository');
-
-        if ($repository->has($source, $currencyCode, $date, $rateType)) {
-            return $this->createNotFoundException();
-        }
-
-        $rate = $repository->get($source, $currencyCode, $date, $rateType);
-
-        if (!$this->isGranted(AccessVoter::EDIT, $rate)) {
+        if (!$this->isGranted(AccessVoter::CREATE, RateInterface::class)) {
             throw $this->createAccessDeniedException();
         }
 
-        $form = $this->getForm($rate);
+        $form = $this->getForm();
 
-        if (true === $this->handleForm($form, $request, $rate)) {
+        if (true === $this->handleForm($form, $request)) {
             return $this->redirectAfterSuccess();
         }
 
-        return $this->render('@ExchangeRate/edit.html.twig', [
+        return $this->render('@ExchangeRate/create.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -69,11 +53,10 @@ class EditController extends Controller
      *
      * @param Form $form
      * @param Request $request
-     * @param RateInterface $rate
      *
      * @return bool TRUE if successful
      */
-    protected function handleForm(Form $form, Request $request, RateInterface $exchangeRate)
+    protected function handleForm(Form $form, Request $request)
     {
         $form->handleRequest($request);
 
@@ -84,7 +67,11 @@ class EditController extends Controller
         /**
          * @var Rate $rate
          */
-        $rate = $form->getData()->toRate($exchangeRate);
+        $rate = $form->getData()->toRate();
+
+        if ($this->get('runopencode.exchange_rate.repository')->has($rate->getSourceName(), $rate->getCurrencyCode(), $rate->getDate(), $rate->getRateType())) {
+            $form->addError(new FormError($this->get('translator')->trans('flash.create.error.exits', [], 'runopencode_exchange_rate'), 'flash.create.error.exits'));
+        }
 
         if (!$form->isValid()) {
             $this->addFlash('error', $this->get('translator')->trans('flash.form.error', [], 'runopencode_exchange_rate'));
@@ -109,9 +96,9 @@ class EditController extends Controller
      *
      * @return Form
      */
-    protected function getForm(RateInterface $rate)
+    protected function getForm()
     {
-        return $this->createForm($this->getFormType(), DtoRate::fromRateInterface($rate));
+        return $this->createForm($this->getFormType());
     }
 
     /**
@@ -124,10 +111,10 @@ class EditController extends Controller
     {
         try {
             $this->get('runopencode.exchange_rate.repository')->save([$rate]);
-            $this->addFlash('success', $this->get('translator')->trans('flash.edit.success', [], 'runopencode_exchange_rate'));
+            $this->addFlash('success', $this->get('translator')->trans('flash.create.success', [], 'runopencode_exchange_rate'));
             return true;
         } catch (\Exception $e) {
-            $this->addFlash('error', $this->get('translator')->trans('flash.edit.error.unknown', [], 'runopencode_exchange_rate'));
+            $this->addFlash('error', $this->get('translator')->trans('flash.create.error.unknown', [], 'runopencode_exchange_rate'));
             return false;
         }
     }

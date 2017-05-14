@@ -8,6 +8,12 @@
 
         {% include '@ExchangeRate/_table.html.twig' with { 'rates': rates } only %}
 
+        {% block generic_action_create %}
+
+            <a href="{{ path('runopencode_exchange_rate_create') }}">{{ 'actions.generic.create' | trans({}, 'runopencode_exchange_rate') }}</a>
+
+        {% endblock generic_action_create %}
+
     {% endblock exchange_rates %}
 
     {% block filters %}
