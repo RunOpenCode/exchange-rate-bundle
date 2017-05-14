@@ -1,3 +1,4 @@
+list.title: Exchange rates
 table:
         heading:
             source: Source
@@ -22,7 +23,7 @@ filter:
         currencyCode:
             label: Currency code
             placeholder: Choose currency code...
-    submit: Apply
+    submit.label: Apply
 
 
 

@@ -57,7 +57,10 @@ class FilterType extends AbstractType
                 'required' => false,
                 'translation_domain' => 'runopencode_exchange_rate',
             ])
-            ->add('submit', ButtonType::class)
+            ->add('submit', ButtonType::class, [
+                'label' => 'filter.submit.label',
+                'translation_domain' => 'runopencode_exchange_rate',
+            ])
             ->setMethod('GET')
         ;
     }
