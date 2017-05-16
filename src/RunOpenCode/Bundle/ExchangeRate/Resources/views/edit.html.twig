@@ -1,1 +1,10 @@
-{{ form(form) }}
+{% extends '@ExchangeRate/layout.html.twig' %}
+
+{% block title %}{{ 'edit.title' | trans({}, 'runopencode_exchange_rate') }}{% endblock title %}
+
+{% block body %}
+
+    {{ form(form) }}
+
+{% endblock body %}
+

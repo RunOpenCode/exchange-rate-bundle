@@ -61,6 +61,7 @@ class EditController extends Controller
 
         return $this->render('@ExchangeRate/edit.html.twig', [
             'form' => $form->createView(),
+            'rate' => $rate
         ]);
     }
 

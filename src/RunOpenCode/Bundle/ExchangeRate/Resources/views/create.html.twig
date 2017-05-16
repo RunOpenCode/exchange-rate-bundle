@@ -1,1 +1,16 @@
-{{ form(form) }}
+{% extends '@ExchangeRate/layout.html.twig' %}
+
+{% block title %}{{ 'create.title' | trans({}, 'runopencode_exchange_rate') }}{% endblock title %}
+
+{% block body %}
+
+    {{ form(form) }}
+
+    {% block generic_action_list %}
+
+        <a href="{{ path('runopencode_exchange_rate_list') }}">{{ 'actions.generic.list' | trans({}, 'runopencode_exchange_rate') }}</a>
+
+    {% endblock generic_action_list %}
+
+{% endblock body %}
+

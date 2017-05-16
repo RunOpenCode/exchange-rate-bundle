@@ -1,4 +1,6 @@
 list.title: Exchange rates
+edit.title: Edit exchange rate
+create.title: Create new exchange rate
 table:
         heading:
             source: Source
@@ -40,6 +42,7 @@ actions:
         delete: Delete
     generic:
         create: Add new
+        list: List
 
 flash:
     form.error: Form has error.

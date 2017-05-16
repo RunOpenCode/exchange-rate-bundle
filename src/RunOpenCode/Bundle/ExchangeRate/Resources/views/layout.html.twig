@@ -6,6 +6,12 @@
     </head>
     <body>
 
+    {% block flash_messages %}
+
+        {% include '@ExchangeRate/_flash.html.twig' %}
+
+    {% endblock flash_messages %}
+
     {% block body %}
 
     {% endblock body %}

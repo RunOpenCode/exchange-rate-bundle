@@ -12,7 +12,8 @@ namespace RunOpenCode\Bundle\ExchangeRate\Controller;
 use RunOpenCode\Bundle\ExchangeRate\Form\FormType;
 use RunOpenCode\Bundle\ExchangeRate\Security\AccessVoter;
 use RunOpenCode\ExchangeRate\Contract\RateInterface;
-use RunOpenCode\ExchangeRate\Model\Rate;
+use RunOpenCode\ExchangeRate\Model\Rate as ExchangeRate;
+use RunOpenCode\Bundle\ExchangeRate\Form\Dto\Rate as DtoRate;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
@@ -65,7 +66,7 @@ class CreateController extends Controller
         }
 
         /**
-         * @var Rate $rate
+         * @var ExchangeRate $rate
          */
         $rate = $form->getData()->toRate();
 
@@ -98,16 +99,16 @@ class CreateController extends Controller
      */
     protected function getForm()
     {
-        return $this->createForm($this->getFormType());
+        return $this->createForm($this->getFormType(), new DtoRate(null, new \DateTime(), null, $this->getParameter('runopencode.exchange_rate.base_currency')));
     }
 
     /**
      * Save rate.
      *
-     * @param Rate $rate
+     * @param ExchangeRate $rate
      * @return TRUE if successful.
      */
-    protected function save(Rate $rate)
+    protected function save(ExchangeRate $rate)
     {
         try {
             $this->get('runopencode.exchange_rate.repository')->save([$rate]);
