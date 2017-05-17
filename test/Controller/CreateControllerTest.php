@@ -9,10 +9,17 @@
  */
 namespace RunOpenCode\Bundle\ExchangeRate\Tests\Controller;
 
+use RunOpenCode\ExchangeRate\Contract\RepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class CreateControllerTest extends WebTestCase
 {
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+        self::clearRepository();
+    }
+
     /**
      * @test
      */
@@ -57,8 +64,6 @@ class CreateControllerTest extends WebTestCase
             'PHP_AUTH_PW'   => 'buzz',
         ]);
 
-        $this->clearRepository();
-
         $this->assertFalse($this->get('runopencode.exchange_rate.repository')->has('test_source', 'EUR', new \DateTime('2017-01-01'), 'median'));
 
         $crawler = $client->request('GET', $this->get('router')->generate('runopencode_exchange_rate_create'));
@@ -86,7 +91,7 @@ class CreateControllerTest extends WebTestCase
     /**
      * @test
      */
-    public function formHasErrors()
+    public function formIsInvalid()
     {
         $client = static::createClient([], [
             'PHP_AUTH_USER' => 'buzz',
@@ -97,10 +102,76 @@ class CreateControllerTest extends WebTestCase
 
         $form = $crawler->selectButton('form[submit]')->form();
 
+        $form['form[date][day]'] = '1';
+        $form['form[date][month]'] = '1';
+        $form['form[date][year]'] = '2017';
+        $form['form[rate]'] = 'test_source.median.CHF';
+        $form['form[value]'] = '';
+
         $crawler = $client->submit($form);
 
         $this->assertEquals(1, $crawler->filter('div.flash-error')->count());
         $this->assertEquals(1, $crawler->filter('html:contains("Form has error.")')->count());
+    }
+
+    /**
+     * @test
+     */
+    public function itDoesNotAllowsCreatingExistingRate()
+    {
+        $client = static::createClient([], [
+            'PHP_AUTH_USER' => 'buzz',
+            'PHP_AUTH_PW'   => 'buzz',
+        ]);
+
+        $this->assertTrue($this->get('runopencode.exchange_rate.repository')->has('test_source', 'EUR', new \DateTime('2017-01-01'), 'median'));
+
+        $crawler = $client->request('GET', $this->get('router')->generate('runopencode_exchange_rate_create'));
+
+        $form = $crawler->selectButton('form[submit]')->form();
+
+        $form['form[date][day]'] = '1';
+        $form['form[date][month]'] = '1';
+        $form['form[date][year]'] = '2017';
+        $form['form[rate]'] = 'test_source.median.EUR';
+        $form['form[value]'] = '';
+
+        $crawler = $client->submit($form);
+
+        $this->assertEquals(1, $crawler->filter('div.flash-error')->count());
+        $this->assertEquals(1, $crawler->filter('html:contains("Form has error.")')->count());
+    }
+
+    /**
+     * @test
+     */
+    public function couldNotSaveRate()
+    {
+        $client = static::createClient([], [
+            'PHP_AUTH_USER' => 'buzz',
+            'PHP_AUTH_PW'   => 'buzz',
+        ]);
+
+        self::$kernel->getContainer()->set('runopencode.exchange_rate.repository', $mock = $this->getMockBuilder(RepositoryInterface::class)->getMock());
+        $mock
+            ->method('save')
+            ->willThrowException(new \Exception());
+
+        $crawler = $client->request('POST', $this->get('router')->generate('runopencode_exchange_rate_create'), [
+            'form' => [
+                'date' => [
+                    'day' => '1',
+                    'month' => '1',
+                    'year' => '2017'
+                ],
+                'rate' => 'test_source.median.EUR',
+                'value' => '100',
+            ]
+        ]);
+
+
+        $this->assertEquals(1, $crawler->filter('div.flash-error')->count());
+        $this->assertEquals(1, $crawler->filter('html:contains("Could not create new exchange rate for unknown reason. Contact administrator.")')->count());
     }
 
     /**
@@ -117,9 +188,13 @@ class CreateControllerTest extends WebTestCase
     /**
      * Clears repository
      */
-    private function clearRepository()
+    private static function clearRepository()
     {
-        $repository = $this->get('runopencode.exchange_rate.repository');
+        if (null === self::$kernel) {
+            static::bootKernel();
+        }
+
+        $repository = self::$kernel->getContainer()->get('runopencode.exchange_rate.repository');
         $repository->delete($repository->all());
     }
 }

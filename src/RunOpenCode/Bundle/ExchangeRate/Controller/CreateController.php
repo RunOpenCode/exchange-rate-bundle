@@ -71,7 +71,7 @@ class CreateController extends Controller
         $rate = $form->getData()->toRate();
 
         if ($this->get('runopencode.exchange_rate.repository')->has($rate->getSourceName(), $rate->getCurrencyCode(), $rate->getDate(), $rate->getRateType())) {
-            $form->addError(new FormError($this->get('translator')->trans('flash.create.error.exits', [], 'runopencode_exchange_rate'), 'flash.create.error.exits'));
+            $form->addError(new FormError($this->get('translator')->trans('flash.create.error.exists', [], 'runopencode_exchange_rate'), 'flash.create.error.exits'));
         }
 
         if (!$form->isValid()) {

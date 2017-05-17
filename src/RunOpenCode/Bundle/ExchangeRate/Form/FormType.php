@@ -24,15 +24,18 @@ class FormType extends AbstractType
     {
         $builder
             ->add('rate', RateType::class, array(
-                'label' => 'form.fields.rate.label'
+                'label' => 'form.fields.rate.label',
+                'required' => true,
             ))
             ->add('date', DateType::class, array(
                 'label' => 'form.fields.date.label',
-                'translation_domain' => 'runopencode_exchange_rate'
+                'translation_domain' => 'runopencode_exchange_rate',
+                'required' => true,
             ))
             ->add('value', NumberType::class, array(
                 'label' => 'form.fields.date.label',
-                'translation_domain' => 'runopencode_exchange_rate'
+                'translation_domain' => 'runopencode_exchange_rate',
+                'required' => true,
             ))
             ->add('submit', ButtonType::class, [
                 'label' => 'form.submit.label',
@@ -48,6 +51,7 @@ class FormType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => DtoRate::class,
+            'intention' => 'runopencode_exchange_rate_bundle_form'
         ));
     }
 }

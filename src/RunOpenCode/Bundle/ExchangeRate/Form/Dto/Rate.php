@@ -11,6 +11,7 @@ namespace RunOpenCode\Bundle\ExchangeRate\Form\Dto;
 
 use RunOpenCode\ExchangeRate\Contract\RateInterface;
 use RunOpenCode\ExchangeRate\Model\Rate as ExchangeRate;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Rate
@@ -31,6 +32,9 @@ class Rate
 
     /**
      * @var float
+     *
+     * @Assert\NotBlank()
+     * @Assert\Type(type="float")
      */
     private $value;
 
