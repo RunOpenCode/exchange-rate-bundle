@@ -24,26 +24,26 @@ class RepositoryDecorator
     private $repository;
 
     /**
-     * @var \SplStack
+     * @var \SplQueue
      */
-    private $callStack;
+    private $queue;
 
     public function __construct(RepositoryInterface $repository)
     {
         $this->repository = $repository;
-        $this->callStack = new \SplStack();
+        $this->queue = new \SplQueue();
     }
 
     public function on($name, $will)
     {
-        $this->callStack->push(['name' => $name, 'value' => $will]);
+        $this->queue->enqueue(['name' => $name, 'value' => $will]);
         return $this;
     }
 
     public function __call($name, $arguments)
     {
-        if (count($this->callStack) > 0 && $name === $this->callStack->top()['name']) {
-            $result = $this->callStack->pop();
+        if (count($this->queue) > 0 && $name === $this->queue->bottom()['name']) {
+            $result = $this->queue->dequeue();
 
             if ($result['value'] instanceof \Exception) {
                 throw $result['value'];
