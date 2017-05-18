@@ -36,15 +36,20 @@ class EditController extends Controller
      * @param \DateTime $date
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-    public function indexAction(Request $request, $source, $rateType, $currencyCode, \DateTime $date)
+    public function indexAction(Request $request)
     {
+        $source = $request->get('source');
+        $rateType = $request->get('rate_type');
+        $currencyCode = $request->get('currency_code');
+        $date = \DateTime::createFromFormat('Y-m-d', $request->get('date'));
+
         /**
          * @var RepositoryInterface $repository
          */
         $repository = $this->get('runopencode.exchange_rate.repository');
 
-        if ($repository->has($source, $currencyCode, $date, $rateType)) {
-            return $this->createNotFoundException();
+        if (!$repository->has($source, $currencyCode, $date, $rateType)) {
+            throw $this->createNotFoundException();
         }
 
         $rate = $repository->get($source, $currencyCode, $date, $rateType);

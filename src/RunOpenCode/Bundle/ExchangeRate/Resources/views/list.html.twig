@@ -8,12 +8,6 @@
 
         {% include '@ExchangeRate/_table.html.twig' with { 'rates': rates } only %}
 
-        {% block generic_action_create %}
-
-            <a href="{{ path('runopencode_exchange_rate_create') }}">{{ 'actions.generic.create' | trans({}, 'runopencode_exchange_rate') }}</a>
-
-        {% endblock generic_action_create %}
-
     {% endblock exchange_rates %}
 
     {% block filters %}
@@ -21,5 +15,17 @@
         {% include '@ExchangeRate/_filter_form.html.twig' with { 'form': form } %}
 
     {% endblock %}
+
+    {% if is_granted('CREATE', '\\RunOpenCode\\ExchangeRate\\Contract\\RateInterface') %}
+
+        {% block generic_action_create %}
+
+            <a href="{{ path('runopencode_exchange_rate_create') }}">
+                {{ 'actions.generic.create' | trans({}, 'runopencode_exchange_rate') }}
+            </a>
+
+        {% endblock generic_action_create %}
+
+    {% endif %}
 
 {% endblock body %}

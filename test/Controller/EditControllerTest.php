@@ -10,14 +10,19 @@
 namespace RunOpenCode\Bundle\ExchangeRate\Tests\Controller;
 
 use RunOpenCode\ExchangeRate\Contract\RepositoryInterface;
+use RunOpenCode\ExchangeRate\Model\Rate;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class CreateControllerTest extends WebTestCase
+class EditControllerTest extends WebTestCase
 {
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
         self::clearRepository();
+
+        self::$kernel->getContainer()->get('runopencode.exchange_rate.repository')->save([
+            new Rate('test_source', 10, 'EUR', 'median', new \DateTime('2017-01-01'), 'RSD')
+        ]);
     }
 
     /**
@@ -30,7 +35,12 @@ class CreateControllerTest extends WebTestCase
             'PHP_AUTH_PW'   => 'foo',
         ]);
 
-        $client->request('GET', $this->get('router')->generate('runopencode_exchange_rate_create'));
+        $client->request('GET', $this->get('router')->generate('runopencode_exchange_rate_edit', [
+            'date' =>  '2017-01-01',
+            'currency_code' => 'EUR',
+            'rate_type' => 'median',
+            'source'=>'test_source'
+        ]));
 
         $response = $client->getResponse();
 
@@ -47,7 +57,12 @@ class CreateControllerTest extends WebTestCase
             'PHP_AUTH_PW'   => 'buzz',
         ]);
 
-        $client->request('GET', $this->get('router')->generate('runopencode_exchange_rate_create'));
+        $client->request('GET', $this->get('router')->generate('runopencode_exchange_rate_edit', [
+            'date' =>  '2017-01-01',
+            'currency_code' => 'EUR',
+            'rate_type' => 'median',
+            'source'=>'test_source'
+        ]));
 
         $response = $client->getResponse();
 
@@ -57,16 +72,43 @@ class CreateControllerTest extends WebTestCase
     /**
      * @test
      */
-    public function itCreatesNewRate()
+    public function thereIsNoRate()
     {
         $client = static::createClient([], [
             'PHP_AUTH_USER' => 'buzz',
             'PHP_AUTH_PW'   => 'buzz',
         ]);
 
-        $this->assertFalse($this->get('runopencode.exchange_rate.repository')->has('test_source', 'EUR', new \DateTime('2017-01-01'), 'median'));
+        $client->request('GET', $this->get('router')->generate('runopencode_exchange_rate_edit', [
+            'date' =>  date('Y-m-d'),
+            'currency_code' => 'CHF',
+            'rate_type' => 'median',
+            'source'=>'test_source'
+        ]));
 
-        $crawler = $client->request('GET', $this->get('router')->generate('runopencode_exchange_rate_create'));
+        $response = $client->getResponse();
+
+        $this->assertEquals(404, $response->getStatusCode());
+    }
+
+    /**
+     * @test
+     */
+    public function itEditsRate()
+    {
+        $client = static::createClient([], [
+            'PHP_AUTH_USER' => 'buzz',
+            'PHP_AUTH_PW'   => 'buzz',
+        ]);
+
+        $this->assertTrue($this->get('runopencode.exchange_rate.repository')->has('test_source', 'EUR', new \DateTime('2017-01-01'), 'median'));
+
+        $crawler = $client->request('GET', $this->get('router')->generate('runopencode_exchange_rate_edit', [
+            'date' =>  '2017-01-01',
+            'currency_code' => 'EUR',
+            'rate_type' => 'median',
+            'source'=>'test_source'
+        ]));
 
         $form = $crawler->selectButton('form[submit]')->form();
 
@@ -78,14 +120,12 @@ class CreateControllerTest extends WebTestCase
 
         $client->submit($form);
 
-        $this->assertTrue($client->getResponse()->isRedirect());
-
         $crawler = $client->followRedirect();
 
         $this->assertEquals(1, $crawler->filter('div.flash-success')->count());
-        $this->assertEquals(1, $crawler->filter('html:contains("You have successfully created new exchange rate.")')->count());
+        $this->assertEquals(1, $crawler->filter('html:contains("You have successfully modified exchange rate.")')->count());
 
-        $this->assertTrue($this->get('runopencode.exchange_rate.repository')->has('test_source', 'EUR', new \DateTime('2017-01-01'), 'median'));
+        $this->assertEquals(100, $this->get('runopencode.exchange_rate.repository')->get('test_source', 'EUR', new \DateTime('2017-01-01'), 'median')->getValue());
     }
 
     /**
@@ -98,35 +138,14 @@ class CreateControllerTest extends WebTestCase
             'PHP_AUTH_PW'   => 'buzz',
         ]);
 
-        $crawler = $client->request('GET', $this->get('router')->generate('runopencode_exchange_rate_create'));
-
-        $form = $crawler->selectButton('form[submit]')->form();
-
-        $form['form[date][day]'] = '1';
-        $form['form[date][month]'] = '1';
-        $form['form[date][year]'] = '2017';
-        $form['form[rate]'] = 'test_source.median.CHF';
-        $form['form[value]'] = '';
-
-        $crawler = $client->submit($form);
-
-        $this->assertEquals(1, $crawler->filter('div.flash-error')->count());
-        $this->assertEquals(1, $crawler->filter('html:contains("Form has error.")')->count());
-    }
-
-    /**
-     * @test
-     */
-    public function itDoesNotAllowsCreatingExistingRate()
-    {
-        $client = static::createClient([], [
-            'PHP_AUTH_USER' => 'buzz',
-            'PHP_AUTH_PW'   => 'buzz',
-        ]);
-
         $this->assertTrue($this->get('runopencode.exchange_rate.repository')->has('test_source', 'EUR', new \DateTime('2017-01-01'), 'median'));
 
-        $crawler = $client->request('GET', $this->get('router')->generate('runopencode_exchange_rate_create'));
+        $crawler = $crawler = $client->request('GET', $this->get('router')->generate('runopencode_exchange_rate_edit', [
+            'date' =>  '2017-01-01',
+            'currency_code' => 'EUR',
+            'rate_type' => 'median',
+            'source'=>'test_source'
+        ]));
 
         $form = $crawler->selectButton('form[submit]')->form();
 
@@ -154,20 +173,25 @@ class CreateControllerTest extends WebTestCase
 
         self::$kernel->getContainer()->get('runopencode.exchange_rate.repository')->on('save', new \Exception());
 
-        $crawler = $client->request('POST', $this->get('router')->generate('runopencode_exchange_rate_create'), [
+        $crawler = $client->request('POST', $this->get('router')->generate('runopencode_exchange_rate_edit', [
+            'date' =>  '2017-01-01',
+            'currency_code' => 'EUR',
+            'rate_type' => 'median',
+            'source'=>'test_source',
+        ]), [
             'form' => [
                 'date' => [
                     'day' => '1',
                     'month' => '1',
                     'year' => '2017'
                 ],
-                'rate' => 'test_source.median.USD',
+                'rate' => 'test_source.median.EUR',
                 'value' => '100',
             ]
         ]);
 
         $this->assertEquals(1, $crawler->filter('div.flash-error')->count());
-        $this->assertEquals(1, $crawler->filter('html:contains("Could not create new exchange rate for unknown reason. Contact administrator.")')->count());
+        $this->assertEquals(1, $crawler->filter('html:contains("Could not save exchange rate for unknown reason. Contact administrator.")')->count());
     }
 
     /**

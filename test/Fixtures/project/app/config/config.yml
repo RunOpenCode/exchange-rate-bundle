@@ -36,7 +36,7 @@ runopencode_exchange_rate:
     file_repository:
         path: "%kernel.root_dir%/../var/cache/database.dat"
     sources:
-        test_source: RunOpenCode\Bundle\ExchangeRate\Tests\Fixture\Source\DummySource
+        test_source: RunOpenCode\Bundle\ExchangeRate\Tests\Fixtures\Source\DummySource
     security:
         enabled: true
         view: [ 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN' ]
@@ -44,3 +44,10 @@ runopencode_exchange_rate:
         edit: [ 'ROLE_SUPER_ADMIN' ]
         delete: [ 'ROLE_SUPER_ADMIN' ]
 
+services:
+
+    decorated_repository:
+        class: RunOpenCode\Bundle\ExchangeRate\Tests\Fixtures\Repository\RepositoryDecorator
+        decorates: "runopencode.exchange_rate.repository"
+        decoration_inner_name: "repository.original"
+        arguments: [ '@repository.original' ]
