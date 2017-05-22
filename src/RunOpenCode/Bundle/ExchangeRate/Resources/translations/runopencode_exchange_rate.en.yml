@@ -55,7 +55,9 @@ flash:
         success: You have successfully modified exchange rate.
         error.unknown: Could not save exchange rate for unknown reason. Contact administrator.
 
-
+validator:
+    rate.invalid: Unknown rate provided ({{ rate_type }}, {{ currency_code }}, {{ source_name }}).
+    baseCurrency.invalid: Invalid base currency code "{{ value }}" provided, expected "{{ base_currency_code }}".
 
 
 #exchange_rate:

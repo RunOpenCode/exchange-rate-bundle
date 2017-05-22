@@ -10,45 +10,29 @@
 namespace RunOpenCode\Bundle\ExchangeRate\Tests\Validator\Constraints;
 
 use PHPUnit\Framework\TestCase;
-use RunOpenCode\Bundle\ExchangeRate\Validator\Constraints\ExchangeRate;
-use RunOpenCode\Bundle\ExchangeRate\Validator\Constraints\ExchangeRateValidator;
-use RunOpenCode\ExchangeRate\Configuration;
-use RunOpenCode\ExchangeRate\Contract\RatesConfigurationRegistryInterface;
-use RunOpenCode\ExchangeRate\Model\Rate;
-use RunOpenCode\ExchangeRate\Registry\RatesConfigurationRegistry;
+use RunOpenCode\Bundle\ExchangeRate\Validator\Constraints\BaseCurrency;
+use RunOpenCode\Bundle\ExchangeRate\Validator\Constraints\BaseCurrencyValidator;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Violation\ConstraintViolationBuilderInterface;
 
 /**
- * Class ExchangeRateValidatorTest
+ * Class BaseCurrencyValidatorTest
  *
  * @package RunOpenCode\Bundle\ExchangeRate\Tests\Validator\Constraints
  */
-class ExchangeRateValidatorTest extends TestCase
+class BaseCurrencyValidatorTest extends TestCase
 {
     /**
      * @test
      *
      * @expectedException \RunOpenCode\Bundle\ExchangeRate\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Expected instance of "RunOpenCode\Bundle\ExchangeRate\Validator\Constraints\ExchangeRate", got "Constraint".
+     * @expectedExceptionMessage Expected instance of "RunOpenCode\Bundle\ExchangeRate\Validator\Constraints\BaseCurrency", got "Constraint".
      */
-    public function itExpectsExchangeRateConstraintClass()
+    public function itExpectsBaseCurrencyConstraintClass()
     {
-        $validator = new ExchangeRateValidator($this->getMockBuilder(RatesConfigurationRegistryInterface::class)->getMock());
+        $validator = new BaseCurrencyValidator('RSD');
         $validator->validate(null, $this->getMockBuilder(Constraint::class)->setMockClassName('Constraint')->getMock());
-    }
-
-    /**
-     * @test
-     *
-     * @expectedException \RunOpenCode\Bundle\ExchangeRate\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Expected instance of "RunOpenCode\ExchangeRate\Contract\RateInterface", got "RunOpenCode\Bundle\ExchangeRate\Tests\Validator\Constraints\ExchangeRateValidatorTest".
-     */
-    public function itExpectsToValidateRate()
-    {
-        $validator = new ExchangeRateValidator($this->getMockBuilder(RatesConfigurationRegistryInterface::class)->getMock());
-        $validator->validate($this, new ExchangeRate());
     }
 
     /**
@@ -56,11 +40,7 @@ class ExchangeRateValidatorTest extends TestCase
      */
     public function validationPass()
     {
-        $registry = new RatesConfigurationRegistry([
-            new Configuration('EUR', 'median', 'dummy_source')
-        ]);
-
-        $validator = new ExchangeRateValidator($registry);
+        $validator = new BaseCurrencyValidator('RSD');
 
         $validationContext = $this->getMockBuilder(ExecutionContextInterface::class)->getMock();
 
@@ -71,14 +51,7 @@ class ExchangeRateValidatorTest extends TestCase
 
         $validator->initialize($validationContext);
 
-        $validator->validate(new Rate(
-            'dummy_source',
-            10,
-            'EUR',
-            'median',
-            new \DateTime('now'),
-            'RSD'
-        ), new ExchangeRate());
+        $validator->validate('RSD', new BaseCurrency());
     }
 
     /**
@@ -86,11 +59,7 @@ class ExchangeRateValidatorTest extends TestCase
      */
     public function validationPassOnNull()
     {
-        $registry = new RatesConfigurationRegistry([
-            new Configuration('EUR', 'median', 'dummy_source')
-        ]);
-
-        $validator = new ExchangeRateValidator($registry);
+        $validator = new BaseCurrencyValidator('RSD');
 
         $validationContext = $this->getMockBuilder(ExecutionContextInterface::class)->getMock();
 
@@ -101,7 +70,7 @@ class ExchangeRateValidatorTest extends TestCase
 
         $validator->initialize($validationContext);
 
-        $validator->validate(null, new ExchangeRate());
+        $validator->validate(null, new BaseCurrency());
     }
 
     /**
@@ -109,12 +78,8 @@ class ExchangeRateValidatorTest extends TestCase
      */
     public function validationFails()
     {
-        $registry = new RatesConfigurationRegistry([
-            new Configuration('CHF', 'median', 'dummy_source')
-        ]);
-
-        $validator = new ExchangeRateValidator($registry);
-        $constraint = new ExchangeRate();
+        $validator = new BaseCurrencyValidator('RSD');
+        $constraint = new BaseCurrency();
 
         $validationContext = $this->getMockBuilder(ExecutionContextInterface::class)->getMock();
         $validationBuilder = $this->getMockBuilder(ConstraintViolationBuilderInterface::class)->getMock();
@@ -126,15 +91,15 @@ class ExchangeRateValidatorTest extends TestCase
             ->willReturn($validationBuilder);
 
         $validationBuilder
-            ->expects($this->exactly(3))
+            ->expects($this->exactly(2))
             ->method('setParameter')
             ->willReturn($validationBuilder);
-        
+
         $validationBuilder
             ->expects($this->exactly(1))
             ->method('setTranslationDomain')
             ->willReturn($validationBuilder);
-        
+
         $validationBuilder
             ->expects($this->exactly(1))
             ->method('addViolation')
@@ -143,13 +108,6 @@ class ExchangeRateValidatorTest extends TestCase
 
         $validator->initialize($validationContext);
 
-        $validator->validate(new Rate(
-            'dummy_source',
-            10,
-            'EUR',
-            'median',
-            new \DateTime('now'),
-            'RSD'
-        ), $constraint);
+        $validator->validate('CHF', $constraint);
     }
 }

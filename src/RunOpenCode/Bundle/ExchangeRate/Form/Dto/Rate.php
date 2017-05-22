@@ -12,21 +12,29 @@ namespace RunOpenCode\Bundle\ExchangeRate\Form\Dto;
 use RunOpenCode\ExchangeRate\Contract\RateInterface;
 use RunOpenCode\ExchangeRate\Model\Rate as ExchangeRate;
 use Symfony\Component\Validator\Constraints as Assert;
+use RunOpenCode\Bundle\ExchangeRate\Validator\Constraints as ExchangeRateAssert;
 
 /**
  * Class Rate
  *
  * @package RunOpenCode\Bundle\ExchangeRate\Form\Dto
+ *
+ * @ExchangeRateAssert\ExchangeRate()
  */
-class Rate
+class Rate implements RateInterface
 {
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     private $rate;
 
     /**
      * @var \DateTime
+     *
+     * @Assert\NotBlank()
+     * @Assert\DateTime()
      */
     private $date;
 
@@ -40,6 +48,9 @@ class Rate
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
+     * @ExchangeRateAssert\BaseCurrency()
      */
     private $baseCurrencyCode;
 
@@ -129,6 +140,59 @@ class Rate
         $this->baseCurrencyCode = $baseCurrencyCode;
         return $this;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSourceName()
+    {
+        if (false !== strpos($this->getRate(), '.')) {
+            return explode('.', $this->getRate())[0];
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCurrencyCode()
+    {
+        if (false !== strpos($this->getRate(), '.')) {
+            return explode('.', $this->getRate())[2];
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRateType()
+    {
+        if (false !== strpos($this->getRate(), '.')) {
+            return explode('.', $this->getRate())[1];
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCreatedAt()
+    {
+        return null; // unknown
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getModifiedAt()
+    {
+        return null; // unknown
+    }
+
 
     /**
      * Build \RunOpenCode\ExchangeRate\Model\Rate from DTO object.

@@ -9,6 +9,8 @@
 
         <parameter key="runopencode.exchange_rate.validator.exchange_rate.class">RunOpenCode\Bundle\ExchangeRate\Validator\Constraints\ExchangeRateValidator</parameter>
 
+        <parameter key="runopencode.exchange_rate.validator.base_currency.class">RunOpenCode\Bundle\ExchangeRate\Validator\Constraints\BaseCurrencyValidator</parameter>
+
     </parameters>
 
     <services>
@@ -16,6 +18,11 @@
         <service id="runopencode.exchange_rate.validator.exchange_rate" class="%runopencode.exchange_rate.validator.exchange_rate.class%">
             <argument type="service" id="runopencode.exchange_rate.registry.rates"/>
             <tag name="validator.constraint_validator" alias="runopencode.exchange_rate.rate_validator" />
+        </service>
+
+        <service id="runopencode.exchange_rate.validator.base_currency" class="%runopencode.exchange_rate.validator.base_currency.class%">
+            <argument>%runopencode.exchange_rate.base_currency%</argument>
+            <tag name="validator.constraint_validator" alias="runopencode.exchange_rate.base_currency_validator" />
         </service>
 
     </services>

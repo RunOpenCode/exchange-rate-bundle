@@ -74,6 +74,10 @@ class ExchangeRateValidator extends ConstraintValidator
              */
             $this->context
                 ->buildViolation($constraint->message)
+                ->setParameter('{{ rate_type }}', $rate->getRateType())
+                ->setParameter('{{ currency_code }}', $rate->getCurrencyCode())
+                ->setParameter('{{ source_name }}', $rate->getSourceName())
+                ->setTranslationDomain('runopencode_exchange_rate')
                 ->addViolation();
         }
     }

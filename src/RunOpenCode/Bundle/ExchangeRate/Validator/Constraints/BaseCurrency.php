@@ -12,7 +12,7 @@ namespace RunOpenCode\Bundle\ExchangeRate\Validator\Constraints;
 use Symfony\Component\Validator\Constraint;
 
 /**
- * Class ExchangeRate
+ * Class BaseCurrency
  *
  * @package RunOpenCode\Bundle\ExchangeRate\Validator\Constraints
  *
@@ -20,16 +20,16 @@ use Symfony\Component\Validator\Constraint;
  *
  * @Annotation
  */
-class ExchangeRate extends Constraint
+class BaseCurrency extends Constraint
 {
-    public $message = 'validator.rate.invalid';
+    public $message = 'validator.baseCurrency.invalid';
 
     /**
      * {@inheritdoc}
      */
     public function validatedBy()
     {
-        return 'runopencode.exchange_rate.rate_validator';
+        return 'runopencode.exchange_rate.base_currency_validator';
     }
 
     /**
@@ -37,6 +37,6 @@ class ExchangeRate extends Constraint
      */
     public function getTargets()
     {
-        return self::CLASS_CONSTRAINT;
+        return self::PROPERTY_CONSTRAINT;
     }
 }
