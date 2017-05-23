@@ -65,8 +65,8 @@ class Rate implements RateInterface
     {
         $this->rate = $rate;
         $this->date = $date;
-        $this->value = $value;
         $this->baseCurrencyCode = $baseCurrencyCode;
+        $this->setValue($value);
     }
 
     /**
@@ -119,7 +119,7 @@ class Rate implements RateInterface
      */
     public function setValue($value)
     {
-        $this->value = $value;
+        $this->value = (null !== $value) ? (float) $value : null;
         return $this;
     }
 
