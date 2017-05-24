@@ -119,7 +119,7 @@ class Rate implements RateInterface
      */
     public function setValue($value)
     {
-        $this->value = (null !== $value) ? (float) $value : null;
+        $this->value = (is_numeric($value)) ? (float) $value : $value;
         return $this;
     }
 

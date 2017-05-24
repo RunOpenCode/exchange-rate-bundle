@@ -31,7 +31,14 @@ class RateTest extends WebTestCase
     public function validation()
     {
         $cases = [
-            ['rate' => 'test_source.median.EUR', 'date' => new \DateTime('now'), 'value' => 10, 'baseCurrencyCode' => 'RSD', 'violationCount' => 0, 'violationMessages' => []]
+            ['rate' => 'test_source.median.EUR', 'date' => new \DateTime('now'), 'value' => 10, 'baseCurrencyCode' => 'RSD', 'violationCount' => 0, 'violationMessages' => []],
+            ['rate' => 'test_source.median.BAM', 'date' => new \DateTime('now'), 'value' => 10, 'baseCurrencyCode' => 'RSD', 'violationCount' => 1, 'violationMessages' => ['validator.rate.invalid']],
+            ['rate' => null, 'date' => new \DateTime('now'), 'value' => 10, 'baseCurrencyCode' => 'RSD', 'violationCount' => 1, 'violationMessages' => ['This value should not be blank.']],
+            ['rate' => 'test_source.median.EUR', 'date' => null, 'value' => 10, 'baseCurrencyCode' => 'RSD', 'violationCount' => 1, 'violationMessages' => ['This value should not be blank.']],
+            ['rate' => 'test_source.median.EUR', 'date' => new \DateTime('now'), 'value' => null, 'baseCurrencyCode' => 'RSD', 'violationCount' => 1, 'violationMessages' => ['This value should not be blank.']],
+            ['rate' => 'test_source.median.EUR', 'date' => new \DateTime('now'), 'value' => 'a string', 'baseCurrencyCode' => 'RSD', 'violationCount' => 1, 'violationMessages' => ['This value should be of type {{ type }}.']],
+            ['rate' => 'test_source.median.EUR', 'date' => new \DateTime('now'), 'value' => 10, 'baseCurrencyCode' => null, 'violationCount' => 1, 'violationMessages' => ['This value should not be blank.']],
+            ['rate' => 'test_source.median.EUR', 'date' => new \DateTime('now'), 'value' => 10, 'baseCurrencyCode' => 'EUR', 'violationCount' => 1, 'violationMessages' => ['validator.baseCurrency.invalid']],
         ];
 
         /**
@@ -56,7 +63,7 @@ class RateTest extends WebTestCase
              * @var \Symfony\Component\Validator\ConstraintViolationInterface $violation
              */
             foreach ($violations as $violation) {
-                $violationMessages[] = $violation->getMessage();
+                $violationMessages[] = $violation->getMessageTemplate();
             }
 
             $this->assertEquals($input['violationMessages'], $violationMessages);
