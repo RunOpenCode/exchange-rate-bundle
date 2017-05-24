@@ -19,4 +19,8 @@
     <route id="runopencode_exchange_rate_delete" path="/exchange-rates/delete/{source}/{rate_type}/{currency_code}/{date}">
         <default key="_controller">RunOpenCode\Bundle\ExchangeRate\Controller\DeleteController::indexAction</default>
     </route>
+
+    <route id="runopencode_exchange_rate_execute_delete" path="/exchange-rates/execute/delete/{source}/{rate_type}/{currency_code}/{date}">
+        <default key="_controller">RunOpenCode\Bundle\ExchangeRate\Controller\DeleteController::deleteAction</default>
+    </route>
 </routes>

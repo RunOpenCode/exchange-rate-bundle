@@ -1,6 +1,10 @@
 list.title: Exchange rates
 edit.title: Edit exchange rate
 create.title: Create new exchange rate
+delete:
+    title: Delete exchange rate
+    confirm: Are you sure that you want to delete this exchange rate?
+
 table:
         heading:
             source: Source
@@ -54,6 +58,9 @@ flash:
     edit:
         success: You have successfully modified exchange rate.
         error.unknown: Could not save exchange rate for unknown reason. Contact administrator.
+    delete:
+        success: You have successfully deleted exchange rate.
+        error.unknown: Could not delete exchange rate for unknown reason. Contact administrator.
 
 validator:
     rate.invalid: Unknown rate provided ({{ rate_type }}, {{ currency_code }}, {{ source_name }}).

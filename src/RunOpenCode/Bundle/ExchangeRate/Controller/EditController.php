@@ -30,10 +30,7 @@ class EditController extends Controller
      * Main controller action
      *
      * @param Request $request
-     * @param $source
-     * @param $rateType
-     * @param $currencyCode
-     * @param \DateTime $date
+     *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     public function indexAction(Request $request)
@@ -75,7 +72,7 @@ class EditController extends Controller
      *
      * @param Form $form
      * @param Request $request
-     * @param RateInterface $rate
+     * @param RateInterface $exchangeRate
      *
      * @return bool TRUE if successful
      */
@@ -123,10 +120,10 @@ class EditController extends Controller
     /**
      * Save rate.
      *
-     * @param Rate $rate
+     * @param RateInterface $rate
      * @return TRUE if successful.
      */
-    protected function save(Rate $rate)
+    protected function save(RateInterface $rate)
     {
         try {
             $this->get('runopencode.exchange_rate.repository')->save([$rate]);

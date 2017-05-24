@@ -1,0 +1,68 @@
+{% extends '@ExchangeRate/layout.html.twig' %}
+
+{% block title %}{{ 'delete.title' | trans({}, 'runopencode_exchange_rate') }}{% endblock title %}
+
+{% block body %}
+
+    {% block form %}
+
+        {% block advisory %}
+
+            {{ 'delete.confirm' | trans({}, 'runopencode_exchange_rate') }}
+
+        {% endblock advisory %}
+
+        {% block rate %}
+            <ul>
+                <li>{{ 'table.heading.source' | trans({}, 'runopencode_exchange_rate') }}: {{ rate.sourceName }}</li>
+                <li>{{ 'table.heading.rateType' | trans({}, 'runopencode_exchange_rate') }}: {{ rate.rateType }}</li>
+                <li>{{ 'table.heading.currencyCode' | trans({}, 'runopencode_exchange_rate') }}: {{ rate.currencyCode }}</li>
+                <li>{{ 'table.heading.date' | trans({}, 'runopencode_exchange_rate') }}: {{ rate.date | date }}</li>
+                <li>{{ 'table.heading.value' | trans({}, 'runopencode_exchange_rate') }}: {{ rate.value }}</li>
+            </ul>
+        {% endblock rate %}
+
+    {% endblock form %}
+
+    {% block generic_action_delete %}
+
+        <a
+                href="{{ path('runopencode_exchange_rate_execute_delete', {
+                    date: rate.date|date('Y-m-d'),
+                    currency_code: rate.currencyCode,
+                    rate_type: rate.rateType,
+                    source: rate.sourceName,
+                    _csrf_token: csrf_token(path('runopencode_exchange_rate_execute_delete')) }) }}"
+        >
+            {{ 'actions.generic.delete' | trans({}, 'runopencode_exchange_rate') }}
+        </a>
+
+    {% endblock generic_action_delete %}
+
+    {% if is_granted('VIEW', '\\RunOpenCode\\ExchangeRate\\Contract\\RateInterface') %}
+
+        {% block generic_action_list %}
+
+            <a href="{{ path('runopencode_exchange_rate_list') }}">
+                {{ 'actions.generic.list' | trans({}, 'runopencode_exchange_rate') }}
+            </a>
+
+        {% endblock generic_action_list %}
+
+    {% endif %}
+
+    {% block generic_action_edit %}
+
+        <a   href="{{ path('runopencode_exchange_rate_edit', {
+            date: rate.date|date('Y-m-d'),
+            currency_code: rate.currencyCode,
+            rate_type: rate.rateType,
+            source: rate.sourceName
+        }) }}">
+            {{ 'actions.generic.edit' | trans({}, 'runopencode_exchange_rate') }}
+        </a>
+
+    {% endblock generic_action_edit %}
+
+{% endblock body %}
+

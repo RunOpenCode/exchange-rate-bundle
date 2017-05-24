@@ -23,6 +23,13 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class ListController extends Controller
 {
+    /**
+     * Main controller action.
+     *
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function indexAction(Request $request)
     {
         if (!$this->isGranted(AccessVoter::VIEW, RateInterface::class)) {

@@ -30,6 +30,7 @@ class CreateController extends Controller
      * Main controller action
      *
      * @param Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function indexAction(Request $request)
@@ -105,10 +106,11 @@ class CreateController extends Controller
     /**
      * Save rate.
      *
-     * @param ExchangeRate $rate
+     * @param RateInterface $rate
+     *
      * @return TRUE if successful.
      */
-    protected function save(ExchangeRate $rate)
+    protected function save(RateInterface $rate)
     {
         try {
             $this->get('runopencode.exchange_rate.repository')->save([$rate]);
