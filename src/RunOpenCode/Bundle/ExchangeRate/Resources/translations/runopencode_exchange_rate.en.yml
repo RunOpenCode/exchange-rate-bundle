@@ -47,6 +47,8 @@ actions:
     generic:
         create: Add new
         list: List
+        delete: Delete
+        edit: Edit
 
 flash:
     form.error: Form has error.

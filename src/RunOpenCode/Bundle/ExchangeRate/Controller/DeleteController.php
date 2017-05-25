@@ -15,6 +15,7 @@ use RunOpenCode\ExchangeRate\Contract\RepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+use Symfony\Component\Security\Csrf\CsrfToken;
 
 /**
  * Class DeleteController
@@ -31,7 +32,7 @@ class DeleteController extends Controller
      */
     public function indexAction(Request $request)
     {
-        return $this->render('', [
+        return $this->render('@ExchangeRate/delete.html.twig', [
             'rate' => $this->getRateFromRequest($request)
         ]);
     }
@@ -120,5 +121,22 @@ class DeleteController extends Controller
     protected function redirectAfterSuccess()
     {
         return $this->redirectToRoute('runopencode_exchange_rate_list');
+    }
+
+    /**
+     * Check if CSRF token is valid, only if CSRF protection is enabled.
+     *
+     * @param string $id Intention.
+     * @param string $token A token.
+     *
+     * @return bool TRUE if token is valid.
+     */
+    protected function isCsrfTokenValid($id, $token)
+    {
+        if (!$this->container->has('security.csrf.token_manager') && null !== $token) {
+            throw new \LogicException('CSRF protection is not enabled in your application.');
+        }
+
+        return null !== $token ? $this->container->get('security.csrf.token_manager')->isTokenValid(new CsrfToken($id, $token)) : true;
     }
 }
