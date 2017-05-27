@@ -152,7 +152,8 @@ class CreateControllerTest extends WebTestCase
             'PHP_AUTH_PW'   => 'buzz',
         ]);
 
-        self::$kernel->getContainer()->get('runopencode.exchange_rate.repository')->on('save', new \Exception());
+        $client->getContainer()->get('runopencode.exchange_rate.repository')->on('save', new \Exception());
+        $client->getContainer()->get('security.csrf.token_manager')->on('isTokenValid', true);
 
         $crawler = $client->request('POST', $this->get('router')->generate('runopencode_exchange_rate_create'), [
             'form' => [
@@ -163,6 +164,7 @@ class CreateControllerTest extends WebTestCase
                 ],
                 'rate' => 'test_source.median.USD',
                 'value' => '100',
+                '_token' => true
             ]
         ]);
 

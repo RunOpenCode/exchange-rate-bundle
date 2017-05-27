@@ -13,7 +13,7 @@ framework:
         strict_requirements: ~
     form:            ~
     csrf_protection:
-        enabled: false
+        enabled: true
     validation:      { enable_annotations: true }
     templating:
         engines: ['twig']
@@ -48,6 +48,12 @@ services:
 
     decorated_repository:
         class: RunOpenCode\Bundle\ExchangeRate\Tests\Fixtures\Repository\RepositoryDecorator
-        decorates: "runopencode.exchange_rate.repository"
-        decoration_inner_name: "repository.original"
+        decorates: runopencode.exchange_rate.repository
+        decoration_inner_name: repository.original
         arguments: [ '@repository.original' ]
+
+    decorated_csrf_token_manager:
+        class: RunOpenCode\Bundle\ExchangeRate\Tests\Fixtures\Csrf\CsrfTokenManager
+        decorates: security.csrf.token_manager
+        decoration_inner_name: security.csrf.token_manager.original
+        arguments: [ '@security.csrf.token_manager.original' ]

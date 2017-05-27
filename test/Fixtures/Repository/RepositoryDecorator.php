@@ -34,12 +34,23 @@ class RepositoryDecorator
         $this->queue = new \SplQueue();
     }
 
+    /**
+     * Put mocked method invocation on execution queue
+     *
+     * @param string $name Method name.
+     * @param mixed $will Invocation result or exception to throw.
+     *
+     * @return RepositoryDecorator $this Fluent interface.
+     */
     public function on($name, $will)
     {
         $this->queue->enqueue(['name' => $name, 'value' => $will]);
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function __call($name, $arguments)
     {
         if (count($this->queue) > 0 && $name === $this->queue->bottom()['name']) {

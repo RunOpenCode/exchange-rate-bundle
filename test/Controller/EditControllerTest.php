@@ -171,7 +171,8 @@ class EditControllerTest extends WebTestCase
             'PHP_AUTH_PW'   => 'buzz',
         ]);
 
-        self::$kernel->getContainer()->get('runopencode.exchange_rate.repository')->on('save', new \Exception());
+        $client->getContainer()->get('runopencode.exchange_rate.repository')->on('save', new \Exception());
+        $client->getContainer()->get('security.csrf.token_manager')->on('isTokenValid', true);
 
         $crawler = $client->request('POST', $this->get('router')->generate('runopencode_exchange_rate_edit', [
             'date' =>  '2017-01-01',
@@ -187,6 +188,7 @@ class EditControllerTest extends WebTestCase
                 ],
                 'rate' => 'test_source.median.EUR',
                 'value' => '100',
+                '_token' => true
             ]
         ]);
 

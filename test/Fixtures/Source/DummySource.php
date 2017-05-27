@@ -18,6 +18,11 @@ use RunOpenCode\ExchangeRate\Exception\SourceNotAvailableException;
 use RunOpenCode\ExchangeRate\Exception\UnknownCurrencyCodeException;
 use RunOpenCode\ExchangeRate\Exception\UnknownRateTypeException;
 
+/**
+ * Class DummySource
+ *
+ * @package RunOpenCode\Bundle\ExchangeRate\Tests\Fixtures\Source
+ */
 class DummySource implements SourceInterface
 {
     use LoggerAwareTrait;
