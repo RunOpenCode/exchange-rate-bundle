@@ -69,4 +69,21 @@ class RateTest extends WebTestCase
             $this->assertEquals($input['violationMessages'], $violationMessages);
         }
     }
+
+    /**
+     * @test
+     */
+    public function coverage()
+    {
+        $rate = new Rate(null, null, null, 'RSD');
+
+        $this->assertNull($rate->getCreatedAt());
+        $this->assertNull($rate->getModifiedAt());
+
+        $this->assertNull($rate->getRateType());
+        $this->assertNull($rate->getSourceName());
+        $this->assertNull($rate->getCurrencyCode());
+
+        $this->assertEquals('RSD', $rate->getBaseCurrencyCode());
+    }
 }
