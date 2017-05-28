@@ -37,8 +37,10 @@ class RestController extends Controller
         }
     }
 
-    public function getAction($sourceName, $currencyCode, \DateTime $date = null, $rateType = RateType::MEDIAN)
+    public function getAction(Request $request)
     {
+        list($sourceName, $currencyCode, $date, $rateType) = array_values($this->extractParameters($request));
+
         try {
             return new JsonResponse([
                 'error' => false,
@@ -49,8 +51,10 @@ class RestController extends Controller
         }
     }
 
-    public function latestAction($sourceName, $currencyCode, $rateType = RateType::MEDIAN)
+    public function latestAction(Request $request)
     {
+        list($sourceName, $currencyCode, , $rateType) = array_values($this->extractParameters($request));
+
         try {
             return new JsonResponse([
                 'error' => false,
@@ -61,8 +65,10 @@ class RestController extends Controller
         }
     }
 
-    public function todayAction($sourceName, $currencyCode, $rateType = RateType::MEDIAN)
+    public function todayAction(Request $request)
     {
+        list($sourceName, $currencyCode, , $rateType) = array_values($this->extractParameters($request));
+
         try {
             return new JsonResponse([
                 'error' => false,
@@ -73,8 +79,10 @@ class RestController extends Controller
         }
     }
 
-    public function historicalAction($sourceName, $currencyCode, \DateTime $date, $rateType = RateType::MEDIAN)
+    public function historicalAction(Request $request)
     {
+        list($sourceName, $currencyCode, $date, $rateType) = array_values($this->extractParameters($request));
+
         try {
             return new JsonResponse([
                 'error' => false,
@@ -103,6 +111,10 @@ class RestController extends Controller
 
         if (!empty($params['date'])) {
             $params['date'] = \DateTime::createFromFormat('Y-m-d', $params['date']);
+        }
+
+        if (empty($params['rateType'])) {
+            $params['rateType'] = RateType::MEDIAN;
         }
 
         return $params;
