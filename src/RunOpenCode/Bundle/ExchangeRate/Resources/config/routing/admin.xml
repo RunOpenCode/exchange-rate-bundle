@@ -4,23 +4,23 @@
         xsi:schemaLocation="http://symfony.com/schema/routing
         http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="runopencode_exchange_rate_list" path="/exchange-rates">
+    <route id="runopencode_exchange_rate_list" path="/">
         <default key="_controller">RunOpenCode\Bundle\ExchangeRate\Controller\ListController::indexAction</default>
     </route>
 
-    <route id="runopencode_exchange_rate_create" path="/exchange-rates/create">
+    <route id="runopencode_exchange_rate_create" path="/create">
         <default key="_controller">RunOpenCode\Bundle\ExchangeRate\Controller\CreateController::indexAction</default>
     </route>
 
-    <route id="runopencode_exchange_rate_edit" path="/exchange-rates/edit/{source}/{rate_type}/{currency_code}/{date}">
+    <route id="runopencode_exchange_rate_edit" path="/edit/{source}/{rate_type}/{currency_code}/{date}">
         <default key="_controller">RunOpenCode\Bundle\ExchangeRate\Controller\EditController::indexAction</default>
     </route>
 
-    <route id="runopencode_exchange_rate_delete" path="/exchange-rates/delete/{source}/{rate_type}/{currency_code}/{date}">
+    <route id="runopencode_exchange_rate_delete" path="/delete/{source}/{rate_type}/{currency_code}/{date}">
         <default key="_controller">RunOpenCode\Bundle\ExchangeRate\Controller\DeleteController::indexAction</default>
     </route>
 
-    <route id="runopencode_exchange_rate_execute_delete" path="/exchange-rates/execute/delete/{source}/{rate_type}/{currency_code}/{date}">
+    <route id="runopencode_exchange_rate_execute_delete" path="/execute/delete/{source}/{rate_type}/{currency_code}/{date}">
         <default key="_controller">RunOpenCode\Bundle\ExchangeRate\Controller\DeleteController::deleteAction</default>
     </route>
 </routes>

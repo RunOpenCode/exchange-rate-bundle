@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing
+        http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="runopencode_exchange_rate_rest_has" path="/has/{source}/{currency_code}/{date}/{rate_type}" methods="GET">
+        <default key="_controller">RunOpenCode\Bundle\ExchangeRate\Controller\RestController::hasAction</default>
+    </route>
+
+    <route id="runopencode_exchange_rate_rest_get" path="/get/{source}/{currency_code}/{date}/{rate_type}" methods="GET">
+        <default key="_controller">RunOpenCode\Bundle\ExchangeRate\Controller\RestController::getAction</default>
+    </route>
+
+    <route id="runopencode_exchange_rate_rest_latest" path="/latest/{source}/{currency_code}/{rate_type}" methods="GET">
+        <default key="_controller">RunOpenCode\Bundle\ExchangeRate\Controller\RestController::latestAction</default>
+    </route>
+
+    <route id="runopencode_exchange_rate_rest_today" path="/today/{source}/{currency_code}/{rate_type}" methods="GET">
+        <default key="_controller">RunOpenCode\Bundle\ExchangeRate\Controller\RestController::todayAction</default>
+    </route>
+
+    <route id="runopencode_exchange_rate_rest_historical" path="/get/{source}/{currency_code}/{date}/{rate_type}" methods="GET">
+        <default key="_controller">RunOpenCode\Bundle\ExchangeRate\Controller\RestController::historicalAction</default>
+    </route>
+
+</routes>

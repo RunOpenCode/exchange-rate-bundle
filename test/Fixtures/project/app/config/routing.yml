@@ -1,2 +1,2 @@
 runopencode_exchange_rate:
-    resource: "@ExchangeRateBundle/Resources/config/routing.xml"
+    resource: "@ExchangeRateBundle/Resources/config/routing/all.xml"

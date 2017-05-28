@@ -10,13 +10,14 @@
 namespace RunOpenCode\Bundle\ExchangeRate\Tests\Fixtures\Repository;
 
 use RunOpenCode\ExchangeRate\Contract\RepositoryInterface;
+use RunOpenCode\ExchangeRate\Enum\RateType;
 
 /**
  * Class RepositoryDecorator
  *
  * @package RunOpenCode\Bundle\ExchangeRate\Tests\Fixture\Repository
  */
-class RepositoryDecorator
+class RepositoryDecorator implements RepositoryInterface
 {
     /**
      * @var RepositoryInterface
@@ -64,5 +65,61 @@ class RepositoryDecorator
         }
 
         return call_user_func_array(array($this->repository, $name), $arguments);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function save(array $rates)
+    {
+        return $this->__call(__FUNCTION__, func_get_args());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function delete(array $rates)
+    {
+        return $this->__call(__FUNCTION__, func_get_args());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function has($sourceName, $currencyCode, \DateTime $date = null, $rateType = RateType::MEDIAN)
+    {
+        return $this->__call(__FUNCTION__, func_get_args());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get($sourceName, $currencyCode, \DateTime $date = null, $rateType = RateType::MEDIAN)
+    {
+        return $this->__call(__FUNCTION__, func_get_args());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function latest($sourceName, $currencyCode, $rateType = RateType::MEDIAN)
+    {
+        return $this->__call(__FUNCTION__, func_get_args());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function all(array $criteria = array())
+    {
+        return $this->__call(__FUNCTION__, func_get_args());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function count()
+    {
+        return $this->__call(__FUNCTION__, func_get_args());
     }
 }
