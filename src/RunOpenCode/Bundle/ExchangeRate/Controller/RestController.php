@@ -10,8 +10,7 @@
 namespace RunOpenCode\Bundle\ExchangeRate\Controller;
 
 use RunOpenCode\ExchangeRate\Contract\ManagerInterface;
-use RunOpenCode\ExchangeRate\Contract\RateInterface;
-use RunOpenCode\ExchangeRate\Enum\RateType;
+use RunOpenCode\ExchangeRate\Model\Rate;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,73 +22,133 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class RestController extends Controller
 {
+    /**
+     * Check if repository has rate
+     *
+     * @see \RunOpenCode\ExchangeRate\Contract\ManagerInterface::has()
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function hasAction(Request $request)
     {
-        list($sourceName, $currencyCode, $date, $rateType) = array_values($this->extractParameters($request));
+        /**
+         * @var $sourceName
+         * @var $currencyCode
+         * @var $date
+         * @var $rateType
+         */
+        extract($this->extractParametersFromRequest($request), EXTR_OVERWRITE);
 
         try {
-            return new JsonResponse([
-                'error' => false,
-                'result' => $this->getManager()->has($sourceName, $currencyCode, $date, $rateType)
-            ]);
+            return $this->createSuccessResponse($this->getManager()->has($sourceName, $currencyCode, $date, $rateType));
         } catch (\Exception $e) {
-            return $this->exceptionToResponse($e);
+            return $this->createExceptionResponse($e);
         }
     }
 
+    /**
+     * Get rate.
+     *
+     * @see \RunOpenCode\ExchangeRate\Contract\ManagerInterface::get()
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function getAction(Request $request)
     {
-        list($sourceName, $currencyCode, $date, $rateType) = array_values($this->extractParameters($request));
+        /**
+         * @var $sourceName
+         * @var $currencyCode
+         * @var $date
+         * @var $rateType
+         */
+        extract($this->extractParametersFromRequest($request), EXTR_OVERWRITE);
 
         try {
-            return new JsonResponse([
-                'error' => false,
-                'result' => $this->rateToArray($this->getManager()->get($sourceName, $currencyCode, $date, $rateType))
-            ]);
+            return $this->createSuccessResponse($this->getManager()->get($sourceName, $currencyCode, $date, $rateType));
         } catch (\Exception $e) {
-            return $this->exceptionToResponse($e);
+            return $this->createExceptionResponse($e);
         }
     }
 
+    /**
+     * Get latest applicable rate.
+     *
+     * @see \RunOpenCode\ExchangeRate\Contract\ManagerInterface::latest()
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function latestAction(Request $request)
     {
-        list($sourceName, $currencyCode, , $rateType) = array_values($this->extractParameters($request));
+        /**
+         * @var $sourceName
+         * @var $currencyCode
+         * @var $date
+         * @var $rateType
+         */
+        extract($this->extractParametersFromRequest($request), EXTR_OVERWRITE);
 
         try {
-            return new JsonResponse([
-                'error' => false,
-                'result' => $this->rateToArray($this->getManager()->latest($sourceName, $currencyCode, $rateType))
-            ]);
+            return $this->createSuccessResponse($this->getManager()->latest($sourceName, $currencyCode, $rateType));
         } catch (\Exception $e) {
-            return $this->exceptionToResponse($e);
+            return $this->createExceptionResponse($e);
         }
     }
 
+    /**
+     * Get rate applicable for today.
+     *
+     * @see \RunOpenCode\ExchangeRate\Contract\ManagerInterface::today()
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function todayAction(Request $request)
     {
-        list($sourceName, $currencyCode, , $rateType) = array_values($this->extractParameters($request));
+        /**
+         * @var $sourceName
+         * @var $currencyCode
+         * @var $date
+         * @var $rateType
+         */
+        extract($this->extractParametersFromRequest($request), EXTR_OVERWRITE);
 
         try {
-            return new JsonResponse([
-                'error' => false,
-                'result' => $this->rateToArray($this->getManager()->today($sourceName, $currencyCode, $rateType))
-            ]);
+            return $this->createSuccessResponse($this->getManager()->today($sourceName, $currencyCode, $rateType));
         } catch (\Exception $e) {
-            return $this->exceptionToResponse($e);
+            return $this->createExceptionResponse($e);
         }
     }
 
+    /**
+     * Get applicable rate for given date.
+     *
+     * @see \RunOpenCode\ExchangeRate\Contract\ManagerInterface::historical()
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function historicalAction(Request $request)
     {
-        list($sourceName, $currencyCode, $date, $rateType) = array_values($this->extractParameters($request));
+        /**
+         * @var $sourceName
+         * @var $currencyCode
+         * @var $date
+         * @var $rateType
+         */
+        extract($this->extractParametersFromRequest($request), EXTR_OVERWRITE);
 
         try {
-            return new JsonResponse([
-                'error' => false,
-                'result' => $this->rateToArray($this->getManager()->historical($sourceName, $currencyCode, $date, $rateType))
-            ]);
+            return $this->createSuccessResponse($this->getManager()->historical($sourceName, $currencyCode, $date, $rateType));
         } catch (\Exception $e) {
-            return $this->exceptionToResponse($e);
+            return $this->createExceptionResponse($e);
         }
     }
 
@@ -100,7 +159,7 @@ class RestController extends Controller
      *
      * @return array
      */
-    private function extractParameters(Request $request)
+    private function extractParametersFromRequest(Request $request)
     {
         $params = [
             'sourceName' => $request->get('source'),
@@ -113,46 +172,49 @@ class RestController extends Controller
             $params['date'] = \DateTime::createFromFormat('Y-m-d', $params['date']);
         }
 
-        if (empty($params['rateType'])) {
-            $params['rateType'] = RateType::MEDIAN;
-        }
-
         return $params;
     }
 
     /**
      * Build exception response.
      *
-     * @param \Exception $e
+     * @param \Exception $exception
      *
      * @return JsonResponse
      */
-    private function exceptionToResponse(\Exception $e)
+    private function createExceptionResponse(\Exception $exception)
     {
         return new JsonResponse([
             'error' => true,
-            'message' => $e->getMessage(),
-            'class' => (new \ReflectionClass($e))->getShortName()
+            'message' => $exception->getMessage(),
+            'class' => (new \ReflectionClass($exception))->getShortName()
         ], 500);
     }
 
     /**
-     * Serialize rate to array
+     * Build success response
      *
-     * @param RateInterface $rate
-     *
-     * @return array
+     * @param mixed $result
+     * @return JsonResponse
      */
-    private function rateToArray(RateInterface $rate)
+    private function createSuccessResponse($result)
     {
-        return [
-            'source_name' => $rate->getSourceName(),
-            'rate_type' => $rate->getRateType(),
-            'base_currency_code' => $rate->getBaseCurrencyCode(),
-            'date' => $rate->getDate()->format('Y-m-d'),
-            'get_value' => $rate->getValue(),
-            'currency_code' => $rate->getCurrencyCode(),
-        ];
+        $rateToArray = function (Rate $rate) {
+
+            return [
+                'source_name' => $rate->getSourceName(),
+                'rate_type' => $rate->getRateType(),
+                'base_currency_code' => $rate->getBaseCurrencyCode(),
+                'date' => $rate->getDate()->format('Y-m-d'),
+                'value' => $rate->getValue(),
+                'currency_code' => $rate->getCurrencyCode(),
+            ];
+        };
+
+        return new JsonResponse([
+            'error' => false,
+            'result' => ($result instanceof Rate) ? $rateToArray($result) : $result
+        ]);
     }
 
     /**

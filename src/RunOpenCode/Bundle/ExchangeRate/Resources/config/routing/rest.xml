@@ -6,22 +6,27 @@
 
     <route id="runopencode_exchange_rate_rest_has" path="/has/{source}/{currency_code}/{date}/{rate_type}" methods="GET">
         <default key="_controller">RunOpenCode\Bundle\ExchangeRate\Controller\RestController::hasAction</default>
+        <default key="rate_type">median</default>
     </route>
 
     <route id="runopencode_exchange_rate_rest_get" path="/get/{source}/{currency_code}/{date}/{rate_type}" methods="GET">
         <default key="_controller">RunOpenCode\Bundle\ExchangeRate\Controller\RestController::getAction</default>
+        <default key="rate_type">median</default>
     </route>
 
     <route id="runopencode_exchange_rate_rest_latest" path="/latest/{source}/{currency_code}/{rate_type}" methods="GET">
         <default key="_controller">RunOpenCode\Bundle\ExchangeRate\Controller\RestController::latestAction</default>
+        <default key="rate_type">median</default>
     </route>
 
     <route id="runopencode_exchange_rate_rest_today" path="/today/{source}/{currency_code}/{rate_type}" methods="GET">
         <default key="_controller">RunOpenCode\Bundle\ExchangeRate\Controller\RestController::todayAction</default>
+        <default key="rate_type">median</default>
     </route>
 
-    <route id="runopencode_exchange_rate_rest_historical" path="/get/{source}/{currency_code}/{date}/{rate_type}" methods="GET">
+    <route id="runopencode_exchange_rate_rest_historical" path="/historical/{source}/{currency_code}/{date}/{rate_type}" methods="GET">
         <default key="_controller">RunOpenCode\Bundle\ExchangeRate\Controller\RestController::historicalAction</default>
+        <default key="rate_type">median</default>
     </route>
 
 </routes>
