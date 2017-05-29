@@ -11,7 +11,9 @@ namespace RunOpenCode\Bundle\ExchangeRate\Tests\DependencyInjection;
 
 use PHPUnit\Framework\TestCase;
 use RunOpenCode\Bundle\ExchangeRate\Command\FetchCommand;
+use RunOpenCode\Bundle\ExchangeRate\Event\FetchErrorEvent;
 use RunOpenCode\Bundle\ExchangeRate\Event\FetchEvents;
+use RunOpenCode\Bundle\ExchangeRate\Event\FetchSuccessEvent;
 use RunOpenCode\ExchangeRate\Configuration;
 use RunOpenCode\ExchangeRate\Contract\ManagerInterface;
 use RunOpenCode\ExchangeRate\Contract\SourceInterface;
@@ -223,12 +225,12 @@ class FetchCommandTest extends TestCase
         $this->assertEquals(2, count($invocations));
 
         $this->assertEquals(FetchEvents::SUCCESS, $invocations[0]->parameters[0]);
-        $this->assertEquals('source_1', $invocations[0]->parameters[1]->getSubject());
-        $this->assertEquals([$rate], $invocations[0]->parameters[1]->getArgument('rates'));
+        $this->assertEquals(FetchSuccessEvent::class, get_class($invocations[0]->parameters[1]));
+        $this->assertEquals([$rate], $invocations[0]->parameters[1]['source_1']);
 
         $this->assertEquals(FetchEvents::ERROR, $invocations[1]->parameters[0]);
-        $this->assertEquals('source_2', $invocations[1]->parameters[1]->getSubject());
-        $this->assertInstanceOf(\Exception::class, $invocations[1]->parameters[1]->getArgument('exception'));
+        $this->assertEquals(FetchErrorEvent::class, get_class($invocations[1]->parameters[1]));
+        $this->assertInstanceOf(\Exception::class, $invocations[1]->parameters[1]['source_2']);
 
         $this->assertEquals(-1, $returnValue);
     }

@@ -1,0 +1,13 @@
+{% block subject %}{{ 'mail.success.title' | trans({ '{{ date }}': date | date('Y-m-d H:i:s') }, 'runopencode_exchange_rate') }}{% endblock subject %}
+{% block to %}{{ to }}{% endblock to %}
+{% block body %}
+
+    {% for source, fetched in rates %}
+
+        <h1>{{ source }}:</h1>
+
+        {% import '@ExchangeRate/mail/_table.html.twig' with { rates: fetched } only %}
+
+    {% endfor %}
+
+{% endblock body %}

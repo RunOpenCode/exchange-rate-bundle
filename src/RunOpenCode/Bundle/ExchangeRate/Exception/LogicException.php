@@ -12,11 +12,11 @@ namespace RunOpenCode\Bundle\ExchangeRate\Exception;
 use RunOpenCode\Bundle\ExchangeRate\Contract\ExceptionInterface;
 
 /**
- * Class InvalidArgumentException
+ * Class LogicException
  *
  * @package RunOpenCode\Bundle\ExchangeRate\Exception
  */
-class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
+class LogicException extends \LogicException implements ExceptionInterface
 {
 
 }

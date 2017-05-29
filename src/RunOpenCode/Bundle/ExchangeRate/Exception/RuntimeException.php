@@ -11,6 +11,11 @@ namespace RunOpenCode\Bundle\ExchangeRate\Exception;
 
 use RunOpenCode\Bundle\ExchangeRate\Contract\ExceptionInterface;
 
+/**
+ * Class RuntimeException
+ *
+ * @package RunOpenCode\Bundle\ExchangeRate\Exception
+ */
 class RuntimeException extends \RuntimeException implements ExceptionInterface
 {
 

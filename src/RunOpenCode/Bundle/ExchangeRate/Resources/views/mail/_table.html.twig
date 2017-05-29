@@ -1,0 +1,61 @@
+<table>
+    <thead>
+        <tr>
+            {% block thead %}
+                <th>
+                    {{ 'table.heading.source'|trans({}, 'runopencode_exchange_rate') }}
+                </th>
+                <th>
+                    {{ 'table.heading.rateType'|trans({}, 'runopencode_exchange_rate') }}
+                </th>
+                <th>
+                    {{ 'table.heading.currencyCode'|trans({}, 'runopencode_exchange_rate') }}
+                </th>
+                <th>
+                    {{ 'table.heading.value'|trans({}, 'runopencode_exchange_rate') }}
+                </th>
+                <th>
+                    {{ 'table.heading.date'|trans({}, 'runopencode_exchange_rate') }}
+                </th>
+                <th>
+                    {{ 'table.heading.modifiedAt'|trans({}, 'runopencode_exchange_rate') }}
+                </th>
+            {% endblock thead %}
+        </tr>
+    </thead>
+    <tbody>
+        {% block tbody %}
+
+            {% for rate in rates %}
+
+                {% block trow %}
+
+                    <tr>
+                        <td>
+                            {{ ('exchange_rate.source.' ~ rate.sourceName) | trans({}, 'runopencode_exchange_rate') }}
+                        </td>
+                        <td>
+                            {{ ('exchange_rate.rate_type.' ~ rate.sourceName ~ '.' ~ rate.rateType) | trans({}, 'runopencode_exchange_rate') }}
+                        </td>
+                        <td>
+                            {{ rate.currencyCode }}
+                        </td>
+                        <td>
+                            {{ rate.value }}
+                        </td>
+                        <td>
+                            {{ rate.date|date('Y-m-d') }}
+                        </td>
+                        <td>
+                            {{ rate.modifiedAt|date('Y-m-d H:i:s') }}
+                        </td>
+                    </tr>
+
+                {% endblock trow %}
+
+            {% endfor %}
+
+        {% endblock tbody %}
+
+    </tbody>
+</table>

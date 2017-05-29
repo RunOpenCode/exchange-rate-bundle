@@ -9,7 +9,9 @@
  */
 namespace RunOpenCode\Bundle\ExchangeRate\Command;
 
+use RunOpenCode\Bundle\ExchangeRate\Event\FetchErrorEvent;
 use RunOpenCode\Bundle\ExchangeRate\Event\FetchEvents;
+use RunOpenCode\Bundle\ExchangeRate\Event\FetchSuccessEvent;
 use RunOpenCode\Bundle\ExchangeRate\Exception\InvalidArgumentException;
 use RunOpenCode\Bundle\ExchangeRate\Exception\RuntimeException;
 use RunOpenCode\ExchangeRate\Contract\ManagerInterface;
@@ -22,7 +24,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
  * Class FetchCommand
@@ -88,7 +89,8 @@ class FetchCommand extends Command
         $sources = $this->sanitizeSources($input->getOption('source'));
         $this->output->title(sprintf('Fetching rates for sources "%s" on "%s".', implode('", "', $sources), $date->format('Y-m-d')));
 
-        $errors = false;
+        $errors = [];
+        $fetched = [];
 
         foreach ($sources as $source) {
 
@@ -110,16 +112,22 @@ class FetchCommand extends Command
                 $this->output->section(sprintf('Fetched rates for source "%s":', $source));
                 $this->output->table(['Currency code', 'Rate type', 'Value'], $rows);
 
-                if (!$input->getOption('silent')) {
-                    $this->eventDispatcher->dispatch(FetchEvents::SUCCESS, new GenericEvent($source, ['rates' => $rates]));
-                }
+                $fetched[$source] = $rates;
+
             } catch (\Exception $e) {
                 $this->output->error(sprintf('Could not fetch rates from source "%s" (%s).', $source, $e->getMessage()));
-                $errors = true;
+                $errors[$source] = $e;
+            }
+        }
 
-                if (!$input->getOption('silent')) {
-                    $this->eventDispatcher->dispatch(FetchEvents::ERROR, new GenericEvent($source, ['exception' => $e]));
-                }
+        if (!$input->getOption('silent')) {
+
+            if (count($fetched) > 0) {
+                $this->eventDispatcher->dispatch(FetchEvents::SUCCESS, new FetchSuccessEvent($fetched, $date));
+            }
+
+            if (count($errors) > 0) {
+                $this->eventDispatcher->dispatch(FetchEvents::ERROR, new FetchErrorEvent($errors, $date));
             }
         }
 

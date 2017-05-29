@@ -1,0 +1,11 @@
+{% block subject %}{{ 'mail.error.title' | trans({ '{{ date }}': date | date('Y-m-d H:i:s') }, 'runopencode_exchange_rate') }}{% endblock subject %}
+{% block to %}{{ to }}{% endblock to %}
+{% block body %}
+
+    {% for source, error in errors %}
+
+        <strong>{{ source }}: </strong>{{ error.message }} <br/>
+
+    {% endfor %}
+
+{% endblock body %}

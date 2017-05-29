@@ -39,7 +39,8 @@
     },
     "suggest": {
         "runopencode/exchange-rate-nbs": "Provides you with exchange rates from National Bank of Serbia.",
-        "runopencode/exchange-rate-intesa-rs": "Provides you with exchange rates from Banca Intesa Serbia."
+        "runopencode/exchange-rate-intesa-rs": "Provides you with exchange rates from Banca Intesa Serbia.",
+        "symfony/swiftmailer-bundle": "Send e-mail about rates fetch success."
     },
     "require-dev": {
         "phpunit/phpunit": "~6.0",
@@ -52,6 +53,7 @@
         "theseer/phpdox": "dev-master",
         "escapestudios/symfony2-coding-standard": "~2.0",
         "symfony/debug": "~3.0",
-        "matthiasnoback/symfony-dependency-injection-test": "~2.0"
+        "matthiasnoback/symfony-dependency-injection-test": "~2.0",
+        "symfony/swiftmailer-bundle": "~2.6|~3.0"
     }
 }
