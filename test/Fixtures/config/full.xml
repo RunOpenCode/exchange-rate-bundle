@@ -89,6 +89,14 @@
 
         </run-open-code-exchange-rate-bundle:form-types>
 
+        <run-open-code-exchange-rate-bundle:notifications>
+            <run-open-code-exchange-rate-bundle:e-mail>
+                <run-open-code-exchange-rate-bundle:enabled>true</run-open-code-exchange-rate-bundle:enabled>
+                <run-open-code-exchange-rate-bundle:recipient>test@test.com</run-open-code-exchange-rate-bundle:recipient>
+                <run-open-code-exchange-rate-bundle:recipient>other@test.com</run-open-code-exchange-rate-bundle:recipient>
+            </run-open-code-exchange-rate-bundle:e-mail>
+        </run-open-code-exchange-rate-bundle:notifications>
+
     </run-open-code-exchange-rate-bundle:config>
 
 </container>

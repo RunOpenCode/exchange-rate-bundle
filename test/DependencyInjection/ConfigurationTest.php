@@ -52,6 +52,12 @@ class ConfigurationTest extends AbstractExtensionConfigurationTestCase
                 'foreign_currency_code_type' => [ 'choice_translation_domain' => 'runopencode_exchange_rate', 'preferred_choices' => [] ],
                 'rate_type' => [ 'choice_translation_domain' => 'runopencode_exchange_rate', 'preferred_choices' => [] ],
             ],
+            'notifications' => [
+                'e_mail' => [
+                    'enabled' => false,
+                    'recipients' => []
+                ]
+            ]
         ], [
             __DIR__.'/../Fixtures/config/minimum.xml'
         ]);
@@ -94,6 +100,12 @@ class ConfigurationTest extends AbstractExtensionConfigurationTestCase
                 'foreign_currency_code_type' => [ 'choice_translation_domain' => 'roc', 'preferred_choices' => ['opt1', 'opt2'] ],
                 'rate_type' => [ 'choice_translation_domain' => 'roc', 'preferred_choices' => ['opt1', 'opt2'] ],
             ],
+            'notifications' => [
+                'e_mail' => [
+                    'enabled' => true,
+                    'recipients' => ['test@test.com', 'other@test.com']
+                ]
+            ]
         ];
 
         $this->assertProcessedConfigurationEquals($expected, [

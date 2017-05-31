@@ -58,6 +58,7 @@ class Configuration implements ConfigurationInterface
                         ->append($this->getRateTypeDefinition())
                     ->end()
                 ->end()
+                ->append($this->getNotificationsDefinition())
             ->end()
         ->end();
 
@@ -316,6 +317,55 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('preferred_choices')->prototype('scalar')->end()->end()
             ->end()
         ->end();
+
+        return $node;
+    }
+
+    /**
+     * Build configuration tree for notifications.
+     *
+     * @return ArrayNodeDefinition
+     */
+    protected function getNotificationsDefinition()
+    {
+        $node = new ArrayNodeDefinition('notifications');
+
+        $node
+            ->beforeNormalization()
+                ->always(function ($value) {
+
+                    if (isset($value['email'])) {
+                        return ['e_mail' => $value['email']];
+                    }
+
+                    return $value;
+                })
+            ->end()
+            ->info('Enable and configure notifications, or disable them.')
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->arrayNode('e_mail')
+                    ->fixXmlConfig('recipient', 'recipients')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('enabled')
+                            ->info('Denotes if e-mail notifications are enabled.')
+                            ->defaultFalse()
+                        ->end()
+                        ->arrayNode('recipients')
+                            ->beforeNormalization()
+                                ->ifString()
+                                ->then(function ($value) {
+                                    return [$value];
+                                })
+                            ->end()
+                            ->info('E-mail addresses where notifications should be sent.')
+                            ->prototype('scalar')->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ->end();    
 
         return $node;
     }

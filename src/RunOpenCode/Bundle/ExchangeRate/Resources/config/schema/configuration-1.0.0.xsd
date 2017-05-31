@@ -131,6 +131,21 @@
                 </xsd:complexType>
             </xsd:element>
 
+            <xsd:element name="notifications" minOccurs="0" maxOccurs="1">
+                <xsd:complexType>
+                    <xsd:all>
+                        <xsd:element name="e-mail" minOccurs="0" maxOccurs="1">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="enabled" minOccurs="0" maxOccurs="1" type="xsd:boolean"/>
+                                    <xsd:element name="recipient" minOccurs="0" maxOccurs="unbounded" type="xsd:string"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:all>
+                </xsd:complexType>
+            </xsd:element>
+
         </xsd:all>
 
     </xsd:complexType>

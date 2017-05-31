@@ -34,3 +34,7 @@ runopencode_exchange_rate:
         rate_type:
             choice_translation_domain: roc
             preferred_choices: [ 'opt1', 'opt2']
+    notifications:
+        email:
+            enabled: true
+            recipients: [ 'test@test.com', 'other@test.com' ]
