@@ -1,5 +1,4 @@
 {% block subject %}{{ 'mail.success.title' | trans({ '{{ date }}': date | date('Y-m-d H:i:s') }, 'runopencode_exchange_rate') }}{% endblock subject %}
-{% block to %}{{ to }}{% endblock to %}
 {% block body %}
 
     {% for source, fetched in rates %}

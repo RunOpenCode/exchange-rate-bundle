@@ -71,6 +71,7 @@ class Extension extends BaseExtension
         $loader->load('security.xml');
         $loader->load('source.xml');
         $loader->load('validator.xml');
+        $loader->load('notifications.xml');
 
         $this
             ->configureBaseCurrency($config, $container)
@@ -85,6 +86,7 @@ class Extension extends BaseExtension
             ->configureCurrencyCodeType($config, $container)
             ->configureForeignCurrencyCodeType($config, $container)
             ->configureRateType($config, $container)
+            ->configureNotifications($config, $container)
         ;
     }
 
@@ -350,6 +352,23 @@ class Extension extends BaseExtension
         $arguments[1] = $config['form_types']['rate_type'];
 
         $definition->setArguments($arguments);
+
+        return $this;
+    }
+
+    /**
+     * Configure notifications
+     *
+     * @param array $config Configuration parameters.
+     * @param ContainerBuilder $container Service container.
+     *
+     * @return Extension $this Fluent interface.
+     */
+    protected function configureNotifications(array $config, ContainerBuilder $container)
+    {
+        if (isset($config['notifications']['e_mail']['enabled']) && $config['notifications']['e_mail']['enabled']) {
+            $container->setParameter('runopencode.exchange_rate.notifications.e_mail', $config['notifications']['e_mail']['recipients']);
+        }
 
         return $this;
     }

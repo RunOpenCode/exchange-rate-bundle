@@ -22,12 +22,17 @@ class FetchEventsEmailNotificationListener
     /**
      * @var \Twig_Environment
      */
-    private $twig;
+    protected $twig;
 
     /**
      * @var \Swift_Mailer
      */
-    private $mailer;
+    protected $mailer;
+
+    /**
+     * @var string[]
+     */
+    protected $recipients;
 
     /**
      * FetchEventsEmailNotificationListener constructor.
@@ -35,10 +40,11 @@ class FetchEventsEmailNotificationListener
      * @param \Twig_Environment $twig
      * @param \Swift_Mailer $mailer
      */
-    public function __construct(\Twig_Environment $twig, \Swift_Mailer $mailer)
+    public function __construct(\Twig_Environment $twig, \Swift_Mailer $mailer, array $recipients)
     {
         $this->twig = $twig;
         $this->mailer = $mailer;
+        $this->recipients = $recipients;
     }
 
     /**
@@ -85,7 +91,7 @@ class FetchEventsEmailNotificationListener
 
         $message
             ->setSubject($this->renderBlock($template, 'subject', $context))
-            ->setTo($this->renderBlock($template, 'to', $context))
+            ->setTo($this->recipients)
             ->setBody($this->renderBlock($template, 'body', $context), 'text/html');
 
         return $message;
