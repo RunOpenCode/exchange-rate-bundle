@@ -367,7 +367,7 @@ class Extension extends BaseExtension
     protected function configureNotifications(array $config, ContainerBuilder $container)
     {
         if (isset($config['notifications']['e_mail']['enabled']) && $config['notifications']['e_mail']['enabled']) {
-            $container->setParameter('runopencode.exchange_rate.notifications.e_mail', $config['notifications']['e_mail']['recipients']);
+            $container->setParameter('runopencode.exchange_rate.notifications.email.recipients', $config['notifications']['e_mail']['recipients']);
         }
 
         return $this;

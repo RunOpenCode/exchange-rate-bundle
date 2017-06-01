@@ -31,7 +31,7 @@ class NotificationsCompilerPass implements CompilerPassInterface
             return;
         }
 
-        if (!$container->hasParameter('runopencode.exchange_rate.notifications.e_mail')) {
+        if (!$container->hasParameter('runopencode.exchange_rate.notifications.email.recipients')) {
             $container->removeDefinition('runopencode.exchange_rate.notifications.email');
             return;
         }
@@ -40,14 +40,14 @@ class NotificationsCompilerPass implements CompilerPassInterface
             throw new RuntimeException('Bundle "symfony/swiftmailer-bundle" is required for email notifications.');
         }
 
-        $recipients = $container->getParameter('runopencode.exchange_rate.notifications.e_mail');
+        $recipients = $container->getParameter('runopencode.exchange_rate.notifications.email.recipients');
 
         if (0 === count($recipients)) {
             throw new RuntimeException('At least one recipient for e-mail notifications must be provided.');
         }
 
         $container
-            ->getDefinition('runopencode.exchange_rate.notifications.e_mail')
-            ->addArgument($recipients);
+            ->getDefinition('runopencode.exchange_rate.notifications.email')
+            ->setArgument(2, $recipients);
     }
 }
