@@ -48,6 +48,9 @@ class NotificationsCompilerPass implements CompilerPassInterface
 
         $container
             ->getDefinition('runopencode.exchange_rate.notifications.email')
-            ->setArgument(2, $recipients);
+            ->setArgument(2, $recipients)
+            ->addTag('kernel.event_listener', [ 'event' => 'runopencode.exchange_rate.fetch.success' ])
+            ->addTag('kernel.event_listener', [ 'event' => 'runopencode.exchange_rate.fetch.error' ])
+        ;
     }
 }

@@ -260,6 +260,27 @@ class ExtensionTest extends AbstractExtensionTestCase
     }
 
     /**
+     * @test
+     */
+    public function itConfiguresNotifications()
+    {
+        $this->load([
+            'base_currency' => 'RSD',
+            'rates' => [
+                ['currency_code' => 'EUR', 'rate_type' => 'median', 'source' => 'national_bank_of_serbia'],
+            ],
+            'notifications' => [
+                'email' => [
+                    'enabled' => true,
+                    'recipients' => ['test@test.test']
+                ]
+            ],
+        ]);
+
+        $this->assertContainerBuilderHasParameter('runopencode.exchange_rate.notifications.email.recipients', ['test@test.test']);
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function getContainerExtensions()

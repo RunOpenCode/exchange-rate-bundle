@@ -5,7 +5,7 @@
 
         <h1>{{ source }}:</h1>
 
-        {% import '@ExchangeRate/mail/_table.html.twig' with { rates: fetched } only %}
+        {% include '@ExchangeRate/mail/_table.html.twig' with { rates: fetched } only %}
 
     {% endfor %}
 

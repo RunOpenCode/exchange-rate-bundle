@@ -112,6 +112,6 @@ class FetchEventsEmailNotificationListener
         $template = $this->twig->loadTemplate($template);
         $context = $this->twig->mergeGlobals($context);
 
-        return $template->renderParentBlock($block, $context);
+        return $template->renderBlock($block, $context);
     }
 }

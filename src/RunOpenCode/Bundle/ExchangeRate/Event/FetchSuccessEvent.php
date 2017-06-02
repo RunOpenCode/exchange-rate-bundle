@@ -17,7 +17,7 @@ use Symfony\Component\EventDispatcher\Event;
  *
  * @package RunOpenCode\Bundle\ExchangeRate\Event
  */
-class FetchSuccessEvent extends Event implements \IteratorAggregate, \ArrayAccess
+class FetchSuccessEvent extends Event
 {
     /**
      * @var array
@@ -53,45 +53,5 @@ class FetchSuccessEvent extends Event implements \IteratorAggregate, \ArrayAcces
     public function getDate()
     {
         return $this->date;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->rates);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function offsetExists($offset)
-    {
-        return isset($this->rates[$offset]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function offsetGet($offset)
-    {
-        return $this->rates[$offset];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function offsetSet($offset, $value)
-    {
-        throw new LogicException(sprintf('Method "%s" of class "%s" can not be invoked in this context.', __FUNCTION__, __CLASS__));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function offsetUnset($offset)
-    {
-        throw new LogicException(sprintf('Method "%s" of class "%s" can not be invoked in this context.', __FUNCTION__, __CLASS__));
     }
 }

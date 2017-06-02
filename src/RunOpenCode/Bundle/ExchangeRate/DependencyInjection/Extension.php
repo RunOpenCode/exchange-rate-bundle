@@ -58,7 +58,6 @@ class Extension extends BaseExtension
      */
     public function load(array $config, ContainerBuilder $container)
     {
-
         $configuration = new TreeConfiguration();
         $config = $this->processConfiguration($configuration, $config);
 
