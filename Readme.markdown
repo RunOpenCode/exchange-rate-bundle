@@ -1,8 +1,9 @@
 Exchange rate bundle
-====
+====================
+
 *Fetch, store and use currency exchange rates in your application*
 
-Exchange rate bundle is Symfony2 and Symfony3 wrapper for [RunOpenCode/exchange-rate](https://github.com/RunOpenCode/exchange-rate) 
+Exchange rate bundle is Symfony wrapper for [RunOpenCode/exchange-rate](https://github.com/RunOpenCode/exchange-rate)
 library.
 
 [![Packagist](https://img.shields.io/packagist/v/RunOpenCode/exchange-rate-bundle.svg)](https://packagist.org/packages/runopencode/exchange-rate-bundle)
@@ -13,13 +14,28 @@ library.
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/7d45e1cd-63a2-474e-a252-9a11ee8faafb/big.png)](https://insight.sensiolabs.com/projects/7d45e1cd-63a2-474e-a252-9a11ee8faafb)
 
+## Features
 
-Bundle is in active development phase, currently is in beta stage, unit testing must be completed and documentation must be 
-written.
+- Easy integration with exchange rate sources
+(such as [National bank of Serba](https://github.com/RunOpenCode/exchange-rate-nbs)
+and [Banca Intesa Serbia](https://github.com/RunOpenCode/exchange-rate-intesa-rs)) via configuration.
+- Console commands for debugging configuration.
+- Console commands for fetching configured rates via cron tasks or queue
+implementations.
+- Configurable e-mail notifications support for successful retrieval of
+rates, as well as errors.
+- CRUD controllers for viewing, editing, deleting and creating rates, with
+configurable role-based security.
+- Public REST api enabling you to deliver rates to other applications
+and third parties.
+- Easy extensibility and customization of each portion of bundle.
 
-TODO:
+## License
 
-- Provide unit tests
-- Provide documentation
-- Write Doctrine ORM repository
-- Write Doctrine Document repository
+This bundle is published under MIT license. Please see [LICENSE](LICENSE) file distributed
+with this package.
+
+## Documentation
+
+For more detailed information about the features of this bundle,
+refer to the [documentation](docs/index.md).

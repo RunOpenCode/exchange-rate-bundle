@@ -61,7 +61,7 @@ class EditController extends Controller
             return $this->redirectAfterSuccess();
         }
 
-        return $this->render('@ExchangeRate/edit.html.twig', [
+        return $this->render($this->getTwigTemplate(), [
             'form' => $form->createView(),
             'rate' => $rate
         ]);
@@ -143,5 +143,15 @@ class EditController extends Controller
     protected function redirectAfterSuccess()
     {
         return $this->redirectToRoute('runopencode_exchange_rate_list');
+    }
+
+    /**
+     * Get Twig template path.
+     *
+     * @return string
+     */
+    protected function getTwigTemplate()
+    {
+        return '@ExchangeRate/edit.html.twig';
     }
 }

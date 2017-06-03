@@ -31,7 +31,7 @@ class DeleteController extends Controller
      */
     public function indexAction(Request $request)
     {
-        return $this->render('@ExchangeRate/delete.html.twig', [
+        return $this->render($this->getTwigTemplate(), [
             'rate' => $this->getRateFromRequest($request)
         ]);
     }
@@ -120,5 +120,15 @@ class DeleteController extends Controller
     protected function redirectAfterSuccess()
     {
         return $this->redirectToRoute('runopencode_exchange_rate_list');
+    }
+
+    /**
+     * Get Twig template path.
+     *
+     * @return string
+     */
+    protected function getTwigTemplate()
+    {
+        return '@ExchangeRate/delete.html.twig';
     }
 }

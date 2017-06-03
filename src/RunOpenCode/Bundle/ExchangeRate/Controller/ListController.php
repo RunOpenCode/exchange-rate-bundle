@@ -38,7 +38,7 @@ class ListController extends Controller
 
         $filterForm = $this->getFilterForm($request);
 
-        return $this->render('@ExchangeRate/list.html.twig', [
+        return $this->render($this->getTwigTemplate(), [
             'rates' => $this->getRates($filterForm),
             'form' => $filterForm->createView(),
         ]);
@@ -89,5 +89,15 @@ class ListController extends Controller
     protected function getFilterFormType()
     {
         return FilterType::class;
+    }
+
+    /**
+     * Get Twig template path.
+     *
+     * @return string
+     */
+    protected function getTwigTemplate()
+    {
+        return '@ExchangeRate/list.html.twig';
     }
 }

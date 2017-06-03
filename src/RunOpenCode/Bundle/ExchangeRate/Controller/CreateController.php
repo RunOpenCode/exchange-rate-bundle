@@ -45,7 +45,7 @@ class CreateController extends Controller
             return $this->redirectAfterSuccess();
         }
 
-        return $this->render('@ExchangeRate/create.html.twig', [
+        return $this->render($this->getTwigTemplate(), [
             'form' => $form->createView(),
         ]);
     }
@@ -130,5 +130,15 @@ class CreateController extends Controller
     protected function redirectAfterSuccess()
     {
         return $this->redirectToRoute('runopencode_exchange_rate_list');
+    }
+
+    /**
+     * Get Twig template path.
+     *
+     * @return string
+     */
+    protected function getTwigTemplate()
+    {
+        return '@ExchangeRate/create.html.twig';
     }
 }
