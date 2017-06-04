@@ -28,4 +28,5 @@ and third parties.
 ## Table of contents
 
 - [Instalation](installation.md)
+- [Routes configuration](routes-configuration.md)
 - [Configuration](configuration.md)

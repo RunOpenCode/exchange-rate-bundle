@@ -239,12 +239,16 @@ class Extension extends BaseExtension
                         AccessVoter::CREATE => $config['security'][AccessVoter::CREATE],
                         AccessVoter::EDIT => $config['security'][AccessVoter::EDIT],
                         AccessVoter::DELETE => $config['security'][AccessVoter::DELETE],
-                    ]
+                    ],
+                    true
                 ]);
 
-        } else {
-            $container->removeDefinition('runopencode.exchange_rate.security.access_voter');
+            return $this;
         }
+
+        $container
+            ->getDefinition('runopencode.exchange_rate.security.access_voter')
+            ->setArguments([ [], false ]);
 
         return $this;
     }

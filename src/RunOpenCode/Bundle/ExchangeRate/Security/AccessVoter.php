@@ -47,13 +47,18 @@ class AccessVoter extends Voter
     protected $roles;
 
     /**
+     * @var boolean
+     */
+    protected $enabled;
+
+    /**
      * AccessVoter constructor.
      *
      * @param array $roles
      *
      * @codeCoverageIgnore
      */
-    public function __construct(array $roles = [])
+    public function __construct(array $roles = [], $enabled = true)
     {
         $this->roles = array_merge([
             self::VIEW => [],
@@ -61,6 +66,8 @@ class AccessVoter extends Voter
             self::EDIT => [],
             self::DELETE => [],
         ], $roles);
+
+        $this->enabled = $enabled;
     }
 
     /**
@@ -90,6 +97,10 @@ class AccessVoter extends Voter
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
+        if (!$this->enabled) {
+            return true;
+        }
+
         $attribute = strtolower($attribute);
 
         return $this->hasAnyRole($token, $this->roles[$attribute]);

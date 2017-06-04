@@ -67,6 +67,43 @@ class AccessVoterTest extends TestCase
     /**
      * @test
      */
+    public function itGrantsAccessAlwaysWhenDisabled()
+    {
+        $voter = new AccessVoter([], false);
+
+        $rate = $this->getMockBuilder(RateInterface::class)->getMock();
+
+        $inputs = [
+            ['EDIT', $rate, 'ROLE_EDIT_RATE'],
+            ['DELETE', $rate, 'ROLE_DELETE_RATE'],
+            ['VIEW', $rate, 'ROLE_VIEW_RATE'],
+            ['VIEW', get_class($rate), 'ROLE_VIEW_RATE'],
+            ['CREATE', get_class($rate), 'ROLE_CREATE_RATE'],
+        ];
+
+
+        foreach ($inputs as $input) {
+
+            list($attribute, $subject, $role) = $input;
+
+            $token = $this->getMockBuilder(TokenInterface::class)->getMock();
+            $roleInterface = $this->getMockBuilder(RoleInterface::class)->getMock();
+
+            $token
+                ->method('getRoles')
+                ->willReturn([$roleInterface]);
+
+            $roleInterface
+                ->method('getRole')
+                ->willReturn($role);
+
+            $this->assertEquals(VoterInterface::ACCESS_GRANTED, $voter->vote($token, $subject, [$attribute]));
+        }
+    }
+
+    /**
+     * @test
+     */
     public function itDeniesAccess()
     {
         $voter = new AccessVoter([

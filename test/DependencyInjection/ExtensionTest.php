@@ -173,7 +173,7 @@ class ExtensionTest extends AbstractExtensionTestCase
             ],
         ]);
 
-        $this->assertContainerBuilderNotHasService('runopencode.exchange_rate.security.access_voter');
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('runopencode.exchange_rate.security.access_voter', 1, false);
     }
 
     /**
