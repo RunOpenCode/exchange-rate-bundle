@@ -32,46 +32,9 @@ class SourcesCompilerPass implements CompilerPassInterface
 
             $definition = $container->getDefinition('runopencode.exchange_rate.registry.sources');
 
-            $requiredSources = $this->getRequiredSources($container);
-
             foreach ($container->findTaggedServiceIds('runopencode.exchange_rate.source') as $id => $tags) {
-
-                foreach ($tags as $attributes) {
-
-                    if (
-                        !empty($attributes['name'])
-                        &&
-                        isset($requiredSources[$attributes['name']])
-                    ) {
-                        $definition->addMethodCall('add', [new Reference($id)]);
-                        unset($requiredSources[$attributes['name']]);
-
-                        continue 2;
-                    }
-                }
-            }
-
-            if (count($requiredSources) > 0) {
-                throw new ServiceNotFoundException(reset($requiredSources));
+                $definition->addMethodCall('add', [new Reference($id)]);
             }
         }
-    }
-
-    /**
-     * Get list of required sources services.
-     *
-     * @param ContainerBuilder $container
-     * @return array
-     */
-    protected function getRequiredSources(ContainerBuilder $container)
-    {
-        $sources = [];
-
-        foreach ($container->findTaggedServiceIds('runopencode.exchange_rate.rate_configuration') as $id => $tags) {
-            $source = $container->getDefinition($id)->getArgument(2);
-            $sources[$source] = $source;
-        }
-
-        return $sources;
     }
 }

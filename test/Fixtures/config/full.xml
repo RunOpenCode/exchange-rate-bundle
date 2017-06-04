@@ -30,9 +30,7 @@
 
         <run-open-code-exchange-rate-bundle:doctrine-dbal-repository connection="default" table-name="table"/>
 
-        <run-open-code-exchange-rate-bundle:sources>
-            <run-open-code-exchange-rate-bundle:source name="test">SomeClass</run-open-code-exchange-rate-bundle:source>
-        </run-open-code-exchange-rate-bundle:sources>
+        <run-open-code-exchange-rate-bundle:source>SomeClass</run-open-code-exchange-rate-bundle:source>
 
         <run-open-code-exchange-rate-bundle:security enabled="false">
             <run-open-code-exchange-rate-bundle:view>List1</run-open-code-exchange-rate-bundle:view>

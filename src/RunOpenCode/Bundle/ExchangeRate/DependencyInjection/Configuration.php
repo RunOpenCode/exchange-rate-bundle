@@ -34,6 +34,7 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('runopencode_exchange_rate');
 
         $rootNode
+            ->fixXmlConfig('source', 'sources')
             ->children()
                 ->scalarNode('base_currency')
                     ->isRequired()
@@ -169,7 +170,6 @@ class Configuration implements ConfigurationInterface
 
         $node
             ->info('Add sources to sources registry without registering them into service container.')
-            ->useAttributeAsKey('name')
             ->prototype('scalar')->end()
         ->end();
 

@@ -30,12 +30,12 @@ configurable role-based security.
 and third parties.
 - Easy extensibility and customization of each portion of bundle.
 
-## License
-
-This bundle is published under MIT license. Please see [LICENSE](LICENSE) file distributed
-with this package.
-
 ## Documentation
 
 For more detailed information about the features of this bundle,
 refer to the [documentation](docs/index.md).
+
+## License
+
+This bundle is published under MIT license. Please see [LICENSE](LICENSE) file distributed
+with this package.

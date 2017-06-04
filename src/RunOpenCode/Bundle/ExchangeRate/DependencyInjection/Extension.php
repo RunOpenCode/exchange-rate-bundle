@@ -138,7 +138,6 @@ class Extension extends BaseExtension
         return $this;
     }
 
-
     /**
      * Configure sources which does not have to be explicitly added to service container.
      *
@@ -151,13 +150,14 @@ class Extension extends BaseExtension
     {
         if (!empty($config['sources'])) {
 
-            foreach ($config['sources'] as $name => $class) {
+            foreach ($config['sources'] as $class) {
 
                 $definition = new Definition($class);
                 $definition
-                    ->addTag('runopencode.exchange_rate.source', ['name' => $name]);
+                    ->addTag('runopencode.exchange_rate.source')
+                    ->setPublic(false);
 
-                $container->setDefinition(sprintf('runopencode.exchange_rate.source.%s', $name), $definition);
+                $container->setDefinition(sprintf('runopencode.exchange_rate.source.%s', str_replace('\\', '_', strtolower($class))), $definition);
             }
         }
 
@@ -229,26 +229,17 @@ class Extension extends BaseExtension
      */
     protected function configureAccessVoter(array $config, ContainerBuilder $container)
     {
-        if ($config['security']['enabled']) {
-
-            $container
-                ->getDefinition('runopencode.exchange_rate.security.access_voter')
-                ->setArguments([
-                    [
-                        AccessVoter::VIEW => $config['security'][AccessVoter::VIEW],
-                        AccessVoter::CREATE => $config['security'][AccessVoter::CREATE],
-                        AccessVoter::EDIT => $config['security'][AccessVoter::EDIT],
-                        AccessVoter::DELETE => $config['security'][AccessVoter::DELETE],
-                    ],
-                    true
-                ]);
-
-            return $this;
-        }
-
         $container
             ->getDefinition('runopencode.exchange_rate.security.access_voter')
-            ->setArguments([ [], false ]);
+            ->setArguments([
+                [
+                    AccessVoter::VIEW => $config['security'][AccessVoter::VIEW],
+                    AccessVoter::CREATE => $config['security'][AccessVoter::CREATE],
+                    AccessVoter::EDIT => $config['security'][AccessVoter::EDIT],
+                    AccessVoter::DELETE => $config['security'][AccessVoter::DELETE],
+                ],
+                $config['security']['enabled']
+            ]);
 
         return $this;
     }

@@ -77,10 +77,7 @@ class ExtensionTest extends AbstractExtensionTestCase
      */
     public function itConfiguresSources()
     {
-        $sources = [
-            'simple_source_1' => '\Simple\SourceClass1',
-            'simple_source_2' => '\Simple\SourceClass2',
-        ];
+        $sources = ['\Simple\SourceClass1', '\Simple\SourceClass2'];
 
         $this->load([
             'base_currency' => 'RSD',
@@ -97,8 +94,9 @@ class ExtensionTest extends AbstractExtensionTestCase
         $configured = [];
 
         foreach ($services as $id => $tags) {
-            $definition = $this->container->findDefinition($id);
-            $configured[$tags[0]['name']] = $definition->getClass();
+            $this->assertTrue($this->container->hasDefinition($id));
+            $this->assertFalse($this->container->getDefinition($id)->isPublic());
+            $configured[] = $this->container->getDefinition($id)->getClass();
         }
 
         $this->assertEquals($sources, $configured);

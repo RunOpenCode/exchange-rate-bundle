@@ -45,15 +45,15 @@ class SourcesCompilerPassTest extends AbstractCompilerPassTestCase
 
         $source1 = new Definition();
         $source1
-            ->addTag('runopencode.exchange_rate.source', ['name' => 'source_1']);
+            ->addTag('runopencode.exchange_rate.source');
 
         $source2 = new Definition();
         $source2
-            ->addTag('runopencode.exchange_rate.source', ['name' => 'source_2']);
+            ->addTag('runopencode.exchange_rate.source');
 
         $source3 = new Definition();
         $source3
-            ->addTag('runopencode.exchange_rate.source', ['name' => 'source_3']);
+            ->addTag('runopencode.exchange_rate.source');
 
         $this->setDefinition('source_service_1', $source1);
         $this->setDefinition('source_service_2', $source2);
@@ -61,32 +61,33 @@ class SourcesCompilerPassTest extends AbstractCompilerPassTestCase
 
         $this->compile();
 
-        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall('runopencode.exchange_rate.registry.sources', 'add', [new Reference('source_service_1')]);
-        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall('runopencode.exchange_rate.registry.sources', 'add', [new Reference('source_service_2')]);
-        $this->assertEquals(2, count($this->container->findDefinition('runopencode.exchange_rate.registry.sources')->getMethodCalls()));
+        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall('runopencode.exchange_rate.registry.sources', 'add', [new Reference('source_service_1')], 0);
+        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall('runopencode.exchange_rate.registry.sources', 'add', [new Reference('source_service_2')], 1);
+        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall('runopencode.exchange_rate.registry.sources', 'add', [new Reference('source_service_3')], 2);
+        $this->assertEquals(3, count($this->container->findDefinition('runopencode.exchange_rate.registry.sources')->getMethodCalls()));
     }
 
-    /**
-     * @test
-     * @expectedException \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
-     */
-    public function itThrowsExceptionWhenSourceIsMissing()
-    {
-        $this->setDefinition('runopencode.exchange_rate.registry.sources', new Definition());
-
-        $source1 = new Definition();
-        $source1
-            ->addTag('runopencode.exchange_rate.source', ['name' => 'source_1']);
-
-        $source3 = new Definition();
-        $source3
-            ->addTag('runopencode.exchange_rate.source', ['name' => 'source_3']);
-
-        $this->setDefinition('source_service_1', $source1);
-        $this->setDefinition('source_service_3', $source3);
-
-        $this->compile();
-    }
+//    /**
+//     * @test
+//     * @expectedException \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+//     */
+//    public function itThrowsExceptionWhenSourceIsMissing()
+//    {
+//        $this->setDefinition('runopencode.exchange_rate.registry.sources', new Definition());
+//
+//        $source1 = new Definition();
+//        $source1
+//            ->addTag('runopencode.exchange_rate.source', ['name' => 'source_1']);
+//
+//        $source3 = new Definition();
+//        $source3
+//            ->addTag('runopencode.exchange_rate.source', ['name' => 'source_3']);
+//
+//        $this->setDefinition('source_service_1', $source1);
+//        $this->setDefinition('source_service_3', $source3);
+//
+//        $this->compile();
+//    }
 
     /**
      * {@inheritdoc}

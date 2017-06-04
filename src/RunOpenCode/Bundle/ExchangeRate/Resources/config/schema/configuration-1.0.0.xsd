@@ -10,7 +10,7 @@
 
     <xsd:complexType name="config">
 
-        <xsd:all>
+        <xsd:sequence>
 
             <xsd:element name="base-currency" type="xsd:string" minOccurs="1" maxOccurs="1" />
 
@@ -50,21 +50,7 @@
                 </xsd:complexType>
             </xsd:element>
 
-            <xsd:element name="sources" minOccurs="0" maxOccurs="1">
-                <xsd:complexType>
-                    <xsd:sequence>
-                        <xsd:element name="source" minOccurs="1" maxOccurs="unbounded">
-                            <xsd:complexType mixed="true">
-                                <xsd:simpleContent>
-                                    <xsd:extension base="textType">
-                                        <xsd:attribute name="name" type="xsd:string" use="required"/>
-                                    </xsd:extension>
-                                </xsd:simpleContent>
-                            </xsd:complexType>
-                        </xsd:element>
-                    </xsd:sequence>
-                </xsd:complexType>
-            </xsd:element>
+            <xsd:element name="source" minOccurs="0" maxOccurs="unbounded" />
             
             <xsd:element name="security" minOccurs="0" maxOccurs="1">
                 <xsd:complexType>
@@ -146,7 +132,7 @@
                 </xsd:complexType>
             </xsd:element>
 
-        </xsd:all>
+        </xsd:sequence>
 
     </xsd:complexType>
 

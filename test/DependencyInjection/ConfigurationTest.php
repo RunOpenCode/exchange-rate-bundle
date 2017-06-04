@@ -84,7 +84,7 @@ class ConfigurationTest extends AbstractExtensionConfigurationTestCase
                 'table_name' => 'table',
             ],
             'sources' => [
-                'test' => 'SomeClass'
+                'SomeClass'
             ],
             'security' => [
                 'enabled' => false,

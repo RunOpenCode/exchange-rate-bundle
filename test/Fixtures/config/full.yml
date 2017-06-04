@@ -10,8 +10,7 @@ runopencode_exchange_rate:
     doctrine_dbal_repository:
         connection: default
         table_name: table
-    sources:
-        test: SomeClass
+    sources: [ SomeClass ]
     security:
         enabled: false
         view: [ 'List1', 'List2' ]

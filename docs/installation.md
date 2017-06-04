@@ -46,8 +46,18 @@ For details about routes configuration and customization of which controller
 will be included in project, please see [Routes configuration](routes-configuration.md)
 section of this documentation.
 
-## Step 4 - Configure bundle
+## Step 4. - Define your sources
+
+Configure sources for exchange rates according to instructions provided in [Sources](sources.md)
+section of this documentation.
+
+## Step 5 - Configure other bundle options
 
 Configure bundle according to instructions provided in [Configuration](configuration.md)
 section of this documentation.
+
+## Step 6 - Setup cron task to fetch rates periodically
+
+Configure cron to fetch rates every day according to instructions provided
+in [Cron configuration](fetch-rates.md) section of this documentation.
 

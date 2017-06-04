@@ -4,8 +4,8 @@
         xsi:schemaLocation="http://symfony.com/schema/routing
         http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <import resource="@ExchangeRateBundle/Resources/config/routing/admin.xml" prefix="/exchange-rates" />
+    <import resource="@ExchangeRateBundle/Resources/config/routing/admin.xml" />
 
-    <import resource="@ExchangeRateBundle/Resources/config/routing/rest.xml" prefix="/api/exchange-rates" />
+    <import resource="@ExchangeRateBundle/Resources/config/routing/rest.xml" prefix="/api" />
 
 </routes>
