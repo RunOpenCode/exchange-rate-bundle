@@ -34,5 +34,3 @@ to a list of classes under `sources` key, example:
             [ '\MyNameSpace\MySourceImplementation\First', '\MyNameSpace\MySourceImplementation\Second']
 
 [<<Routes configuration](routes-configuration.md) | [Table of contents](index.md) | [Configuration>>](configuration.md)
-
-

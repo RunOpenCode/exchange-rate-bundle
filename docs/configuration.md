@@ -151,4 +151,4 @@ to be sent. Example:
 
 For custom implementation of notification service, see chapter [Custom implementations](custom-implementations.md).
 
- [<<Sources](sources.md) | [Table of contents](index.md) | [Cron configuration>>](fetch-rates.md)
+[<<Sources](sources.md) | [Table of contents](index.md) | [Cron configuration>>](fetch-rates.md)

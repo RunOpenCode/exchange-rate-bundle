@@ -12,7 +12,7 @@ namespace RunOpenCode\Bundle\ExchangeRate\Security;
 use RunOpenCode\ExchangeRate\Contract\RateInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Role\RoleInterface;
+use Symfony\Component\Security\Core\Role\Role;
 
 /**
  * Class AccessVoter
@@ -116,7 +116,7 @@ class AccessVoter extends Voter
      */
     private function hasAnyRole(TokenInterface $token, array $roles)
     {
-        $tokenRoles = array_filter(array_map(function(RoleInterface $role) {
+        $tokenRoles = array_filter(array_map(function(Role $role) {
             return $role->getRole() ?: false;
         }, $token->getRoles()));
 
