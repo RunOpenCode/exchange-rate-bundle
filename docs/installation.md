@@ -61,3 +61,4 @@ section of this documentation.
 Configure cron to fetch rates every day according to instructions provided
 in [Cron configuration](fetch-rates.md) section of this documentation.
 
+[Table of contents](index.md) | [Routes configuration>>](routes-configuration.md)

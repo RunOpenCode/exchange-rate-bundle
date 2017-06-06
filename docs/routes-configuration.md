@@ -26,3 +26,4 @@ quite possilbe that colision with courent routes can occur if prefix is not prov
         resource: "@ExchangeRate/Resources/config/routing/all.xml"
         prefix: /exchange-rate
 
+[<<Instalation](installation.md) | [Table of contents](index.md) | [Sources>>](sources.md)

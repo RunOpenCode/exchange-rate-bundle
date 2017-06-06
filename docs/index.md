@@ -41,6 +41,8 @@ and third parties.
 - [Configuration](configuration.md)
 - [Cron configuration](fetch-rates.md)
 - [Custom implementations](custom-implementations.md)
+- [Extend and override](extend-and-override.md)
+- [Form types and validators](form-types-and-validators.md)
 
 ## License
 

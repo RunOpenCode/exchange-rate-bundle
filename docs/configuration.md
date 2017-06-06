@@ -25,6 +25,10 @@ as well as exchange rates with which you intend to work with. Example:
             - { currency_code: CHF, rate_type: median, source: national_bank_of_serbia }
             - { currency_code: USD, rate_type: median, source: national_bank_of_serbia }
 
+In order to validate your configuration settings, you can execute command
+`debug:runopencode:exchange-rate` in your console which will provide you
+with configuration overview and useful debugging info.
+
 ## Other configuration options
 
 ### Configure repository
@@ -146,3 +150,5 @@ to be sent. Example:
                 recipients: [ 'test@test.com', 'other@test.com' ]
 
 For custom implementation of notification service, see chapter [Custom implementations](custom-implementations.md).
+
+ [<<Sources](sources.md) | [Table of contents](index.md) | [Cron configuration>>](fetch-rates.md)
