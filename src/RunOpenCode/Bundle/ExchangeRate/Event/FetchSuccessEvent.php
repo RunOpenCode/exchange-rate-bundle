@@ -9,7 +9,6 @@
  */
 namespace RunOpenCode\Bundle\ExchangeRate\Event;
 
-use RunOpenCode\Bundle\ExchangeRate\Exception\LogicException;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
