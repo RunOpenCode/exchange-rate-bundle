@@ -14,7 +14,7 @@ use RunOpenCode\Bundle\ExchangeRate\Security\AccessVoter;
 use RunOpenCode\ExchangeRate\Contract\RateInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
-use Symfony\Component\Security\Core\Role\RoleInterface;
+use Symfony\Component\Security\Core\Role\Role;
 
 /**
  * Class AccessVoterTest
@@ -50,13 +50,13 @@ class AccessVoterTest extends TestCase
             list($attribute, $subject, $role) = $input;
 
             $token = $this->getMockBuilder(TokenInterface::class)->getMock();
-            $roleInterface = $this->getMockBuilder(RoleInterface::class)->getMock();
+            $roles = $this->getMockBuilder(Role::class)->disableOriginalConstructor()->getMock();
 
             $token
                 ->method('getRoles')
-                ->willReturn([$roleInterface]);
+                ->willReturn([$roles]);
 
-            $roleInterface
+            $roles
                 ->method('getRole')
                 ->willReturn($role);
 
@@ -87,13 +87,13 @@ class AccessVoterTest extends TestCase
             list($attribute, $subject, $role) = $input;
 
             $token = $this->getMockBuilder(TokenInterface::class)->getMock();
-            $roleInterface = $this->getMockBuilder(RoleInterface::class)->getMock();
+            $roles = $this->getMockBuilder(Role::class)->disableOriginalConstructor()->getMock();
 
             $token
                 ->method('getRoles')
-                ->willReturn([$roleInterface]);
+                ->willReturn([$roles]);
 
-            $roleInterface
+            $roles
                 ->method('getRole')
                 ->willReturn($role);
 
@@ -128,13 +128,13 @@ class AccessVoterTest extends TestCase
             list($attribute, $subject, $role) = $input;
 
             $token = $this->getMockBuilder(TokenInterface::class)->getMock();
-            $roleInterface = $this->getMockBuilder(RoleInterface::class)->getMock();
+            $roles = $this->getMockBuilder(Role::class)->disableOriginalConstructor()->getMock();
 
             $token
                 ->method('getRoles')
-                ->willReturn([$roleInterface]);
+                ->willReturn([$roles]);
 
-            $roleInterface
+            $roles
                 ->method('getRole')
                 ->willReturn($role);
 
