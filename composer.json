@@ -35,7 +35,7 @@
         "symfony/symfony": "^3.0|^4.0",
         "runopencode/exchange-rate": "^3.0",
         "symfony/validator": "^3.0|^4.0",
-        "symfony/form": "3.0|^4.0",
+        "symfony/form": "^3.0|^4.0",
         "roave/security-advisories": "dev-master"
     },
     "suggest": {
