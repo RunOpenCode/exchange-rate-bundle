@@ -3,7 +3,7 @@
 <phpunit bootstrap="./vendor/autoload.php" colors="true">
 
     <php>
-        <server name="KERNEL_DIR" value="./test/Fixtures/project/app/" />
+        <server name="KERNEL_CLASS" value="AppKernel" />
     </php>
 
     <testsuites>

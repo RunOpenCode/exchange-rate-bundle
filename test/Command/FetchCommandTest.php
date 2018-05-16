@@ -224,13 +224,13 @@ class FetchCommandTest extends TestCase
         $invocations = $spy->getInvocations();
         $this->assertEquals(2, count($invocations));
 
-        $this->assertEquals(FetchEvents::SUCCESS, $invocations[0]->parameters[0]);
-        $this->assertEquals(FetchSuccessEvent::class, get_class($invocations[0]->parameters[1]));
-        $this->assertEquals([$rate], $invocations[0]->parameters[1]->getRates()['source_1']);
+        $this->assertEquals(FetchEvents::SUCCESS, $invocations[0]->getParameters()[0]);
+        $this->assertEquals(FetchSuccessEvent::class, get_class($invocations[0]->getParameters()[1]));
+        $this->assertEquals([$rate], $invocations[0]->getParameters()[1]->getRates()['source_1']);
 
-        $this->assertEquals(FetchEvents::ERROR, $invocations[1]->parameters[0]);
-        $this->assertEquals(FetchErrorEvent::class, get_class($invocations[1]->parameters[1]));
-        $this->assertInstanceOf(\Exception::class, $invocations[1]->parameters[1]->getErrors()['source_2']);
+        $this->assertEquals(FetchEvents::ERROR, $invocations[1]->getParameters()[0]);
+        $this->assertEquals(FetchErrorEvent::class, get_class($invocations[1]->getParameters()[1]));
+        $this->assertInstanceOf(\Exception::class, $invocations[1]->getParameters()[1]->getErrors()['source_2']);
 
         $this->assertEquals(-1, $returnValue);
     }

@@ -58,7 +58,7 @@ class ExchangeRateBundleTest extends TestCase
          * @var \PHPUnit_Framework_MockObject_Invocation_Object $invocation
          */
         foreach ($invocations as $invocation) {
-            $registeredCompilerPasses[] = get_class($invocation->parameters[0]);
+            $registeredCompilerPasses[] = get_class($invocation->getParameters()[0]);
         }
 
         $this->assertCount(4, $invocations);

@@ -63,7 +63,7 @@ class FetchEventsEmailNotificationListenerTest extends WebTestCase
         /**
          * @var \Swift_Message $message
          */
-        $message = $invocation->parameters[0];
+        $message = $invocation->getParameters()[0];
 
         $this->assertInstanceOf(\Swift_Message::class, $message);
 
@@ -106,7 +106,7 @@ class FetchEventsEmailNotificationListenerTest extends WebTestCase
         /**
          * @var \Swift_Message $message
          */
-        $message = $invocation->parameters[0];
+        $message = $invocation->getParameters()[0];
 
         $this->assertInstanceOf(\Swift_Message::class, $message);
 

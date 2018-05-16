@@ -17,7 +17,7 @@
 
     <services>
 
-        <service id="runopencode.exchange_rate" class="%runopencode.exchange_rate.class%">
+        <service id="runopencode.exchange_rate" class="%runopencode.exchange_rate.class%" public="true">
             <argument>%runopencode.exchange_rate.base_currency%</argument>
             <argument type="service" id="runopencode.exchange_rate.repository"/>
             <argument type="service" id="runopencode.exchange_rate.registry.sources"/>

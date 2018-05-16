@@ -27,14 +27,15 @@
     "autoload-dev": {
         "psr-4": {
             "RunOpenCode\\Bundle\\ExchangeRate\\Tests\\": "test/"
-        }
+        },
+        "classmap": [ "test/Fixtures/project/app" ]
     },
     "require": {
         "php": ">=7.0",
-        "symfony/symfony": "~3.0",
-        "runopencode/exchange-rate": "~2.0",
-        "symfony/validator": "~3.2",
-        "symfony/form": "~3.2",
+        "symfony/symfony": "^3.0|^4.0",
+        "runopencode/exchange-rate": "^3.0",
+        "symfony/validator": "^3.0|^4.0",
+        "symfony/form": "3.0|^4.0",
         "roave/security-advisories": "dev-master"
     },
     "suggest": {
@@ -43,17 +44,17 @@
         "symfony/swiftmailer-bundle": "Send e-mail about rates fetch success."
     },
     "require-dev": {
-        "phpunit/phpunit": "~6.0",
-        "symfony/phpunit-bridge": "dev-master",
-        "squizlabs/php_codesniffer": "~2.0",
-        "phploc/phploc": "dev-master",
-        "pdepend/pdepend" : "~2.5",
+        "phpunit/phpunit": "^6.0",
+        "symfony/phpunit-bridge": "^3.0|^4.0",
+        "squizlabs/php_codesniffer": "^2.0|^3.0",
+        "phploc/phploc": "^3.0|^4.0",
+        "pdepend/pdepend" : "^2.5",
         "phpmd/phpmd" : "@stable",
-        "sebastian/phpcpd": "dev-master",
-        "theseer/phpdox": "dev-master",
-        "escapestudios/symfony2-coding-standard": "~2.0",
-        "symfony/debug": "~3.0",
-        "matthiasnoback/symfony-dependency-injection-test": "~2.0",
-        "symfony/swiftmailer-bundle": "~2.6|~3.0"
+        "sebastian/phpcpd": "^3.0|^4.0",
+        "theseer/phpdox": "^0.10",
+        "escapestudios/symfony2-coding-standard": "^2.0|^3.0",
+        "symfony/debug": "^3.0|^4.0",
+        "matthiasnoback/symfony-dependency-injection-test": "^2.0|^3.0",
+        "symfony/swiftmailer-bundle": "^3.0"
     }
 }
